@@ -25,8 +25,9 @@
 3. **"Tailor" implies a target.** If no JD is supplied, ask for one or use the target role.
 4. **"Translate" means `localize`, never literal translation.** Re-derive from facts for the target market.
 5. **"Make it prettier" means `restyle`.** Do not rewrite content unless asked.
-6. **Ambiguous intent gets one question.** Example: "你是想保持内容只换版式，还是连内容一起优化？"
+6. **Ambiguous intent gets one interactive question.** Example: "你是想保持内容只换版式，还是连内容一起优化？"
 7. **Out-of-scope requests are declined clearly** and, if useful, mapped to the right tool.
+8. **All routes require continuous interactive questioning when input is missing.** Follow the [mandatory host-tool protocol](../SKILL.md#mandatory-continuous-interaction): use `AskUserQuestion` or an available equivalent, wait for the answer, and continue the same conversation and task. This includes extraction confirmation, evidence follow-ups, template selection, framework consent, localization gaps, and minimum-gate acceptance. Do not end a task with a questionnaire or require "continue" after each answer. Preserve free-text input and pause/resume; if the tool is unavailable or denied, report the limitation without silently switching to final-message questions.
 
 ## 3. Route A — Create from scratch
 

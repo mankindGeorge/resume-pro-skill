@@ -341,3 +341,49 @@ Before asking for a target role, ask:
 The preferred role is used for fact ranking, the application target, and the output file name (for example `resume-backend-engineer.html`). It is **not** rendered as a 求职意向 section. Use `--no-role-in-filename` if the user wants a plain `resume.html`.
 
 No job-intent line is ever added to a template. The target role is a selection and naming device, not resume content.
+
+## 13. Continuous agent interaction
+
+The [mandatory interaction protocol](../SKILL.md#mandatory-continuous-interaction) applies to every route, not only initial intake. The agent must use the host's interactive question tool (such as `AskUserQuestion`), wait for the response, and continue the same task. A final chat message asking the user to reply or say "continue" is not an acceptable substitute. Ask only for missing facts, unresolved preferences, or required consent; retain previous answers and do not add unnecessary confirmations.
+
+The CLI remains a deterministic, short-lived state operation. Each successful answer/skip saves the vault and intake session and returns the next question. It cannot force a host to expose a dialog or keep an agent running; the skill instructions define that host-side requirement. If the required tool is unavailable or denied, report the capability limitation and preserve state rather than silently degrading to a questionnaire.
+
+### 13.1 Map the actual tool result
+
+| User interaction | Agent action |
+|---|---|
+| Selects a valid option | Map the display label to the CLI's allowed value and submit it with the original question ID |
+| Enters free text | Preserve the text, including Chinese, punctuation, and multiple lines; pass it as one safely quoted argument |
+| Tool only exposes choice buttons plus custom input | Use custom input for facts; neutral buttons may mean leave unanswered or pause, never sample names or invented achievements |
+| Selects leave unanswered for a fact | Use `--skip --id <question-id>`; required fields retain blocker notes, which alone do not guarantee the gate fails |
+| Says they do not know a fact | Submit an accepted unknown value such as `不知道`; do not invent a value or mark it verified |
+| Needs to approve facts or a writing framework | Offer approve, edit/decline, or pause; do not offer skip as a way past consent |
+| Requests pause/stop, or dismisses without answering | Do not submit any answer, skip, or confirmation; preserve state and stop asking |
+| Provides an invalid answer | Explain the CLI error, retain saved answers, and use the interactive tool to correct that field |
+| Corrects an earlier answer | Use its original `--id` for scalar fields and reread saved facts. Collection handlers may append; explicitly replace the identified field when requested, validate it, and obtain fresh confirmation |
+
+For `AskUserQuestion`, custom input is supplied through the built-in Other path; do not add a duplicate Other option. Respect the actual tool's question and option limits. Do not turn free-form experience collection into a forced multiple-choice test. If no available input can represent the required answer, report the limitation instead of inventing one.
+
+### 13.2 Save, resume, and finish
+
+- Read the next question with `resume --json --lang <en|zh> intake` in the same working directory. Submit answers with `--id` so they apply to the question actually shown, not an assumed cursor.
+- Do not run bare interactive `resume intake` through the agent's shell tool; that is the standalone human terminal workflow, not a chat question UI.
+- Read `intake --summary` before fact confirmation. Display facts for review, then ask for confirmation using the interactive tool, not a final message. Treat corrections as real edits, not automatic consent.
+- On pause, accepted answers already exist in `.resume/vault.yaml` and `.resume/intake-session.json`. A read-only summary can report progress; do not send `quit` as `--answer`, since JSON mode treats that as content rather than a terminal control. Do not use `--reset` to resume.
+- `complete: true` only ends the intake question list. Independently require `summary.confirmed: true` from actual user approval before proceeding; neither question-list completion nor the gate result is a substitute for checking consent. If needed, show the summary and obtain approval through the tool with `--id confirm.summary`. Then run the sufficiency check and continue any remaining consent, writing, rendering, and QA steps within the same task. Do not ask "shall I continue?" merely because a command exited.
+- A blocked gate cannot be bypassed by keeping the conversation alive. Resolve actionable gaps interactively; if the user cannot supply them, explain the blocker and pause. Explicit pause, cancellation, a real blocker, or the requested deliverable are valid stopping points.
+
+### 13.3 Acceptance scenarios
+
+| Scenario | Expected behavior |
+|---|---|
+| Three consecutive intake answers | Three sequential host-tool exchanges; each answer is saved, the next tool question opens without a user "continue" message |
+| Known market/persona or previously answered identity | Reuse saved information; do not ask it again |
+| A multiline Chinese project description | Custom text reaches the vault without replacement by option labels or shell execution |
+| Invalid choice, then valid correction | The same field is corrected; other saved answers and the session survive |
+| Pause, then resume | No fake answer is saved; intake resumes at the pending question |
+| Final fact confirmation | The summary is shown before consent; completion proceeds to the sufficiency check rather than ending the agent task |
+| Template/framework/localization clarification | The same interactive protocol is used outside intake |
+| Missing or denied host tool | Honest capability-blocker report, no simulated dialog or silent fallback |
+
+Automated tests guard the instruction contract and exercise CLI state transitions with scripted answers. They do not prove a particular agent client displays dialogs or follows instructions; validate those behaviors in a host that exposes the tool.

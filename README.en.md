@@ -32,7 +32,7 @@ Cover letters, interview coaching, salary negotiation, job scraping, and auto-ap
 ## Core principles
 
 - **Facts and evidence first.** Resume bullets link to sources, distinguishing verified, user-asserted, estimated, and unknown information. Numeric claims supported only by estimated or unknown sources are blocked by checks; a user assertion is not external verification.
-- **Guide before generating.** Ask targeted questions when information is missing instead of filling gaps with fiction. Ask about mass versus targeted applications before selecting experience.
+- **Guide before generating.** Missing input must be collected one question at a time through the agent's interactive question tool, continuing the same conversation and task after each answer instead of ending with "reply with your answers". Preserve free-text input, pause, and resume. Ask about mass versus targeted applications before selecting experience. If the host lacks a suitable tool, report the limitation rather than silently falling back to a questionnaire.
 - **Writing frameworks require consent.** Ask before applying STAR, XYZ, FAB, CAR, result-first, or user-voice guidance.
 - **Different markets, different priorities.** Adjust sections, order, page budgets, and photo policies by market and career stage. Chinese campus profiles emphasize education, fundamentals, real internships, and individual project contributions.
 - **No job-intent section.** Use the target role for selection and file naming, not as a separate resume section.

@@ -5,7 +5,7 @@ This is an internal evaluation on fictional fixtures. It is not a user study and
 ## 1. Automated surface
 
 - Templates are organized under `templates/cn/` and `templates/en/`; no language label is rendered into a resume.
-- 190 tests cover vault validation, evidence rules, intake branching, sufficiency, ingestion, template audit, template learning, selection, writing consent, lint, JD match, recommendation, HTML rendering, six A4 templates, optional portrait slots, mass/targeted role classification, transcreation/parity, QA, and version diffs.
+- 195 tests cover vault validation, evidence rules, intake branching, continuous-interaction instructions and CLI state transitions, sufficiency, ingestion, template audit, template learning, selection, writing consent, lint, JD match, recommendation, HTML rendering, six A4 templates, optional portrait slots, mass/targeted role classification, transcreation/parity, QA, and version diffs.
 - Run: `python -m pytest`.
 - Browser QA: headless Edge/Chrome prints the rendered HTML to a temporary PDF, then checks actual pages, extracted text, selected bullets, headings, font floor, and section order.
 - Reproducibility: the same vault + application + template produce byte-identical HTML. Template manifests are signed with SHA-256 over HTML + CSS.
@@ -49,6 +49,8 @@ A resume is shippable only when no dimension is 1 and Truth is at least 4.
 
 - PDF ingestion and template learning are approximate; scanned PDFs are detected, not OCR'd.
 - Bullet rewriting is agent work guided by the framework; the CLI does not call an LLM.
+- Continuous questioning is a mandatory host-agent instruction, not a CLI-controlled dialog. Regression tests check the instruction contract and scripted CLI answer/summary/resume transitions; they do not execute `AskUserQuestion`, verify a real host UI, or prove shell quoting. A host without a suitable interactive tool cannot run this workflow as specified.
+- Intake `complete: true` and a passing sufficiency gate do not establish user consent. The agent must show the facts and independently verify `summary.confirmed: true`; a legacy skipped confirmation must be revisited. Re-answering collection fields may append, so the agent must verify requested replacements rather than assuming every `--id` edit is a replacement.
 - Name order, phone formatting, and address granularity are not automatically transformed.
 - Experimental markets (`cn_soe`, `cn_finance`, `cn_creative`, `hk_sg`, `academic`) are not validated in v1.
 - No DOCX/LaTeX/PDF resume exporter; PDF is a browser print action.

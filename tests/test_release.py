@@ -49,6 +49,32 @@ def test_skill_entrypoint_exists():
     assert "framework" in text.lower()
 
 
+def test_skill_requires_continuous_interactive_questions():
+    """Guard the host-agent contract; this does not execute a host question UI."""
+    text = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+    assert "## Mandatory continuous interaction" in text
+    protocol = text.split("## Mandatory continuous interaction", 1)[1].split("\n## ", 1)[0]
+    for requirement in (
+        "MUST call the host's interactive question tool",
+        "AskUserQuestion",
+        "MUST NOT end the task with a final-answer question",
+        "same conversation and task",
+        "free-text",
+        "--id",
+        "--summary",
+        "complete: true",
+        "summary.confirmed: true",
+        "never skip confirmation",
+        "pause",
+        "interaction.tool_unavailable",
+        "Do not start a new chat",
+        "Do not use a blocking terminal prompt",
+    ):
+        assert requirement in protocol, f"Missing interaction rule: {requirement}"
+    assert len(text.splitlines()) < 500
+    assert "TODO:" not in text
+
+
 def test_no_pdf_or_docx_resume_writer():
     for path in (ROOT / "src").rglob("*.py"):
         text = path.read_text(encoding="utf-8")

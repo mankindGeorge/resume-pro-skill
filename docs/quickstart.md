@@ -68,7 +68,9 @@ resume --json profile     # machine summary + gate
 
 ## 5. Agent-driven intake
 
-The CLI is designed to be driven by an agent without a TTY:
+The agent must use the host's interactive question tool (`AskUserQuestion` or an available equivalent), wait for each answer, save it, and immediately continue the same task. Do not end with a questionnaire or ask the user to say "continue". Free-text answers, explicit pause, and later resume must remain possible. If no suitable tool is available or permission is denied, report that limitation rather than silently falling back to final-message questions. See the [continuous interaction protocol](intake-and-sufficiency.md#13-continuous-agent-interaction).
+
+The CLI is designed to be driven by an agent without a TTY. These are individual steps in the agent's loop, not a script to run without real user answers:
 
 ```bash
 resume --json intake

@@ -36,7 +36,32 @@ A resume is a **per-job selection over a verified career vault**, rendered throu
 | "I have a template I like" | `template-import` |
 | "Is this ready to send?" | `audit` |
 
-A file means `optimize`, not `create`. "Review" means diagnose without rewriting. "Translate" means `localize`, not literal translation. If intent is ambiguous, ask one question.
+A file means `optimize`, not `create`. "Review" means diagnose without rewriting. "Translate" means `localize`, not literal translation. If intent is ambiguous, ask one question using the protocol below.
+
+## Mandatory continuous interaction
+
+Apply this protocol to **every route** whenever missing facts, an unresolved preference, or user consent is needed: intake, extraction confirmation, evidence follow-ups, application mode, role, framework, template, photo, localization, and minimum-gate acceptance.
+
+### Host tool requirement
+
+- You **MUST call the host's interactive question tool** (`AskUserQuestion` or an available equivalent), wait for its answer, then resume the **same conversation and task**. This is mandatory, not a preferred presentation style. Use only tools actually exposed by the host and follow their schema and permission rules.
+- You **MUST NOT end the task with a final-answer question**, a questionnaire, or "reply with your answers / say continue" as the normal handoff. Do not start a new chat, launch a separate task for each answer, or ask the user to restart the skill.
+- Ask exactly one unresolved question per tool call, in the user's language; explain why it matters. Use facts and choices already supplied instead of asking again. Do not manufacture consent or add redundant approval steps.
+- Preserve **free-text** input for names, dates, experience, projects, and explanations. With `AskUserQuestion`, use its built-in Other/custom-text input; if options are required, offer honest controls such as "Leave unanswered" and "Pause", not invented candidate facts. Map a deliberate leave-unanswered choice to a recorded gap, never to a successful answer. For consent, offer approve, edit/decline, or pause; never skip confirmation. For choices, map labels to valid CLI values; retain access to all values through custom input when the tool's option limit is smaller than the list.
+- Treat empty/cancelled tool results as no answer, not consent or a skip. On explicit pause/stop, or dismissal without an answer, preserve saved state and stop questioning; do not repeatedly reopen the dialog. On a requested resume, read the saved question instead of resetting. A user's "I don't know" is an unknown, not permission to invent.
+- If no suitable interactive tool is available or its use is denied, preserve state and report `interaction.tool_unavailable` as a **host capability limitation**, not a CLI error code. Do not silently substitute a final-message questionnaire, pretend to have shown a dialog, or bypass the restriction. Final responses are allowed for completion, explicit pause/cancellation, or a genuine blocker; never claim a paused or blocked resume is complete.
+
+### Agent-driven loop
+
+1. Load the existing vault and session in the same working directory. For creation, initialize only if needed and pass only known market/persona values. For optimization, ingest first and ask only about unresolved extracted facts; do not start the full new-resume interview.
+2. Use `resume --json --lang <en|zh> intake` to obtain `question.id`, `kind`, `prompt`, `why`, `required`, `choices`, and `example`. Do not use a blocking terminal prompt (`resume intake` without `--json`) to collect answers inside an agent session. Standalone human CLI use remains supported.
+3. When a question needs user input, call the interactive tool and wait. After the tool returns, submit the actual answer with `resume --json --lang <en|zh> intake --id <question-id> --answer <answer>`. Preserve free-text wording and safely quote it as a single argument; never interpolate raw user input as shell code. Use `--skip --id <question-id>` only for a deliberate leave-unanswered fact, or `--answer "不知道"` / `--answer "don't know"` for an explicit unknown. Neither is a supplied fact or consent; optional gaps may remain, but required gaps still need assessment. Never submit either for `confirm.summary`.
+4. After a successful write, inspect the returned next `question` and continue the tool loop immediately. A CLI process exiting successfully is **not** the end of the agent task. On invalid input, explain the validation error and ask again for that field with the tool; do not reset the session or silently change the answer. CLI `quit` is a terminal-only control: intercept pause/stop in the agent, never save it as a fact.
+5. Before `confirm.summary`, call `resume --json --lang <en|zh> intake --summary`, present the facts and evidence to review, and obtain confirmation through the tool. Apply scalar corrections with their original IDs, then reread saved facts. Collection handlers can append rather than replace: do not assume `--id` removes old skills, awards, or links. For a replacement, update only the identified canonical field with the user's correction, validate, and show the corrected facts before fresh confirmation. The summary call does not advance intake and may also report progress before pausing; accepted answers are already saved after each write.
+6. When the payload says `complete: true`, read `intake --summary` and require `summary.confirmed: true` from actual user approval, then run `resume --json --lang <en|zh> check`. A passing gate or exhausted question list is not proof of consent; a previously skipped confirmation must be asked through the tool using `--id confirm.summary`. For fixable gaps, ask one targeted question through the same tool loop, persist the supplied facts, and recheck. Do not repeat already answered or deliberately unknown questions; if no answer can resolve the blocker now, explain it and pause without fabricating or delivering a final resume.
+7. Continue in the same task through any still-needed framework/template decisions, writing, rendering, and QA. Ask for `minimum`-gate acceptance interactively before using `--yes`. End with the verified result, or an honest pause/blocker report; do not stop merely because intake ended. A review-only request still ends with diagnosis, not an unsolicited build.
+
+For tool-input mappings, pause/resume behavior, and acceptance scenarios, see [Guided intake](docs/intake-and-sufficiency.md#13-continuous-agent-interaction).
 
 ## Route workflows
 
@@ -44,12 +69,13 @@ A file means `optimize`, not `create`. "Review" means diagnose without rewriting
 
 ```bash
 resume init --market <id> --persona <id>
-resume --json intake
-# Ask the returned question. Answer with:
-resume --json intake --answer "..."
-# or skip an optional question:
-resume --json intake --skip
-resume check
+resume --json --lang <en|zh> intake
+# Call the host's interactive question tool, wait, then submit its answer:
+resume --json --lang <en|zh> intake --id <question-id> --answer <answer>
+# Only if the user explicitly leaves this field unanswered:
+resume --json --lang <en|zh> intake --skip --id <question-id>
+# Repeat the tool loop until intake completes, then check:
+resume --json --lang <en|zh> check
 resume new --role "<role>" --market <id> --persona <id> --framework <id>
 resume build <slug> --yes
 resume photo portrait.jpg --app <slug>
