@@ -1,0 +1,193 @@
+{
+  "id": "ats-classic",
+  "name": "ATS 经典",
+  "language": "zh",
+  "version": "1.0.0",
+  "status": "stable",
+  "description": "Single-column, standard headings, no graphics. Parseability-first.",
+  "markets": [
+    "intl_en",
+    "cn_internet",
+    "cn_soe",
+    "cn_finance",
+    "cn_creative",
+    "hk_sg",
+    "academic"
+  ],
+  "personas": [
+    "experienced",
+    "new_grad",
+    "student_with_internship",
+    "student_with_projects",
+    "career_switcher"
+  ],
+  "page": {
+    "sizes": [
+      "a4"
+    ],
+    "margins_mm": {
+      "top": 18,
+      "right": 18,
+      "bottom": 18,
+      "left": 18
+    },
+    "target_pages": {
+      "min": 1,
+      "max": 2
+    },
+    "columns": "single"
+  },
+  "slots": {
+    "required": [
+      {
+        "name": "identity.name",
+        "selector": "[data-slot='identity.name']",
+        "kind": "text"
+      },
+      {
+        "name": "identity.contact",
+        "selector": "[data-slot='identity.contact']",
+        "kind": "text"
+      },
+      {
+        "name": "section.education",
+        "selector": "[data-slot='section.education']",
+        "kind": "section"
+      },
+      {
+        "name": "section.experience",
+        "selector": "[data-slot='section.experience']",
+        "kind": "section"
+      },
+      {
+        "name": "section.skills",
+        "selector": "[data-slot='section.skills']",
+        "kind": "section"
+      }
+    ],
+    "optional": [
+      {
+        "name": "identity.links",
+        "selector": "[data-slot='identity.links']",
+        "kind": "list",
+        "repeatable": true
+      },
+      {
+        "name": "identity.photo",
+        "selector": "[data-slot='identity.photo']",
+        "kind": "image"
+      },
+      {
+        "name": "section.summary",
+        "selector": "[data-slot='section.summary']",
+        "kind": "rich_text"
+      },
+      {
+        "name": "section.projects",
+        "selector": "[data-slot='section.projects']",
+        "kind": "section"
+      },
+      {
+        "name": "section.awards",
+        "selector": "[data-slot='section.awards']",
+        "kind": "section"
+      },
+      {
+        "name": "section.certificates",
+        "selector": "[data-slot='section.certificates']",
+        "kind": "section"
+      },
+      {
+        "name": "section.languages",
+        "selector": "[data-slot='section.languages']",
+        "kind": "section"
+      },
+      {
+        "name": "section.publications",
+        "selector": "[data-slot='section.publications']",
+        "kind": "section"
+      },
+      {
+        "name": "section.open_source",
+        "selector": "[data-slot='section.open_source']",
+        "kind": "section"
+      },
+      {
+        "name": "education.item",
+        "selector": "[data-slot='education.item']",
+        "kind": "list",
+        "repeatable": true
+      },
+      {
+        "name": "experience.item",
+        "selector": "[data-slot='experience.item']",
+        "kind": "list",
+        "repeatable": true
+      },
+      {
+        "name": "experience.item.bullet",
+        "selector": "[data-slot='experience.item.bullet']",
+        "kind": "list",
+        "repeatable": true
+      },
+      {
+        "name": "project.item",
+        "selector": "[data-slot='project.item']",
+        "kind": "list",
+        "repeatable": true
+      },
+      {
+        "name": "project.item.bullet",
+        "selector": "[data-slot='project.item.bullet']",
+        "kind": "list",
+        "repeatable": true
+      }
+    ]
+  },
+  "budgets": {
+    "summary_chars": {
+      "en": 240,
+      "zh": 120
+    },
+    "bullets_per_role": 5,
+    "bullets_per_project": 4,
+    "max_roles": 5,
+    "max_projects": 4,
+    "max_skills": 16
+  },
+  "files": {
+    "html": "template.html",
+    "css": "styles.css",
+    "preview": "preview.html",
+    "print_css": "styles.css"
+  },
+  "print": {
+    "safe_margin_mm": 12,
+    "bleed_mm": 0,
+    "color_mode": "grayscale_safe"
+  },
+  "ats": {
+    "single_column": true,
+    "text_selectable": true,
+    "tables_allowed": false,
+    "standard_headings": [
+      "个人简介",
+      "工作经历",
+      "项目经历",
+      "专业技能",
+      "教育经历",
+      "荣誉奖项",
+      "证书",
+      "语言能力",
+      "论文 / 发表",
+      "开源项目"
+    ]
+  },
+  "editable_variant": true,
+  "fingerprint": "51240653207a0140d0b4753914bbdb4b0b3c91cd09974a2d88d1a108ea5ad3c4",
+  "created_at": "2026-11-05T00:00:00Z",
+  "provenance": {
+    "kind": "original",
+    "note": "Language counterpart of the original templates/en/ats-classic baseline; preserves its structure with localized headings and typography. No approval or promotion implied."
+  }
+}

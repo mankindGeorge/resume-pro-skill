@@ -6,7 +6,13 @@
   "status": "stable",
   "description": "Two-page senior/manager resume; outcome-first and scope-forward.",
   "markets": [
-    "intl_en"
+    "intl_en",
+    "cn_internet",
+    "cn_soe",
+    "cn_finance",
+    "cn_creative",
+    "hk_sg",
+    "academic"
   ],
   "personas": [
     "senior_manager",
@@ -165,7 +171,13 @@
       "Executive Summary",
       "Experience",
       "Leadership & Skills",
-      "Education"
+      "Education",
+      "Awards",
+      "Publications",
+      "Certifications",
+      "Languages",
+      "Selected Projects",
+      "Open Source"
     ]
   },
   "editable_variant": true,

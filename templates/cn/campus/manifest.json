@@ -1,15 +1,18 @@
 {
   "id": "campus",
-  "name": "Campus",
+  "name": "校园",
   "language": "zh",
   "version": "1.0.0",
   "status": "stable",
-  "description": "CN campus resume: education first, fundamentals visible, A4, 1–2 pages; no job-intent section.",
+  "description": "Education-first resume with visible fundamentals, A4, 1–2 pages; no job-intent section.",
   "markets": [
+    "intl_en",
     "cn_internet",
     "cn_soe",
     "cn_finance",
-    "cn_creative"
+    "cn_creative",
+    "hk_sg",
+    "academic"
   ],
   "personas": [
     "student_with_projects",
@@ -171,13 +174,18 @@
     "standard_headings": [
       "教育经历",
       "专业技能",
-      "实习经历",
+      "工作/实习经历",
       "项目经历",
-      "荣誉奖项"
+      "荣誉奖项",
+      "开源项目",
+      "证书",
+      "语言能力",
+      "论文 / 发表",
+      "个人简介"
     ]
   },
   "editable_variant": true,
-  "fingerprint": "ca065e1e0824c07fd33fb1c569643718cafcd7f8f202fc8fd1655789ecece81c",
+  "fingerprint": "c6c5f1b115aa2d38bb08bfd6bded7fe2662993344487a21a763881360d8c249b",
   "created_at": "2026-11-05T00:00:00Z",
   "provenance": {
     "kind": "original",

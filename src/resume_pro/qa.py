@@ -23,7 +23,7 @@ from .errors import ResumeProError
 from .ingest import EMAIL_RE, PHONE_RE
 from .lint import CLICHES, FIRST_PERSON, WEAK_START
 from .paths import schema_dir
-from .render import load_template
+from .render import application_locale, load_template
 from .template_audit import PERSONAL_MARKERS
 
 BROWSER_CANDIDATES = (
@@ -194,7 +194,7 @@ def _redact(value: Any, vault: dict[str, Any]) -> Any:
 
 
 def _selected_bullets(vault: dict[str, Any], application: dict[str, Any]) -> list[dict[str, Any]]:
-    locale = application["writing"]["locale"]
+    locale = application_locale(application)
     selected = set(application["selection"].get("bullet_ids") or [])
     rows = []
     for section in ("experience", "projects"):
@@ -240,7 +240,7 @@ def run_qa(
             pass
     chosen_template = template_id or render_data.get("template_id") or application["template"]["id"]
     try:
-        template = load_template(chosen_template, root=root)
+        template = load_template(chosen_template, root=root, language=application_locale(application))
     except ResumeProError as error:
         checks.append(QACheck("qa.template", "fail", error.message, error.fix))
         return QAResult("fail", checks, metrics)
@@ -253,7 +253,7 @@ def run_qa(
         for section in sorted(sections.get("sections") or [], key=lambda item: item.get("order", 99))
         if section.get("enabled")
     ]
-    locale = application["writing"]["locale"]
+    locale = application_locale(application)
     bullets = _selected_bullets(vault, application)
 
     browser = browser_path or find_browser()

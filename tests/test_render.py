@@ -11,10 +11,11 @@ import re
 from pathlib import Path
 
 import pytest
+from bs4 import BeautifulSoup
 
-from resume_pro.application import create_application, page_budget, save_application
+from resume_pro.application import LIBRARY_TEMPLATES, create_application, page_budget, save_application
 from resume_pro.layout import LayoutError
-from resume_pro.render import RenderError, load_template, render_application
+from resume_pro.render import RenderError, build_render_model, load_template, render_application
 from resume_pro.select import select_facts
 
 
@@ -205,15 +206,40 @@ def test_page_size_mismatch(experienced_vault, tmp_path):
     assert error.value.code == "render.page_size_mismatch"
 
 
-def test_language_mismatch_is_rejected(student_vault, experienced_vault, tmp_path):
-    cn_app = _app(student_vault, tmp_path, "ats-classic", market="cn_internet", persona="student_with_internship", role="Backend Engineer")
-    with pytest.raises(RenderError) as error:
-        render_application(tmp_path, student_vault, cn_app)
-    assert error.value.code == "render.language_mismatch"
-    en_app = _app(experienced_vault, tmp_path, "campus", market="intl_en", persona="experienced", role="Senior Backend Engineer")
-    with pytest.raises(RenderError) as error:
-        render_application(tmp_path, experienced_vault, en_app)
-    assert error.value.code == "render.language_mismatch"
+@pytest.mark.parametrize("template_id", LIBRARY_TEMPLATES)
+@pytest.mark.parametrize("market,locale", [("cn_internet", "zh"), ("intl_en", "en")])
+def test_all_layouts_render_both_languages_without_changing_content(student_vault, tmp_path, template_id, market, locale):
+    app = _app(student_vault, tmp_path, template_id, market=market, persona="student_with_internship", role="Backend Engineer")
+    before = copy.deepcopy(app)
+    vault_before = copy.deepcopy(student_vault)
+    result = render_application(tmp_path, student_vault, app)
+    soup = BeautifulSoup(result.html_path.read_text(encoding="utf-8"), "html.parser")
+    assert soup.html["lang"] == locale
+    assert soup.select_one('[data-section="education"] h2').get_text() == ("教育经历" if locale == "zh" else "Education")
+    assert app == before
+    assert student_vault == vault_before
+    baseline = copy.deepcopy(app)
+    baseline["template"]["id"] = "campus"
+    assert build_render_model(student_vault, app) == build_render_model(student_vault, baseline)
+    assert result.fingerprint == load_template(template_id, language=locale)["fingerprint"]
+
+
+@pytest.mark.parametrize("template_id", LIBRARY_TEMPLATES)
+def test_language_does_not_override_market_photo_policy(student_vault, tmp_path, template_id):
+    vault = copy.deepcopy(student_vault)
+    vault["identity"]["photo"] = str(_png(tmp_path / "portrait.png"))
+    app = _app(vault, tmp_path, template_id, market="cn_internet", persona="student_with_internship", role="Backend Engineer")
+    app["writing"]["locale"] = "en"
+    result = render_application(tmp_path, vault, app)
+    html = result.html_path.read_text(encoding="utf-8")
+    assert '<html lang="en">' in html
+    assert "data:image/png;base64," in html
+    app["market"] = "intl_en"
+    app["writing"]["locale"] = "zh"
+    result = render_application(tmp_path, vault, app)
+    html = result.html_path.read_text(encoding="utf-8")
+    assert '<html lang="zh">' in html
+    assert "<img" not in html
 
 
 def test_render_zh_professional(experienced_vault, tmp_path):
@@ -317,35 +343,69 @@ def test_fingerprint_mismatch_is_rejected(tmp_path):
     assert error.value.code == "render.fingerprint_mismatch"
 
 
-def test_library_manifests_are_valid():
-    for template_id in ("ats-classic", "campus", "modern-sidebar", "editorial", "executive", "zh-professional"):
-        template = load_template(template_id)
-        assert template["manifest"]["fingerprint"] == template["fingerprint"]
-        assert (template["directory"] / template["manifest"]["files"]["preview"]).is_file()
-        assert template["manifest"]["page"]["sizes"] == ["a4"]
-        assert template["manifest"]["language"] in {"zh", "en"}
-        assert "size: A4" in template["css"]
-        assert "width: 210mm" in template["css"]
-        assert "min-height: 297mm" in template["css"]
+@pytest.mark.parametrize("template_id", LIBRARY_TEMPLATES)
+@pytest.mark.parametrize("language", ["zh", "en"])
+def test_library_manifests_are_valid(template_id, language):
+    template = load_template(template_id, language=language)
+    assert template["manifest"]["fingerprint"] == template["fingerprint"]
+    assert (template["directory"] / template["manifest"]["files"]["preview"]).is_file()
+    assert template["manifest"]["page"]["sizes"] == ["a4"]
+    assert template["manifest"]["language"] == language
+    assert "size: A4" in template["css"]
+    assert "width: 210mm" in template["css"]
+    assert "min-height: 297mm" in template["css"]
+    headings = [tag.get_text() for tag in BeautifulSoup(template["html"], "html.parser").find_all("h2")]
+    assert template["manifest"]["ats"]["standard_headings"] == headings
 
 
-def _template_dir(template_id: str) -> Path:
-    root = Path(__file__).resolve().parents[1] / "templates"
-    for folder in ("cn", "en"):
-        candidate = root / folder / template_id
-        if candidate.is_dir():
-            return candidate
-    return root / template_id
+@pytest.mark.parametrize("template_id", LIBRARY_TEMPLATES)
+def test_language_variants_preserve_structure_and_capacity(template_id):
+    cn = load_template(template_id, language="zh")
+    en = load_template(template_id, language="en")
+    def structure(template):
+        soup = BeautifulSoup(template["html"], "html.parser")
+        return [(tag.name, {k: v for k, v in tag.attrs.items() if k != "lang"}) for tag in soup.find_all(True)]
+    assert structure(cn) == structure(en)
+    for key in ("id", "page", "slots", "budgets", "status", "markets", "personas"):
+        assert cn["manifest"][key] == en["manifest"][key]
+    assert cn["manifest"]["provenance"]["kind"] == en["manifest"]["provenance"]["kind"]
+    assert cn["fingerprint"] != en["fingerprint"]
+    assert any(font in cn["css"] for font in ("PingFang SC", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC"))
+    assert all(font not in en["css"] for font in ("PingFang SC", "Microsoft YaHei", "Songti SC"))
 
 
-def test_language_font_stacks_are_separated():
-    english = ("ats-classic", "modern-sidebar", "editorial", "executive")
-    chinese = ("campus", "zh-professional")
-    for template_id in english:
-        css = (_template_dir(template_id) / "styles.css").read_text(encoding="utf-8")
-        assert "PingFang SC" not in css
-        assert "Microsoft YaHei" not in css
-        assert "Songti SC" not in css
-    for template_id in chinese:
-        css = (_template_dir(template_id) / "styles.css").read_text(encoding="utf-8")
-        assert any(font in css for font in ("PingFang SC", "Microsoft YaHei", "Source Han Sans SC", "Noto Sans CJK SC"))
+def test_ambiguous_template_requires_language():
+    with pytest.raises(RenderError) as error:
+        load_template("campus")
+    assert error.value.code == "render.template_language_required"
+
+
+def test_invalid_template_language_is_rejected():
+    with pytest.raises(RenderError) as error:
+        load_template("campus", language="cn")
+    assert error.value.code == "render.invalid_language"
+
+
+def test_missing_variant_never_loads_other_language(tmp_path, monkeypatch):
+    directory = tmp_path / "cn" / "campus"
+    directory.mkdir(parents=True)
+    (directory / "manifest.json").write_text("{}", encoding="utf-8")
+    monkeypatch.setenv("RESUME_PRO_TEMPLATES_DIR", str(tmp_path))
+    with pytest.raises(RenderError) as error:
+        load_template("campus", language="en")
+    assert error.value.code == "render.template_missing"
+
+
+def test_flat_learned_template_remains_language_checked(tmp_path):
+    template_id = _user_template(tmp_path)
+    assert load_template(template_id, root=tmp_path, language="en")["manifest"]["status"] == "private"
+    with pytest.raises(RenderError) as error:
+        load_template(template_id, root=tmp_path, language="zh")
+    assert error.value.code == "render.language_mismatch"
+
+
+def test_render_defaults_missing_locale_from_market(student_vault, tmp_path):
+    app = _app(student_vault, tmp_path, "ats-classic", market="cn_internet", persona="student_with_internship", role="Backend Engineer")
+    app["writing"].pop("locale")
+    result = render_application(tmp_path, student_vault, app)
+    assert '<html lang="zh">' in result.html_path.read_text(encoding="utf-8")

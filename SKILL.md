@@ -19,7 +19,9 @@ A resume is a **per-job selection over a verified career vault**, rendered throu
 8. **Chinese-market rules.** Core skills, AI-related work, internships, and projects are the four campus signals. CS fundamentals are required for campus. Reject demo-only projects. Never omit education. Strongest signal first. 1–2 pages for students/under 3 years; 2–3 for 3+ years. Never render a 求职意向 section.
 9. **Respect the application mode.** Ask whether the resume is mainly for mass applications. If not, classify each experience/project by job family and ask for the preferred role. Use that role for ranking and the file name; do not add a job-intent line.
 10. **Photo slot.** Every template reserves an optional portrait slot. When no photo is set, the slot must be completely invisible.
-11. **Language-matched templates.** The library is split into `templates/cn/` and `templates/en/`, with different font stacks and leading. Never use a Chinese template for an English resume or vice versa; the renderer rejects it. No "CN"/"EN" label is rendered into the resume.
+11. **Language-matched variants, not market-locked designs.** Offer all six designs (`ats-classic`, `campus`, `modern-sidebar`, `editorial`, `executive`, `zh-professional`) in both resume languages: 12 variants. `templates/cn/` means Chinese (`language: zh`), `templates/en/` English (`language: en`), not market eligibility. Keep the historical `zh-professional` ID for either language. Render and QA using `writing.locale`, falling back to the market profile's `language`; reject a mismatched or missing variant. When calling `load_template(id, language=zh|en)`, specify the language: a multilingual ID without it is ambiguous and must fail, never prefer `cn`. Render no "CN"/"EN" label.
+
+Keep the existing default recommendations (`campus` / `zh-professional` for Chinese-market campus / professional profiles; `ats-classic` / `executive` for international default / senior profiles), but do not treat them as exclusive choices. Market/persona still govern selection, writing, page policy, photos, and fact confirmation. Respect each design's capacity budgets and fixed sidebar/main regions; bilingual availability does not relax those constraints or change template review status.
 
 ## Routing
 
@@ -76,12 +78,15 @@ resume --json --lang <en|zh> intake --id <question-id> --answer <answer>
 resume --json --lang <en|zh> intake --skip --id <question-id>
 # Repeat the tool loop until intake completes, then check:
 resume --json --lang <en|zh> check
-resume new --role "<role>" --market <id> --persona <id> --framework <id>
+# List layouts in the resume language and where to preview them:
+resume templates
+resume new --role "<role>" --market <id> --persona <id> --framework <id> --template <id>
 resume build <slug> --yes
 resume photo portrait.jpg --app <slug>
 ```
 
 - Ask exactly one question at a time; explain why.
+- **Choose the template with the user before rendering.** After the gate passes, call the interactive tool to ask which layout to use. Present the six designs available in the resume's language (`resume templates`; each ID exists in both `cn`/`en`), recommend the market/persona default, and let the user pick another or keep the default. Tell the user where to view each design: open `templates/<cn|en>/<id>/preview.html` in a browser (the `preview` path is also in `resume templates --json`). Pass the chosen ID with `--template`; never silently accept the default when the user has not been asked.
 - If `check` exits `2`, read the targeted questions and ask one. Do not generate.
 - `minimum` is a truthful but modest resume; confirm before building. `strong` can build.
 - Never fill a gap with generic AI prose.
@@ -92,7 +97,7 @@ resume photo portrait.jpg --app <slug>
 resume review resume.pdf --market <id> --persona <id>
 resume optimize resume.docx --market <id> --persona <id> --role "<role>"
 resume optimize resume.docx --market <id> --persona <id> --keep-template
-resume new --role "<role>" --market <id> --persona <id> --framework <id>
+resume new --role "<role>" --market <id> --persona <id> --framework <id> --template <id>
 resume build <slug> --yes
 resume photo portrait.jpg --app <slug>
 ```
@@ -100,6 +105,7 @@ resume photo portrait.jpg --app <slug>
 - Ingest first; never restart a from-scratch interview.
 - Show the extraction report and ask the user to confirm missing/low-confidence fields.
 - Audit the template. `excellent`/`good_with_fixes` can be kept; `replace`/`unmaintainable` gets a concrete reason and 2–3 library recommendations.
+- When not keeping the original, ask the user to choose a library layout with the interactive tool before rendering, and show where to preview it (`templates/<cn|en>/<id>/preview.html`; `resume templates`), exactly as in Create from zero.
 - Keeping a template rebuilds a private HTML template under `templates/user-<hash>/`; the original file is untouched. Preserve visual language, not pixel-perfect PDF.
 - A different name in the file replaces the vault unless `--merge` is explicit.
 
@@ -119,7 +125,7 @@ resume restyle --app <slug> --template modern-sidebar --yes
 resume restyle resume.docx --template user-abc123
 ```
 
-Facts must not change. Use `--app` to rebuild canonical HTML; a file produces a learned-template preview.
+Change appearance only: preserve facts, market, persona, selection, and writing locale. Use `--app` to rebuild canonical HTML with the matching language variant; a file produces a learned-template preview. Do not use restyling to switch markets or reselect content.
 
 ### Tailor and match
 
@@ -140,7 +146,8 @@ resume localize <slug> --to en --role "Backend Engineering Intern" --yes
 resume localize <slug> --to zh --role "高级后端工程师" --yes
 ```
 
-- Re-derive from facts for the target market; do not translate rendered text.
+- Re-derive from facts for the target market; do not translate rendered text. Keep the existing cross-market selection and writing workflow.
+- Retain the source design ID by default and resolve its target-language variant; change the design only with an explicit `--template <id>`. A private learned template without that language must fail clearly, never silently switch designs. Legacy flat `templates/user-<hash>/` templates remain supported, with their manifest language checked.
 - Missing target-language facts exit `3` with a gap list. `--draft` marks them `[NEEDS EN]`/`[NEEDS ZH]`; do not deliver a draft.
 - Parity failures block delivery. Review `parity.json` before the user sends anything.
 

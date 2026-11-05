@@ -1,0 +1,190 @@
+{
+  "id": "modern-sidebar",
+  "name": "现代侧栏",
+  "language": "zh",
+  "version": "1.0.0",
+  "status": "stable",
+  "description": "Restrained two-column layout with a logical DOM order and a single-column screen fallback.",
+  "markets": [
+    "intl_en",
+    "cn_internet",
+    "cn_soe",
+    "cn_finance",
+    "cn_creative",
+    "hk_sg",
+    "academic"
+  ],
+  "personas": [
+    "experienced",
+    "career_switcher"
+  ],
+  "page": {
+    "sizes": [
+      "a4"
+    ],
+    "margins_mm": {
+      "top": 16,
+      "right": 16,
+      "bottom": 16,
+      "left": 16
+    },
+    "target_pages": {
+      "min": 1,
+      "max": 2
+    },
+    "columns": "main_sidebar"
+  },
+  "slots": {
+    "required": [
+      {
+        "name": "identity.name",
+        "selector": "[data-slot='identity.name']",
+        "kind": "text"
+      },
+      {
+        "name": "identity.contact",
+        "selector": "[data-slot='identity.contact']",
+        "kind": "text"
+      },
+      {
+        "name": "section.summary",
+        "selector": "[data-slot='section.summary']",
+        "kind": "rich_text"
+      },
+      {
+        "name": "section.experience",
+        "selector": "[data-slot='section.experience']",
+        "kind": "section"
+      },
+      {
+        "name": "section.skills",
+        "selector": "[data-slot='section.skills']",
+        "kind": "section"
+      },
+      {
+        "name": "section.education",
+        "selector": "[data-slot='section.education']",
+        "kind": "section"
+      }
+    ],
+    "optional": [
+      {
+        "name": "identity.links",
+        "selector": "[data-slot='identity.links']",
+        "kind": "list",
+        "repeatable": true
+      },
+      {
+        "name": "identity.photo",
+        "selector": "[data-slot='identity.photo']",
+        "kind": "image"
+      },
+      {
+        "name": "section.projects",
+        "selector": "[data-slot='section.projects']",
+        "kind": "section"
+      },
+      {
+        "name": "section.awards",
+        "selector": "[data-slot='section.awards']",
+        "kind": "section"
+      },
+      {
+        "name": "section.certificates",
+        "selector": "[data-slot='section.certificates']",
+        "kind": "section"
+      },
+      {
+        "name": "section.languages",
+        "selector": "[data-slot='section.languages']",
+        "kind": "section"
+      },
+      {
+        "name": "section.publications",
+        "selector": "[data-slot='section.publications']",
+        "kind": "section"
+      },
+      {
+        "name": "section.open_source",
+        "selector": "[data-slot='section.open_source']",
+        "kind": "section"
+      },
+      {
+        "name": "education.item",
+        "selector": "[data-slot='education.item']",
+        "kind": "list",
+        "repeatable": true
+      },
+      {
+        "name": "experience.item",
+        "selector": "[data-slot='experience.item']",
+        "kind": "list",
+        "repeatable": true
+      },
+      {
+        "name": "experience.item.bullet",
+        "selector": "[data-slot='experience.item.bullet']",
+        "kind": "list",
+        "repeatable": true
+      },
+      {
+        "name": "project.item",
+        "selector": "[data-slot='project.item']",
+        "kind": "list",
+        "repeatable": true
+      },
+      {
+        "name": "project.item.bullet",
+        "selector": "[data-slot='project.item.bullet']",
+        "kind": "list",
+        "repeatable": true
+      }
+    ]
+  },
+  "budgets": {
+    "summary_chars": {
+      "en": 240,
+      "zh": 120
+    },
+    "bullets_per_role": 5,
+    "bullets_per_project": 4,
+    "max_roles": 5,
+    "max_projects": 4,
+    "max_skills": 16
+  },
+  "files": {
+    "html": "template.html",
+    "css": "styles.css",
+    "preview": "preview.html",
+    "print_css": "styles.css"
+  },
+  "print": {
+    "safe_margin_mm": 12,
+    "bleed_mm": 0,
+    "color_mode": "grayscale_safe"
+  },
+  "ats": {
+    "single_column": false,
+    "text_selectable": true,
+    "tables_allowed": false,
+    "standard_headings": [
+      "个人简介",
+      "工作经历",
+      "项目经历",
+      "论文 / 发表",
+      "开源项目",
+      "专业技能",
+      "教育经历",
+      "荣誉奖项",
+      "证书",
+      "语言能力"
+    ]
+  },
+  "editable_variant": true,
+  "fingerprint": "5cdad5b26aa16a3dba5cb55d607a750e69cb53cabbba256f641dac06bf9ab583",
+  "created_at": "2026-11-05T00:00:00Z",
+  "provenance": {
+    "kind": "original",
+    "note": "Language counterpart of the original templates/en/modern-sidebar baseline; preserves its structure with localized headings and typography. No approval or promotion implied."
+  }
+}

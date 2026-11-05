@@ -111,11 +111,23 @@ def test_templates_lists_library(tmp_path, monkeypatch):
     assert result.exit_code == 0, result.output
     ids = {item["id"] for item in json.loads(result.output)["templates"]}
     assert {"ats-classic", "campus", "modern-sidebar", "editorial", "executive", "zh-professional"} <= ids
-    languages = {item["id"]: item.get("language") for item in json.loads(result.output)["templates"]}
-    assert languages["campus"] == "zh"
-    assert languages["zh-professional"] == "zh"
-    assert languages["campus"] == "zh"
-    assert languages["ats-classic"] == "en"
+    items = json.loads(result.output)["templates"]
+    assert len(items) == 12
+    assert {(item["id"], item["language"]) for item in items} == {(name, language) for name in ids for language in ("zh", "en")}
+    for item in items:
+        assert "error" not in item
+        assert Path(item["path"]).parent.name == ("cn" if item["language"] == "zh" else "en")
+        assert item["preview"] and Path(item["preview"]).is_file()
+        assert Path(item["preview"]).name == "preview.html"
+
+
+def test_templates_human_output_shows_preview_path(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    result = CliRunner().invoke(cli, ["templates"])
+    assert result.exit_code == 0, result.output
+    assert "preview:" in result.output
+    assert result.output.count("preview:") == 12
+    assert "preview.html" in result.output
 
 
 def test_restyle_app_rebuilds_with_new_template(tmp_path, monkeypatch):
@@ -173,6 +185,7 @@ def test_localize_cn_to_en(tmp_path, monkeypatch):
     localize = payload["localize"]
     assert localize["parity"]["status"] == "pass"
     assert localize["target_market"] == "intl_en"
+    assert payload["build"]["render"]["template_id"] == "campus"
     assert Path(payload["build"]["render"]["html"]).is_file()
     html = Path(payload["build"]["render"]["html"]).read_text(encoding="utf-8")
     assert "Education" in html

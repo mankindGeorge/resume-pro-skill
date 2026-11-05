@@ -8,10 +8,11 @@ from pathlib import Path
 
 import pytest
 
-from resume_pro.application import create_application, page_budget, save_application
+from resume_pro.application import LIBRARY_TEMPLATES, create_application, page_budget, save_application
 from resume_pro.localize import LocalizeError, compare, localize_application
-from resume_pro.render import render_application
+from resume_pro.render import RenderError, render_application
 from resume_pro.select import select_facts
+from tests.test_render import _user_template
 
 
 def _source_app(vault, tmp_path, *, market, persona, role, template):
@@ -52,7 +53,7 @@ def test_student_zh_to_en_parity_pass(student_vault, tmp_path):
     assert not result.gaps
     assert result.target_market == "intl_en"
     assert result.application["writing"]["locale"] == "en"
-    assert result.application["template"]["id"] == "ats-classic"
+    assert result.application["template"]["id"] == "campus"
     assert source == before
     assert result.application["localization"]["source_application"] == source["slug"]
 
@@ -76,7 +77,7 @@ def test_experienced_en_to_zh_parity_pass(experienced_vault, tmp_path):
     assert result.parity.status == "pass"
     assert not result.gaps
     assert result.application["market"] == "cn_internet"
-    assert result.application["template"]["id"] == "zh-professional"
+    assert result.application["template"]["id"] == "ats-classic"
     sections = {s["id"]: s for s in result.application["selection"]["sections"]}
     assert sections["summary"]["enabled"] is True
     assert "job_intent" not in sections
@@ -192,3 +193,38 @@ def test_market_language_mismatch_is_rejected(student_vault, tmp_path):
             target_role="Backend Engineer",
         )
     assert error.value.code in {"localize.same_locale", "localize.market_language_mismatch"}
+
+
+@pytest.mark.parametrize("template_id", LIBRARY_TEMPLATES)
+@pytest.mark.parametrize("market,target_locale", [("cn_internet", "en"), ("intl_en", "zh")])
+def test_localize_preserves_layout_and_market_selection(student_vault, tmp_path, template_id, market, target_locale):
+    source = _source_app(student_vault, tmp_path, market=market, persona="student_with_internship", role="Backend Engineer", template=template_id)
+    before = copy.deepcopy(source)
+    result = localize_application(tmp_path, student_vault, source, target_locale=target_locale, target_role="Backend Engineer")
+    target = result.application
+    assert target["template"]["id"] == template_id
+    assert target["writing"]["framework"] == source["writing"]["framework"]
+    assert target["writing"]["locale"] == target_locale
+    assert target["page_budget"] == page_budget(target["market"], target["persona"])
+    expected = select_facts(student_vault, market=target["market"], persona=target["persona"], target_role="Backend Engineer", page_max=target["page_budget"]["max"])
+    assert target["selection"] == expected
+    assert source == before
+    render = render_application(tmp_path, result.render_vault, target)
+    assert f'<html lang="{target_locale}">' in render.html_path.read_text(encoding="utf-8")
+
+
+def test_localize_explicit_template_overrides_layout(student_vault, tmp_path):
+    source = _source_app(student_vault, tmp_path, market="cn_internet", persona="student_with_internship", role="Backend Engineer", template="campus")
+    result = localize_application(tmp_path, student_vault, source, target_locale="en", template_id="ats-classic")
+    assert result.application["template"]["id"] == "ats-classic"
+
+
+def test_localize_learned_template_missing_language_does_not_save(student_vault, tmp_path):
+    template_id = _user_template(tmp_path)
+    source = _source_app(student_vault, tmp_path, market="intl_en", persona="student_with_internship", role="Backend Engineer", template=template_id)
+    with pytest.raises(RenderError) as error:
+        localize_application(tmp_path, student_vault, source, target_locale="zh")
+    assert error.value.code == "render.language_mismatch"
+    assert not (tmp_path / ".resume" / "applications" / f"{source['slug']}-zh").exists()
+    result = localize_application(tmp_path, student_vault, source, target_locale="zh", template_id="campus")
+    assert result.application["template"]["id"] == "campus"

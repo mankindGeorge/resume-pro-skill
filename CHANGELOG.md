@@ -8,10 +8,16 @@ All notable changes to this project are documented here. The format follows Keep
 
 - Require the agent to use a host interactive question tool across all resume routes, continuing the same conversation and task after each answer rather than ending with a questionnaire. Preserve free-text answers and pause/resume; report unavailable or denied tools without a silent fallback.
 - Require explicit fact confirmation independently of intake completion and sufficiency. Clarify collection-correction semantics and the boundary between host-tool instructions and CLI enforcement.
+- Complete Chinese and English coverage for all six designs (`ats-classic`, `campus`, `modern-sidebar`, `editorial`, `executive`, `zh-professional`): 12 public variants. The `cn`/`en` folders denote resume language only, with manifest `language: zh`/`en`, not market restrictions; retain the historical `zh-professional` ID in both languages.
+- Resolve rendering and QA templates by `writing.locale`, falling back to the market profile's `language`. Require an explicit language for multilingual `load_template` calls rather than preferring `cn`; list all 12 public variants.
+- Preserve the source design ID during target-market localization unless `--template` explicitly overrides it. Missing target-language learned templates fail clearly without a silent design fallback; legacy flat learned templates remain supported with language validation. Restyling changes appearance, not market or fact selection.
+- Keep existing default recommendations, market/persona selection and writing rules, page/photo policies, fact confirmation, layout capacity budgets, and fixed two-column regions. Recommendations are not exclusive design restrictions. Template review status is unchanged; bilingual coverage is not approval or release.
+- Require the agent to ask the user which layout to use before rendering during creation and optimization, recommending the default but never accepting it silently, and to show where to preview each design (`templates/<cn|en>/<id>/preview.html`).
 
 ### Added
 
 - Five regression tests for the mandatory interaction instructions, multi-round CLI answers, invalid-input recovery, read-only summary/resume, unknown answers, multiline Chinese input, and confirmation recovery. These are not live host-UI tests.
+- `resume templates` now prints each variant's `preview.html` path in human output and a `preview` field in `--json`, so users can open a design in a browser before choosing. A contract test guards the create/optimize template-choice and preview-location instructions, and listing tests assert the preview paths.
 
 ## [0.1.0] — 2026-11-05
 

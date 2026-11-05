@@ -111,7 +111,7 @@ resume photo portrait.jpg --app <slug>
 resume localize <slug> --to en --role "Backend Engineer" --yes
 ```
 
-本地化需要 Agent 与用户补齐目标语言的表达。缺少目标语言内容时，CLI 会报告缺口，而不是自行翻译或编造；事实一致性检查失败时会阻止正式交付。
+本地化仍按目标市场重新选材与写作，不翻译 HTML；默认保留来源版式 ID，显式 `--template <id>` 可覆盖。私有 learned 模板若无目标语言版本会明确报错，不静默换版式；旧式平铺模板仍兼容，但须校验 manifest 语言。Agent 与用户需要补齐目标语言的表达；缺少内容时 CLI 报告缺口，不自行翻译或编造，事实一致性检查失败会阻止正式交付。
 
 更完整的操作见[使用演练](docs/walkthrough.md)和 [CLI 契约](docs/cli-contract.md)。
 
@@ -119,14 +119,22 @@ resume localize <slug> --to en --role "Backend Engineer" --yes
 
 **输入：** DOCX、文本型 PDF、HTML、Markdown、TXT；DOC / RTF 需要 LibreOffice。当前不支持扫描型 PDF 的 OCR。
 
-**模板：** 中文与英文分开组织，不在正式简历中显示 CN / EN 标签。中文简历使用中文模板，英文简历使用英文模板，跨语言混用会被拒绝。
+**模板：** 提供 **6 种不同设计 × 中英双语，共 12 个变体**。`templates/cn/` 与 `templates/en/` 仅表示简历语言，manifest 分别为 `language: zh` / `en`，不是市场限制；正式简历不显示 CN / EN 标签。
 
-| 语言 | 目录 | 随源码提供的模板 |
-|---|---|---|
-| 中文 | [`templates/cn/`](templates/cn/) | `campus`、`zh-professional` |
-| English | [`templates/en/`](templates/en/) | `ats-classic`、`modern-sidebar`、`editorial`、`executive` |
+| 设计 ID | 版式 | 中文 | English |
+|---|---|---|---|
+| `ats-classic` | 简洁单栏 | [cn](templates/cn/ats-classic/) | [en](templates/en/ats-classic/) |
+| `campus` | 教育优先单栏 | [cn](templates/cn/campus/) | [en](templates/en/campus/) |
+| `modern-sidebar` | 主栏 + 右侧栏 | [cn](templates/cn/modern-sidebar/) | [en](templates/en/modern-sidebar/) |
+| `editorial` | 单页杂志式 | [cn](templates/cn/editorial/) | [en](templates/en/editorial/) |
+| `executive` | 居中抬头、双页 | [cn](templates/cn/executive/) | [en](templates/en/executive/) |
+| `zh-professional` | 左侧栏 + 经历优先主栏 | [cn](templates/cn/zh-professional/) | [en](templates/en/zh-professional/) |
 
-照片插槽在未设置照片时完全收起；`intl_en` 按市场策略不显示照片。模板效果需要结合实际内容人工审阅，自动检查不代表设计审核或所有 ATS 的兼容性保证。
+`zh-professional` 保留历史 ID，英文同样可用。渲染与 QA 按申请的 `writing.locale` 选语言变体，未设置时使用市场 profile 的 `language`；缺失或语言不匹配会明确报错。默认推荐仍为中文市场校园 / 职场的 `campus` / `zh-professional`、国际市场常规 / 高阶的 `ats-classic` / `executive`，推荐不是排他限制。
+
+**查看与选择：** 在浏览器打开 `templates/<cn|en>/<id>/preview.html` 即可预览每个版式；`resume templates` 会列出全部变体及其预览路径。制作简历时，Agent 会在渲染前用交互式提问询问你选用哪个版式（给出默认推荐但可改选），并告知上述预览入口，不会在你未表态时静默采用默认。
+
+更换版式只改变外观，不改市场、选材或写作语言。市场与 persona 仍决定选材、写作、页数、照片和事实确认规则；各布局的容量预算与双栏固定区域仍有效，详见[模板契约](docs/template-contracts.md)。照片插槽在未设置照片时完全收起；`intl_en` 按市场策略不显示照片，不受版式或简历语言影响。此次双语补齐不改变模板审核状态；模板效果仍需结合实际内容人工审阅，自动检查不代表设计审核或所有 ATS 的兼容性保证。
 
 **输出：** 正式 HTML、非权威的可编辑 HTML 副本，以及检查报告。定向申请通常在文件名中包含岗位。浏览器中对可编辑副本的修改不会自动写回事实库。
 

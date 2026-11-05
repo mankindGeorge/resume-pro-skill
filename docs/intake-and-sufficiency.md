@@ -294,7 +294,7 @@ After the gate:
 1. Apply the writing framework the user chose (`star | xyz | fab | result_first | car | user_voice`).
 2. Apply the market rules (`intl_en`, `cn_internet`, `cn_soe`, etc.).
 3. Apply the CN rules (four signals, CS fundamentals, project depth, page count, primacy).
-4. Select the template that fits the market and persona.
+4. Ask the user which layout to use (interactive tool), recommending the market/persona default and showing where to preview each design (`templates/<cn|en>/<id>/preview.html`; `resume templates`). Pass the chosen ID with `--template`; do not accept the default silently.
 5. Render deterministically.
 6. Run QA, including the 10-second skim.
 
@@ -384,6 +384,7 @@ For `AskUserQuestion`, custom input is supplied through the built-in Other path;
 | Pause, then resume | No fake answer is saved; intake resumes at the pending question |
 | Final fact confirmation | The summary is shown before consent; completion proceeds to the sufficiency check rather than ending the agent task |
 | Template/framework/localization clarification | The same interactive protocol is used outside intake |
+| Choosing a layout before rendering | The agent asks which design to use through the tool, shows the six layouts in the resume language and each `templates/<cn\|en>/<id>/preview.html` path, recommends the default but lets the user change it, then passes `--template <id>`; the default is never accepted silently |
 | Missing or denied host tool | Honest capability-blocker report, no simulated dialog or silent fallback |
 
 Automated tests guard the instruction contract and exercise CLI state transitions with scripted answers. They do not prove a particular agent client displays dialogs or follows instructions; validate those behaviors in a host that exposes the tool.

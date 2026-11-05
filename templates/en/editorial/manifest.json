@@ -6,7 +6,13 @@
   "status": "stable",
   "description": "One-page editorial layout for early-career candidates; projects lead.",
   "markets": [
-    "intl_en"
+    "intl_en",
+    "cn_internet",
+    "cn_soe",
+    "cn_finance",
+    "cn_creative",
+    "hk_sg",
+    "academic"
   ],
   "personas": [
     "student_with_projects",
@@ -168,7 +174,12 @@
       "Selected Projects",
       "Experience",
       "Skills",
-      "Education"
+      "Education",
+      "Awards",
+      "Certifications",
+      "Languages",
+      "Publications",
+      "Open Source"
     ]
   },
   "editable_variant": true,

@@ -39,35 +39,29 @@ Every template must:
 
 ## 3. The template library
 
-The library contains **six templates**. Each one has a different structural idea; none is a renamed copy of another. The split by language is organizational, not visual: no "CN"/"EN" badge is ever rendered into a resume. The manifest carries `language` only for routing and validation.
+The library contains **six distinct designs × two resume languages = 12 variants**. Each design has a different structure; its Chinese and English variants share that structure, with language-appropriate typography. Both `templates/cn/` and `templates/en/` contain all six IDs below. Private learned templates remain under `templates/user-<hash>/`, outside the public library.
 
-```
-templates/
-├── cn/
-│   ├── campus/              # single-column campus sheet
-│   └── zh-professional/     # left sidebar + experience-first main column
-├── en/
-│   ├── ats-classic/         # bare single-column ATS sheet
-│   ├── modern-sidebar/      # main column + right sidebar
-│   ├── editorial/           # magazine-style one page
-│   └── executive/           # centered letterhead, two pages
-└── user-<hash>/             # private learned templates, not part of the public library
-```
+### 3.0 Language variants and routing
 
-### 3.0 Language families
+- `templates/cn/<id>/` means Chinese resume text, with manifest `language: zh`; `templates/en/<id>/` means English, with `language: en`. These folders are not market restrictions. No "CN"/"EN" badge is rendered.
+- Chinese variants use CJK-first font stacks and Chinese heading/date conventions; English variants use Latin-first typography and English conventions. Preserve each design's font hierarchy and capacity limits rather than treating the variants as renamed copies.
+- Resolve a design with `load_template(id, language=zh|en)`. When the ID has multiple language variants, omitting language is an explicit ambiguity error; never search `cn` first and silently accept it. A requested but missing language variant also fails explicitly.
+- Rendering and QA use the application's `writing.locale`, falling back to the market profile's `language` only when it is absent. Validate the selected manifest against that resolved language, not against a presumed market-exclusive design ID. `--lang` changes CLI messages, not resume language.
+- `resume templates` lists 12 public variants, including each ID, its manifest language, and its `preview.html` path (printed in human output and a `preview` field in `--json`), plus private learned templates. Open `templates/<cn|en>/<id>/preview.html` in a browser to view a design. Keep the historical `zh-professional` ID compatible in both languages; its name does not restrict it to Chinese.
+- During creation and optimization the agent asks the user which layout to use through the interactive question tool before rendering: present the six designs in the resume's language, recommend the market/persona default, show the preview paths, and pass the choice with `--template <id>`. Never accept the default silently when the user has not been asked.
+- Existing defaults remain recommendations: `campus` for Chinese-market campus profiles, `zh-professional` for Chinese-market professional profiles, `ats-classic` for international default profiles, and `executive` for international senior profiles. They are not exclusive eligibility lists. Market/persona still govern fact selection, writing, page policy, photos, and fact confirmation.
+- `restyle` changes appearance only, not market, persona, selection, or writing locale. `localize` retains its target-market reselection and rewriting workflow; it keeps the source design ID by default, unless an explicit `--template <id>` overrides it. Neither route translates rendered HTML.
 
-- **Chinese family:** `campus`, `zh-professional`. Chinese-first font stacks (`Source Han Sans SC`, `Noto Sans CJK SC`, `PingFang SC`, `Microsoft YaHei`), line-height 1.5–1.55, no uppercase transform, `YYYY.MM` dates, no 求职意向, optional portrait.
-- **English family:** `ats-classic`, `modern-sidebar`, `editorial`, `executive`. Latin-first stacks (`Calibri`, `Arial`, `Georgia`), 1.3–1.4 leading, uppercase headings, `YYYY-MM` dates, no CJK fonts in the primary stack.
-- Cross-language use is rejected with `render.language_mismatch`. `resume templates` prints each template's language. A Chinese resume gets a Chinese template; an English resume gets an English template. This avoids mixed font metrics and inconsistent line spacing.
+| ID | Languages | Layout capacity | Structure | ATS posture |
+|---|---|---|---|---|
+| `ats-classic` | zh, en | A4 · 1–2 pages | single | highest |
+| `campus` | zh, en | A4 · 1–2 pages | single, education-first | high |
+| `modern-sidebar` | zh, en | A4 · 1–2 pages | main + right sidebar | medium, with single-column fallback |
+| `editorial` | zh, en | A4 · 1 page | single, magazine | medium-high |
+| `executive` | zh, en | A4 · 2 pages | single, centered letterhead | high |
+| `zh-professional` | zh, en | A4 · 2–3 pages | left sidebar + main | high |
 
-| ID | Lang | Market | Personas | Size / pages | Structure | Photo | ATS posture |
-|---|---|---|---|---|---|---|---|
-| `ats-classic` | en | `intl_en` | experienced, new_grad, student_with_internship, student_with_projects, career_switcher | A4 · 1–2 | single | slot, suppressed by market policy | highest |
-| `modern-sidebar` | en | `intl_en` | experienced, career_switcher | A4 · 1–2 | main + right sidebar | slot, suppressed by market policy | medium, with single-column fallback |
-| `editorial` | en | `intl_en` | student_with_projects, new_grad, student_with_internship, career_switcher | A4 · 1 | single, magazine | slot, suppressed by market policy | medium-high |
-| `executive` | en | `intl_en` | senior_manager, experienced | A4 · 2 | single, centered letterhead | slot, suppressed by market policy | high |
-| `campus` | zh | `cn_internet`, `cn_soe`, `cn_finance`, `cn_creative` | student_with_projects, student_with_internship, new_grad | A4 · 1–2 | single, campus order | optional portrait | high |
-| `zh-professional` | zh | `cn_internet`, `cn_soe`, `cn_finance`, `cn_creative` | experienced, career_switcher, senior_manager | A4 · 2–3 | left sidebar + main | optional portrait | high |
+All designs reserve an optional photo slot; the market determines whether it is shown (`intl_en` suppresses it regardless of resume language). Layout capacity does not replace market/persona page policy: both remain binding, and bilingual availability does not authorize overflow, filler, or automatic redesign. Main/sidebar region assignments stay fixed; market-driven ranking and ordering must operate within those regions. The section orders below describe design structure, not new market-writing rules. ATS posture is a design aim, not a universal compatibility guarantee. Review status is unchanged; language coverage and signed manifests do not constitute design approval or release.
 
 ### 3.1 `ats-classic`
 
@@ -79,12 +73,12 @@ templates/
 
 ### 3.2 `campus`
 
-- Purpose: CN campus and intern applications.
-- Order: name/contact → education → skills → experience (实习) → projects → awards → open source.
+- Purpose: education-first campus and intern applications in either resume language.
+- Order: name/contact → education → skills → experience → projects → awards → open source; labels follow the resume language.
 - Required: `identity.name`, `identity.contact`, `section.education`, `section.skills`.
 - Optional: `identity.links`, `identity.photo`, `section.experience`, `section.projects`, `section.awards`, `section.open_source`, `section.certificates`, `section.languages`, `section.publications`, `section.summary`.
-- Rules: education before experience; 1–2 pages; an optional portrait slot collapses completely when empty; CS fundamentals group rendered with the same weight as AI skills; no 求职意向 and no "自我评价" block.
-- CN page counts: student and <3 years 1–2 pages; 3+ years 2–3 pages.
+- Rules: education before experience; 1–2-page layout capacity; an optional portrait slot collapses completely when empty; for CN campus profiles, render CS fundamentals with the same weight as AI skills; no 求职意向 and no "自我评价" block.
+- CN market page policy remains student and <3 years 1–2 pages; 3+ years 2–3 pages. It does not expand this design's capacity.
 
 ### 3.3 `modern-sidebar`
 
@@ -96,7 +90,7 @@ templates/
 
 ### 3.4 `editorial`
 
-- Purpose: a distinctive one-page layout for early-career candidates in international markets.
+- Purpose: a distinctive one-page layout for early-career candidates in either resume language, not restricted to international markets.
 - Order: name/contact → summary → selected projects → experience → skills → education → awards.
 - Required: `identity.name`, `identity.contact`, `section.summary`, `section.projects`, `section.education`.
 - Optional: `identity.links`, `identity.photo`, `section.experience`, `section.skills`, `section.awards`, `section.certificates`, `section.languages`, `section.publications`, `section.open_source`.
@@ -108,15 +102,15 @@ templates/
 - Order: name/contact → executive summary → experience → leadership & skills → education → awards/publications.
 - Required: `identity.name`, `identity.contact`, `section.summary`, `section.experience`, `section.education`.
 - Optional: `identity.links`, `identity.photo`, `section.skills`, `section.projects`, `section.awards`, `section.certificates`, `section.languages`, `section.publications`, `section.open_source`.
-- Rules: outcome-first bullets, scope and team size visible, no photo, no decorative timeline. Page 2 must not be filler; the two-page target is enforced by QA. The photo slot exists but `intl_en` policy suppresses rendering.
+- Rules: show verified outcomes, scope, and team size using the consented writing framework; no decorative timeline. Page 2 must not be filler; the two-page target is enforced by QA. The optional photo follows market policy: `intl_en` suppresses it, not the design itself.
 
 ### 3.6 `zh-professional`
 
-- Purpose: experienced Chinese-market candidates. This is a **left-sidebar** design, not a renamed campus sheet.
-- Layout: header spans the page; left sidebar = portrait, 专业技能, 教育经历, 证书, 语言能力; main column = 个人简介, 工作经历, 项目经历, 荣誉奖项, 论文 / 发表, 开源项目.
+- Purpose: an experience-first **left-sidebar** design in either resume language, not a renamed campus sheet. Preserve the historical ID for compatibility; `zh-` does not mean English is excluded.
+- Layout: header spans the page; left sidebar = portrait, skills, education, certificates, languages; main column = summary, experience, projects, awards, publications, open source. Translate labels for the resume language without moving sections between regions.
 - Required: `identity.name`, `identity.contact`, `section.summary`, `section.experience`, `section.education`, `section.skills`.
 - Optional: `identity.links`, `identity.photo`, `section.projects`, `section.awards`, `section.certificates`, `section.languages`, `section.publications`, `section.open_source`.
-- Rules: Chinese-first fonts, 1.55 line-height, no uppercase, no 求职意向, 2–3 pages, optional portrait slot that collapses when empty. Experience and projects lead; the sidebar carries credentials and skills.
+- Rules: language-appropriate fonts and leading, no 求职意向, 2–3-page layout capacity, optional portrait slot that collapses when empty. Experience and projects lead; the sidebar carries credentials and skills.
 
 ## 4. Content budgets
 
@@ -154,14 +148,18 @@ Budgets are enforced before render. The renderer trims the weakest bullets only 
 - Never added to the public library, never redistributed, never committed by default.
 - Must satisfy the same slot contract and QA gates as library templates.
 - Preserve the original visual language, not pixel-perfect PDF reproduction.
+- Legacy flat learned templates remain loadable, but their manifest language must match the requested resume language. Do not assume private templates have both variants merely because the public library does.
+- If localization retains a learned ID with no target-language variant, fail explicitly; do not silently replace it with a recommended public design. An explicit `--template <id>` may select an available alternative.
 
 ## 8. Failure behavior
 
 | Failure | Behavior |
 |---|---|
+| Multilingual ID without an explicit loader language | Report ambiguity; require `load_template(id, language=zh|en)`, never prefer `cn`. |
+| Missing language variant or mismatched manifest language | Fail explicitly, including for flat learned templates; never silently change design. |
 | Missing required slot | Exit `3`; name the slot and the application field. |
 | Invalid manifest | Exit `3`; name the failing field. |
 | Budget exceeded | Exit `4`; name the section and the overage. |
 | Overflow / clipping | Exit `4`; name the page and element. |
-| Unreadable extracted text | Exit `4`; offer the fallback template. |
-| Unsupported photo in market | Exit `4`; remove photo or switch template. |
+| Unreadable extracted text | Exit `4`; offer the fallback template without silently applying it. |
+| Unsupported photo in market | Exit `4` if forbidden content reaches QA; remove it. Switching designs or language does not change market policy. |

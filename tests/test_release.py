@@ -13,20 +13,13 @@ ROOT = Path(__file__).resolve().parents[1]
 TEMPLATES = ("ats-classic", "campus", "modern-sidebar", "editorial", "executive", "zh-professional")
 
 
-def _template_dir(template_id: str) -> Path:
-    for folder in ("cn", "en"):
-        candidate = ROOT / "templates" / folder / template_id
-        if candidate.is_dir():
-            return candidate
-    return ROOT / "templates" / template_id
-
-
 def test_golden_previews_are_stable():
-    for template_id in TEMPLATES:
-        preview = _template_dir(template_id) / "preview.html"
-        expected = (ROOT / "tests" / "golden" / f"{template_id}.sha256").read_text(encoding="utf-8").strip()
-        actual = hashlib.sha256(preview.read_bytes()).hexdigest()
-        assert actual == expected, f"{template_id} preview changed; regenerate with scripts/build_previews.py"
+    for folder in ("cn", "en"):
+        for template_id in TEMPLATES:
+            preview = ROOT / "templates" / folder / template_id / "preview.html"
+            expected = (ROOT / "tests" / "golden" / f"{folder}-{template_id}.sha256").read_text(encoding="utf-8").strip()
+            actual = hashlib.sha256(preview.read_bytes()).hexdigest()
+            assert actual == expected, f"{folder}/{template_id} preview changed; regenerate with scripts/build_previews.py --update-golden"
 
 
 def test_license_scan_passes():
@@ -73,6 +66,24 @@ def test_skill_requires_continuous_interactive_questions():
         assert requirement in protocol, f"Missing interaction rule: {requirement}"
     assert len(text.splitlines()) < 500
     assert "TODO:" not in text
+
+
+def test_skill_asks_template_choice_and_preview_location():
+    """Guard the create-flow contract: ask which layout and show where to preview it."""
+    text = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+    create = text.split("### Create from zero", 1)[1].split("\n### ", 1)[0]
+    for requirement in (
+        "Choose the template with the user before rendering.",
+        "interactive tool",
+        "resume templates",
+        "preview.html",
+        "--template",
+        "never silently accept the default",
+    ):
+        assert requirement in create, f"Missing template-choice rule: {requirement}"
+    optimize = text.split("### Optimize an existing resume", 1)[1].split("\n### ", 1)[0]
+    assert "choose a library layout with the interactive tool" in optimize
+    assert "preview.html" in optimize
 
 
 def test_no_pdf_or_docx_resume_writer():

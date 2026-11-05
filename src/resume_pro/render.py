@@ -145,12 +145,17 @@ def _selected_bullets(item: dict[str, Any], selected: set[str], order: dict[str,
     return bullets
 
 
+def application_locale(application: dict[str, Any]) -> str:
+    """Use the resume's writing language, defaulting to its market profile."""
+    return (application.get("writing") or {}).get("locale") or profile.load_market(application["market"])["language"]
+
+
 def build_render_model(vault: dict[str, Any], application: dict[str, Any], *, root: Path | None = None) -> dict[str, Any]:
     selection = application.get("selection") or {}
     fact_ids = set(selection.get("fact_ids") or [])
     bullet_ids = set(selection.get("bullet_ids") or [])
     bullet_order = {bullet_id: index for index, bullet_id in enumerate(selection.get("bullet_ids") or [])}
-    locale = (application.get("writing") or {}).get("locale") or ("zh" if str(application.get("market", "")).startswith("cn_") else "en")
+    locale = application_locale(application)
 
     identity = vault.get("identity") or {}
     contact_parts = [identity.get("email"), identity.get("phone")]
@@ -375,32 +380,40 @@ def _remove_section(source: str, section: str) -> str:
     return pattern.sub("", source)
 
 
-def load_template(template_id: str, *, root: Path | None = None) -> dict[str, Any]:
+def load_template(
+    template_id: str, *, root: Path | None = None, language: str | None = None,
+) -> dict[str, Any]:
+    """Resolve a layout and language; never silently pick between language variants."""
+    if language is not None and language not in {"zh", "en"}:
+        raise RenderError(
+            "render.invalid_language",
+            f"Unsupported template language {language!r}.",
+            fix="Use `zh` (templates/cn) or `en` (templates/en).",
+        )
     if not TEMPLATE_ID_RE.match(template_id):
         raise RenderError(
             "render.invalid_template_id",
             f"Invalid template id {template_id!r}.",
             fix="Use a lowercase id such as `ats-classic` or a learned `user-*` template.",
         )
-    if template_id.startswith("user-") and root is not None:
-        candidates = [
-            Path(root) / "templates" / template_id,
-            Path(root) / "templates" / "cn" / template_id,
-            Path(root) / "templates" / "en" / template_id,
-        ]
-    else:
-        candidates = [
-            templates_dir() / "cn" / template_id,
-            templates_dir() / "en" / template_id,
-            templates_dir() / template_id,
-        ]
-    directory = next((candidate for candidate in candidates if (candidate / "manifest.json").is_file()), None)
-    if directory is None:
+    base = Path(root) / "templates" if template_id.startswith("user-") and root is not None else templates_dir()
+    folders = [{"zh": "cn", "en": "en"}[language]] if language else ["cn", "en"]
+    candidates = [base / folder / template_id for folder in folders]
+    candidates.append(base / template_id)  # Legacy flat learned templates remain supported.
+    existing = [candidate for candidate in candidates if (candidate / "manifest.json").is_file()]
+    if not existing:
         raise RenderError(
             "render.template_missing",
-            f"No template named {template_id!r} in templates/cn, templates/en, or templates/user-*.",
-            fix="Run `resume templates` to see available templates.",
+            f"No template named {template_id!r} for language {language!r}.",
+            fix="Run `resume templates` and select a layout available in the requested language.",
         )
+    if language is None and len(existing) > 1:
+        raise RenderError(
+            "render.template_language_required",
+            f"Template {template_id!r} has multiple language variants.",
+            fix="Pass language='zh' or language='en' when loading this layout.",
+        )
+    directory = existing[0]
     manifest_path = directory / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     errors = sorted(Draft202012Validator(_schema()).iter_errors(manifest), key=lambda error: list(error.path))
@@ -417,6 +430,12 @@ def load_template(template_id: str, *, root: Path | None = None) -> dict[str, An
             "render.template_id_mismatch",
             f"Manifest id {manifest.get('id')!r} does not match {template_id!r}.",
             fix="Make the directory and manifest id identical.",
+        )
+    if language is not None and manifest.get("language") != language:
+        raise RenderError(
+            "render.language_mismatch",
+            f"Template {template_id!r} is for {manifest.get('language')!r}, not {language!r}.",
+            fix="Choose or provide a template variant in the requested resume language.",
         )
     html_path = directory / manifest["files"]["html"]
     css_path = directory / manifest["files"]["css"]
@@ -599,15 +618,7 @@ def render_application(
     draft: bool = False,
 ) -> RenderResult:
     chosen = template_id or application["template"]["id"]
-    template = load_template(chosen, root=root)
-    market_language = profile.load_market(application["market"]).get("language")
-    template_language = template["manifest"].get("language")
-    if template_language != market_language:
-        raise RenderError(
-            "render.language_mismatch",
-            f"Template {chosen!r} is for {template_language!r}, but the application is {market_language!r}.",
-            fix="Use a template from the matching language family; `resume templates` lists the language.",
-        )
+    template = load_template(chosen, root=root, language=application_locale(application))
     app_size = (application.get("page_budget") or {}).get("size")
     if app_size and app_size not in (template["manifest"].get("page") or {}).get("sizes", []):
         raise RenderError(

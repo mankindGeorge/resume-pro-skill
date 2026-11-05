@@ -1,15 +1,18 @@
 {
   "id": "zh-professional",
-  "name": "Chinese Professional",
+  "name": "专业侧栏",
   "language": "zh",
   "version": "1.0.0",
   "status": "stable",
-  "description": "Chinese professional resume: experience-first, Chinese typography, A4, 2–3 pages.",
+  "description": "Professional sidebar resume: experience-first main column, A4, 2–3 pages.",
   "markets": [
+    "intl_en",
     "cn_internet",
     "cn_soe",
     "cn_finance",
-    "cn_creative"
+    "cn_creative",
+    "hk_sg",
+    "academic"
   ],
   "personas": [
     "experienced",
@@ -76,11 +79,6 @@
         "name": "identity.photo",
         "selector": "[data-slot='identity.photo']",
         "kind": "image"
-      },
-      {
-        "name": "section.summary",
-        "selector": "[data-slot='section.summary']",
-        "kind": "rich_text"
       },
       {
         "name": "section.projects",
@@ -167,16 +165,20 @@
     "color_mode": "grayscale_safe"
   },
   "ats": {
-    "single_column": true,
+    "single_column": false,
     "text_selectable": true,
     "tables_allowed": false,
     "standard_headings": [
+      "专业技能",
+      "教育经历",
+      "证书",
+      "语言能力",
       "个人简介",
       "工作经历",
       "项目经历",
-      "专业技能",
-      "教育经历",
-      "荣誉奖项"
+      "荣誉奖项",
+      "论文 / 发表",
+      "开源项目"
     ]
   },
   "editable_variant": true,

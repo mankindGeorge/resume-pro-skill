@@ -111,7 +111,7 @@ resume photo portrait.jpg --app <slug>
 resume localize <slug> --to en --role "Backend Engineer" --yes
 ```
 
-Localization requires the agent and user to supply target-language wording. When it is missing, the CLI reports gaps rather than translating or inventing content. Failed fact-parity checks block final delivery.
+Localization still reselects and rewrites for the target market, never translates HTML. It retains the source design ID by default; an explicit `--template <id>` overrides it. A private learned template without the target-language variant fails clearly, never silently changes designs; legacy flat templates remain supported with manifest-language validation. The agent and user must supply target-language wording. Missing wording is reported as gaps, not translated or invented by the CLI; failed fact-parity checks block final delivery.
 
 For complete workflows, see the [walkthrough](docs/walkthrough.md) and [CLI contract](docs/cli-contract.md).
 
@@ -119,14 +119,22 @@ For complete workflows, see the [walkthrough](docs/walkthrough.md) and [CLI cont
 
 **Inputs:** DOCX, text-based PDF, HTML, Markdown, and TXT. DOC / RTF require LibreOffice. OCR for scanned PDFs is not currently supported.
 
-**Templates:** Chinese and English templates are organized separately, without CN / EN badges on the rendered resume. Chinese resumes use Chinese templates, English resumes use English templates, and cross-language combinations are rejected.
+**Templates:** **Six distinct designs × two resume languages = 12 variants.** `templates/cn/` and `templates/en/` indicate resume language only, with manifest `language: zh` / `en`, not market restrictions. No CN / EN badge appears on the rendered resume.
 
-| Language | Directory | Templates included in the source tree |
-|---|---|---|
-| 中文 | [`templates/cn/`](templates/cn/) | `campus`, `zh-professional` |
-| English | [`templates/en/`](templates/en/) | `ats-classic`, `modern-sidebar`, `editorial`, `executive` |
+| Design ID | Layout | 中文 | English |
+|---|---|---|---|
+| `ats-classic` | Minimal single column | [cn](templates/cn/ats-classic/) | [en](templates/en/ats-classic/) |
+| `campus` | Education-first single column | [cn](templates/cn/campus/) | [en](templates/en/campus/) |
+| `modern-sidebar` | Main column + right sidebar | [cn](templates/cn/modern-sidebar/) | [en](templates/en/modern-sidebar/) |
+| `editorial` | One-page editorial | [cn](templates/cn/editorial/) | [en](templates/en/editorial/) |
+| `executive` | Centered letterhead, two pages | [cn](templates/cn/executive/) | [en](templates/en/executive/) |
+| `zh-professional` | Left sidebar + experience-first main column | [cn](templates/cn/zh-professional/) | [en](templates/en/zh-professional/) |
 
-Photo slots collapse completely when unused; `intl_en` suppresses photos by market policy. Review each layout with actual content. Automated checks are not design approval or a guarantee of compatibility with every ATS.
+The historical `zh-professional` ID remains compatible and is also available in English. Rendering and QA resolve the variant using the application's `writing.locale`, falling back to the market profile's `language`; missing or mismatched variants fail explicitly. Default recommendations remain `campus` / `zh-professional` for Chinese-market campus / professional profiles and `ats-classic` / `executive` for international default / senior profiles; these are recommendations, not exclusive choices.
+
+**Viewing and choosing:** Open `templates/<cn|en>/<id>/preview.html` in a browser to preview each layout; `resume templates` lists every variant with its preview path. When building a resume, the agent asks which layout to use through an interactive question before rendering — recommending the default but allowing a change — and points to those previews. It never silently accepts the default when you have not been asked.
+
+Restyling changes appearance only, not market, selection, or writing locale. Market and persona still govern selection, writing, page policy, photos, and fact confirmation. Each layout's capacity budgets and fixed two-column regions remain binding; see the [template contract](docs/template-contracts.md). Photo slots collapse completely when unused; `intl_en` suppresses photos by market policy regardless of design or resume language. Bilingual coverage does not change template review status. Review each layout with actual content; automated checks are not design approval or a guarantee of compatibility with every ATS.
 
 **Outputs:** Final HTML, a non-canonical editable HTML copy, and check reports. Targeted applications normally include the role in the file name. Browser edits to the editable copy are not automatically merged back into the career vault.
 

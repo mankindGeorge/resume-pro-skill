@@ -31,7 +31,7 @@ from .localize import collect_gaps, localize_application
 from .match import match_vault
 from .qa import run_qa
 from .recommend import recommend as recommend_roles
-from .render import load_template, render_application
+from .render import application_locale, load_template, render_application
 from .select import select_facts
 from .writing import FRAMEWORK_IDS, require_consent
 from .intake import (
@@ -467,7 +467,7 @@ def _run_build(
     if gate.requires_confirmation and not confirm:
         payload["next"] = "The gate is MINIMUM; rerun with --yes to confirm a truthful but modest version."
         return 2, payload
-    locale = (application.get("writing") or {}).get("locale") or "en"
+    locale = application_locale(application)
     source_locale = "en" if locale == "zh" else "zh"
     locale_gaps = collect_gaps(vault, application["selection"], locale=locale, source_locale=source_locale)
     if locale_gaps:
@@ -560,7 +560,7 @@ def templates(ctx: click.Context, json_flag: bool) -> None:
     try:
         root = find_project_root() or Path.cwd()
         directories = [templates_dir(), root / "templates"]
-        seen: set[str] = set()
+        seen: set[tuple[str, str | None]] = set()
         items = []
         manifest_paths = []
         for directory in directories:
@@ -569,12 +569,16 @@ def templates(ctx: click.Context, json_flag: bool) -> None:
                     manifest_paths.extend(sorted((directory / folder).glob("*/manifest.json")))
                 manifest_paths.extend(sorted(directory.glob("user-*/manifest.json")))
         for manifest_path in manifest_paths:
-            if manifest_path.parent.name in seen:
+            folder = manifest_path.parent.parent.name
+            language = {"cn": "zh", "en": "en"}.get(folder)
+            key = (manifest_path.parent.name, language)
+            if key in seen:
                 continue
-            seen.add(manifest_path.parent.name)
+            seen.add(key)
             try:
-                template = load_template(manifest_path.parent.name, root=root)
+                template = load_template(manifest_path.parent.name, root=root, language=language)
                 manifest = template["manifest"]
+                preview_path = template["directory"] / (manifest.get("files") or {}).get("preview", "preview.html")
                 items.append(
                     {
                         "id": manifest["id"],
@@ -586,16 +590,18 @@ def templates(ctx: click.Context, json_flag: bool) -> None:
                         "pages": manifest["page"]["target_pages"],
                         "columns": manifest["page"]["columns"],
                         "fingerprint": manifest["fingerprint"],
-                        "path": str(manifest_path.parent),
-                        "folder": (
-                            "cn" if "/templates/cn/" in manifest_path.parent.as_posix()
-                            else "en" if "/templates/en/" in manifest_path.parent.as_posix()
-                            else "user"
-                        ),
+                        "path": str(template["directory"]),
+                        "preview": str(preview_path) if preview_path.is_file() else None,
+                        "folder": folder if folder in {"cn", "en"} else "user",
                     }
                 )
             except ResumeProError as error:
-                items.append({"id": manifest_path.parent.name, "error": error.to_dict()})
+                items.append({
+                    "id": manifest_path.parent.name,
+                    "language": language,
+                    "folder": folder if folder in {"cn", "en"} else "user",
+                    "error": error.to_dict(),
+                })
         if as_json:
             _json_out({"ok": True, "templates": items})
         else:
@@ -617,6 +623,8 @@ def templates(ctx: click.Context, json_flag: bool) -> None:
                             f"  {item['id']}: {item['name']} · {', '.join(item['markets'])} · "
                             f"{', '.join(item['personas'])} · {item['pages']['min']}–{item['pages']['max']} pages"
                         )
+                        if item.get("preview"):
+                            click.echo(f"      preview: {item['preview']}")
         ctx.exit(0)
     except ResumeProError as error:
         _handle(ctx, error)
@@ -631,16 +639,11 @@ def _slug(text: str) -> str:
     return value[:40] or "document"
 
 
-def _validate_template_language(root: Path, market: str, template_id: str) -> None:
-    template = load_template(template_id, root=root)
-    market_language = profile.load_market(market).get("language")
-    template_language = template["manifest"].get("language")
-    if template_language != market_language:
-        raise ResumeProError(
-            "template.language_mismatch",
-            f"Template {template_id!r} is for {template_language!r}, but market {market!r} is {market_language!r}.",
-            fix="Choose a template from the matching language family; `resume templates` lists the language.",
-        )
+def _validate_template_language(
+    root: Path, market: str, template_id: str, *, language: str | None = None,
+) -> None:
+    language = language or profile.load_market(market)["language"]
+    load_template(template_id, root=root, language=language)
 
 
 def _report_dir(root: Path, kind: str, source: Path) -> Path:
@@ -960,7 +963,7 @@ def restyle(
 
         if app_slug:
             application = load_application(root, app_slug)
-            _validate_template_language(root, application["market"], template_id)
+            _validate_template_language(root, application["market"], template_id, language=application_locale(application))
             _snapshot_version(root, application)
             application["template"]["id"] = template_id
             application["template"]["source"] = "user_learned" if template_id.startswith("user-") else "library"

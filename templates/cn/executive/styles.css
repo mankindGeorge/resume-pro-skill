@@ -1,0 +1,96 @@
+:root {
+  --font-body: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Source Han Sans SC", "Noto Sans CJK SC", Arial, sans-serif;
+  --size-body: 10.5pt;
+  --line-height: 1.5;
+  --ink: #1a1a1a;
+  --muted: #444;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+@page { size: A4; margin: 18mm; }
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--size-body);
+  line-height: var(--line-height);
+  color: var(--ink);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.header { text-align: center; margin: 0 0 10pt; }
+.header h1 { font-size: 21pt; line-height: 1.14; font-weight: 700; letter-spacing: 0.05em; margin: 0 0 3pt; }
+.contact, .links { font-size: 9.6pt; color: var(--muted); margin: 1pt 0; }
+a { color: inherit; text-decoration: none; }
+
+.section { margin-top: 10pt; }
+.section h2 {
+  font-size: 11pt;
+  font-weight: 700;
+  text-transform: none;
+  letter-spacing: 0.12em;
+  border-bottom: 1pt solid #111;
+  padding-bottom: 2pt;
+  margin: 0 0 4pt;
+}
+
+.entry { margin: 0 0 7pt; break-inside: avoid; }
+.entry-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10pt; }
+.entry-title { font-weight: 700; }
+.entry-meta { font-size: 9.5pt; color: var(--muted); white-space: nowrap; }
+.entry-sub { font-size: 9.7pt; color: var(--muted); margin-top: 1pt; }
+
+ul { margin: 2pt 0 0 15pt; padding: 0; }
+li { margin: 1pt 0; }
+.simple-list { margin: 2pt 0 0 15pt; }
+.skill-row { display: flex; gap: 6pt; margin: 2pt 0; }
+.skill-label { font-weight: 700; min-width: 110pt; }
+.job-intent { font-weight: 600; margin: 0; }
+
+
+
+/* Optional portrait: the slot collapses completely when empty. */
+.header { position: relative; }
+.photo-slot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 25mm;
+  height: 35mm;
+  overflow: hidden;
+}
+.photo-slot:empty { display: none; }
+.photo-slot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 1.5mm;
+}
+body[data-photo="true"] .header { padding-right: 30mm; min-height: 37mm; }
+
+@media screen {
+  html { background: #e9edf2; }
+  body {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 12mm auto;
+    padding: 18mm;
+    background: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.12);
+  }
+}
+
+@media print {
+  html, body {
+    width: auto;
+    min-height: auto;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    box-shadow: none;
+  }
+  .section { break-inside: avoid; }
+}

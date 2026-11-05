@@ -6,7 +6,13 @@
   "status": "stable",
   "description": "Single-column, standard headings, no graphics. Parseability-first.",
   "markets": [
-    "intl_en"
+    "intl_en",
+    "cn_internet",
+    "cn_soe",
+    "cn_finance",
+    "cn_creative",
+    "hk_sg",
+    "academic"
   ],
   "personas": [
     "experienced",
@@ -170,7 +176,11 @@
       "Projects",
       "Skills",
       "Education",
-      "Awards"
+      "Awards",
+      "Certifications",
+      "Languages",
+      "Publications",
+      "Open Source"
     ]
   },
   "editable_variant": true,

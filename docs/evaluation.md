@@ -4,12 +4,12 @@ This is an internal evaluation on fictional fixtures. It is not a user study and
 
 ## 1. Automated surface
 
-- Templates are organized under `templates/cn/` and `templates/en/`; no language label is rendered into a resume.
-- 195 tests cover vault validation, evidence rules, intake branching, continuous-interaction instructions and CLI state transitions, sufficiency, ingestion, template audit, template learning, selection, writing consent, lint, JD match, recommendation, HTML rendering, six A4 templates, optional portrait slots, mass/targeted role classification, transcreation/parity, QA, and version diffs.
+- Templates are organized under `templates/cn/` and `templates/en/`; the folders identify resume language only (`zh`/`en`), not a market or design restriction. Each of the six layouts exists in both languages (twelve variants); no language label is rendered into a resume.
+- 247 tests cover vault validation, evidence rules, intake branching, continuous-interaction instructions and CLI state transitions, sufficiency, ingestion, template audit, template learning, selection, writing consent, lint, JD match, recommendation, HTML rendering, six A4 layouts in both languages, language-aware template resolution, optional portrait slots, mass/targeted role classification, transcreation/parity that preserves the source layout, QA, and version diffs.
 - Run: `python -m pytest`.
 - Browser QA: headless Edge/Chrome prints the rendered HTML to a temporary PDF, then checks actual pages, extracted text, selected bullets, headings, font floor, and section order.
 - Reproducibility: the same vault + application + template produce byte-identical HTML. Template manifests are signed with SHA-256 over HTML + CSS.
-- Golden preview hashes are stored under `tests/golden/`.
+- Golden preview hashes are stored under `tests/golden/` as `cn-<id>.sha256` / `en-<id>.sha256` (twelve files).
 
 ## 2. Fixtures
 
@@ -19,10 +19,10 @@ This is an internal evaluation on fictional fixtures. It is not a user study and
 | `vault-student-projects.yaml` | Two projects, no internship; bilingual |
 | `vault-experienced.yaml` | Two roles, six years; bilingual |
 | `vault-incomplete.yaml` | Deliberately blocked; targeted questions |
-| `vault-student-cn.yaml`, `vault-experienced-cn.yaml` | Chinese-market previews; `campus` and `zh-professional` |
+| `vault-student-cn.yaml`, `vault-experienced-cn.yaml` | Chinese-language previews; `campus` and `zh-professional` (both also ship English variants) |
 | `vault-academic.yaml` | Academic-market data for localization tests |
 | Strong/weak DOCX, HTML, PDF, scanned PDF | Ingestion and template audit |
-| Six signed templates with previews | Rendering and A4 print |
+| Six signed layouts × two languages (twelve previews) | Rendering, language parity, and A4 print |
 
 ## 3. Blind review rubric
 
@@ -40,8 +40,8 @@ A resume is shippable only when no dimension is 1 and Truth is at least 4.
 
 ## 4. ATS honesty
 
-- The templates are text-based, single-column (except `modern-sidebar`), and use standard headings. No text is placed in images.
-- `modern-sidebar` is a two-column layout; older ATS parsers may struggle. Use `ats-classic` when parseability is the priority.
+- The templates are text-based, single-column (except `modern-sidebar` and `zh-professional`), and use standard headings. No text is placed in images.
+- `modern-sidebar` and `zh-professional` are two-column layouts; older ATS parsers may struggle. Use `ats-classic` when parseability is the priority.
 - No tool can guarantee an ATS result. Always test against the target company's system when possible, and keep the HTML/PDF text selectable.
 - The tool never claims a specific ATS score. `match` is a transparent rubric, not an employer's actual filter.
 

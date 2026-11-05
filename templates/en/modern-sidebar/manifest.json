@@ -6,7 +6,13 @@
   "status": "stable",
   "description": "Restrained two-column layout with a logical DOM order and a single-column screen fallback.",
   "markets": [
-    "intl_en"
+    "intl_en",
+    "cn_internet",
+    "cn_soe",
+    "cn_finance",
+    "cn_creative",
+    "hk_sg",
+    "academic"
   ],
   "personas": [
     "experienced",
@@ -165,8 +171,13 @@
       "Summary",
       "Experience",
       "Projects",
+      "Publications",
+      "Open Source",
       "Skills",
-      "Education"
+      "Education",
+      "Awards",
+      "Certifications",
+      "Languages"
     ]
   },
   "editable_variant": true,

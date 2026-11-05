@@ -11,9 +11,10 @@ from pathlib import Path
 from typing import Any
 
 from . import profile
-from .application import application_dir, create_application, default_template, page_budget, save_application
+from .application import application_dir, create_application, page_budget, save_application
 from .errors import ResumeProError
 from .paths import get_path, set_path
+from .render import load_template
 from .select import select_facts
 from .writing import require_consent
 
@@ -436,6 +437,10 @@ def localize_application(
         )
     chosen_framework = framework or source_app["writing"]["framework"]
     require_consent(chosen_framework, True)
+    chosen_template = template_id or source_app["template"]["id"]
+    # Preserve the layout, including learned layouts when a target variant exists.
+    # Fail before saving anything rather than silently substituting another design.
+    load_template(chosen_template, root=root, language=target_locale)
 
     budget = page_budget(market, persona)
     target_selection = select_facts(
@@ -480,7 +485,7 @@ def localize_application(
         persona=persona,
         framework=chosen_framework,
         company=(source_app.get("target") or {}).get("company"),
-        template_id=template_id or default_template(market, persona),
+        template_id=chosen_template,
         slug=target_slug,
     )
     application_dir(root, target_slug).mkdir(parents=True, exist_ok=True)

@@ -1,6 +1,6 @@
 # Quickstart
 
-Phase 1 implements the vault, guided intake, and the sufficiency gate. Rendering arrives in Phase 3.
+Collect and confirm facts, check sufficiency, select and write for the target market, then render and audit HTML using a language-matched template variant.
 
 ## 1. Install for development
 
@@ -135,8 +135,8 @@ Exit codes for ingestion routes:
 ## 7. Target, lint, and match
 
 ```bash
-# Create an application with an explicit writing framework.
-resume new --role "Backend Engineer" --market cn_internet   --persona student_with_internship --framework result_first
+# Create an application with an explicit writing framework and a user-chosen layout.
+resume new --role "Backend Engineer" --market cn_internet   --persona student_with_internship --framework result_first --template campus
 
 # Content lint + CN rules + 10-second skim.
 resume lint --app <slug>
@@ -175,11 +175,13 @@ Build behavior:
 
 The rendered HTML is the canonical, self-contained file with inline CSS. The editable HTML is a non-canonical preview with `contenteditable` text slots and a toolbar; browser edits are not merged back.
 
-Photos are optional. Every template reserves a portrait slot; it collapses completely when no photo is set. `resume photo <file>` stores the image and the renderer embeds it as a data URI. `intl_en` suppresses photos by policy; CN markets may show one.
+Photos are optional. Every template reserves a portrait slot; it collapses completely when no photo is set. `resume photo <file>` stores the image and the renderer embeds it as a data URI. `intl_en` suppresses photos by policy; CN markets may show one. Choosing another design or resume language does not change that policy.
 
-`--draft` adds a fixed `DRAFT — NOT FOR SUBMISSION` banner. `resume templates` lists the three signed library templates and any learned `user-*` templates.
+`--draft` adds a fixed `DRAFT — NOT FOR SUBMISSION` banner. `resume templates` lists **12 public variants: six distinct designs in both Chinese and English**, plus any learned `user-*` templates, and prints each variant's `preview.html` path (also a `preview` field in `--json`). Open that file in a browser to see the design before choosing.
 
-Templates are split into `templates/cn/` and `templates/en/`: Chinese resumes use `campus` (students and new grads) or `zh-professional` (experienced, left sidebar); English resumes use `ats-classic`, `modern-sidebar`, `editorial`, or `executive`. Cross-language use is rejected to avoid mixed font metrics.
+All six IDs — `ats-classic`, `campus`, `modern-sidebar`, `editorial`, `executive`, `zh-professional` — exist in both `templates/cn/` (manifest `language: zh`) and `templates/en/` (`language: en`). The folders mean resume language, not market eligibility. `zh-professional` retains its historical ID and works in English too. Rendering and QA select the variant by `writing.locale`, falling back to the market profile's `language`; missing or mismatched variants fail explicitly. Direct `load_template(id, language=zh|en)` calls must specify language for multilingual IDs: omission fails instead of preferring `cn`. The CLI resolves it from the application, not from message-only `--lang`.
+
+Default recommendations remain `campus` / `zh-professional` for Chinese-market campus / professional profiles and `ats-classic` / `executive` for international default / senior profiles. They are not exclusive choices. During creation the agent asks the user which layout to use through the interactive question tool before rendering — presenting the six designs in the resume's language, recommending the default, and pointing to each `templates/<cn|en>/<id>/preview.html` — then passes the choice with `resume new --template <id>`. The default is never accepted silently when the user has not been asked. `restyle` changes appearance only, preserving facts, market, persona, selection, and writing locale. Market/persona writing, page, photo, and fact-confirmation rules still apply, alongside each layout's capacity budgets and fixed main/sidebar regions. See the [template contract](template-contracts.md); bilingual coverage does not change review status or constitute design approval.
 
 Build is **HTML only**. The template is sized to A4: open the HTML, choose A4 in the browser's print dialog, and save as PDF. The tool never writes PDF, DOCX, LaTeX, or image resumes.
 
