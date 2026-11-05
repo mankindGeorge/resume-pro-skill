@@ -1,0 +1,23 @@
+schema_version: "1.0"
+id: academic
+label: "Academic / research"
+status: experimental
+seniority: academic
+markets: [academic]
+page_budget:
+  academic: 4
+minimum_facts:
+  education: 1
+  publications: 1
+  research_experience: 1
+required_signals: [publications, research, teaching]
+preferred: [grants, conferences, reviewing, invited_talks]
+question_ladders:
+  research: [area, question, method, result, venue, authorship]
+  publications: [title, venue, year, authors, link]
+prompt_rules:
+  - never_inflate_authorship
+  - distinguish_submitted_from_published
+  - keep_cv_conventions
+notes:
+  - "Academic CV, not a one-page resume. Out of MVP scope."

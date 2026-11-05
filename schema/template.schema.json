@@ -1,0 +1,411 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://resume-pro.dev/schema/template.schema.json",
+  "title": "Template Manifest",
+  "description": "Contract between the renderer and a template. An invalid or incomplete manifest must fail before rendering.",
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "version",
+    "language",
+    "status",
+    "markets",
+    "personas",
+    "page",
+    "slots",
+    "budgets",
+    "files",
+    "print",
+    "ats",
+    "fingerprint"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,63}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "status": {
+      "enum": [
+        "stable",
+        "experimental",
+        "private",
+        "candidate"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "markets": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "enum": [
+          "intl_en",
+          "cn_internet",
+          "cn_soe",
+          "cn_finance",
+          "cn_creative",
+          "hk_sg",
+          "academic"
+        ]
+      }
+    },
+    "personas": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "enum": [
+          "student_no_projects",
+          "student_with_projects",
+          "student_with_internship",
+          "new_grad",
+          "career_switcher",
+          "experienced",
+          "senior_manager",
+          "academic",
+          "creative"
+        ]
+      }
+    },
+    "page": {
+      "type": "object",
+      "required": [
+        "sizes",
+        "margins_mm",
+        "target_pages",
+        "columns"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "sizes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "enum": [
+              "letter",
+              "a4"
+            ]
+          }
+        },
+        "margins_mm": {
+          "type": "object",
+          "required": [
+            "top",
+            "right",
+            "bottom",
+            "left"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "top": {
+              "type": "number",
+              "minimum": 12
+            },
+            "right": {
+              "type": "number",
+              "minimum": 12
+            },
+            "bottom": {
+              "type": "number",
+              "minimum": 12
+            },
+            "left": {
+              "type": "number",
+              "minimum": 12
+            }
+          }
+        },
+        "target_pages": {
+          "type": "object",
+          "required": [
+            "min",
+            "max"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "min": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            }
+          }
+        },
+        "columns": {
+          "enum": [
+            "single",
+            "main_sidebar",
+            "sidebar_main"
+          ],
+          "description": "Two-column templates must declare a single-column parseable fallback."
+        }
+      }
+    },
+    "slots": {
+      "type": "object",
+      "required": [
+        "required",
+        "optional"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/slot"
+          }
+        },
+        "optional": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/slot"
+          }
+        }
+      }
+    },
+    "budgets": {
+      "type": "object",
+      "required": [
+        "summary_chars",
+        "bullets_per_role",
+        "bullets_per_project",
+        "max_roles",
+        "max_projects",
+        "max_skills"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "summary_chars": {
+          "type": "object",
+          "required": [
+            "en",
+            "zh"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "en": {
+              "type": "integer",
+              "minimum": 80,
+              "maximum": 600
+            },
+            "zh": {
+              "type": "integer",
+              "minimum": 40,
+              "maximum": 300
+            }
+          }
+        },
+        "bullets_per_role": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "bullets_per_project": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 6
+        },
+        "max_roles": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 10
+        },
+        "max_projects": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 8
+        },
+        "max_skills": {
+          "type": "integer",
+          "minimum": 4,
+          "maximum": 30
+        }
+      }
+    },
+    "files": {
+      "type": "object",
+      "required": [
+        "html",
+        "css",
+        "preview"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "html": {
+          "type": "string"
+        },
+        "css": {
+          "type": "string"
+        },
+        "preview": {
+          "type": "string"
+        },
+        "print_css": {
+          "type": "string"
+        },
+        "editable_html": {
+          "type": "string"
+        }
+      }
+    },
+    "print": {
+      "type": "object",
+      "required": [
+        "safe_margin_mm",
+        "bleed_mm",
+        "color_mode"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "safe_margin_mm": {
+          "type": "number",
+          "minimum": 8
+        },
+        "bleed_mm": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "color_mode": {
+          "enum": [
+            "color",
+            "grayscale_safe"
+          ]
+        }
+      }
+    },
+    "ats": {
+      "type": "object",
+      "required": [
+        "single_column",
+        "text_selectable",
+        "tables_allowed",
+        "standard_headings"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "single_column": {
+          "type": "boolean"
+        },
+        "text_selectable": {
+          "const": true
+        },
+        "tables_allowed": {
+          "type": "boolean"
+        },
+        "standard_headings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Heading text the parser must be able to recognize."
+        },
+        "parse_fallback": {
+          "type": "string",
+          "description": "Path to the single-column fallback variant."
+        }
+      }
+    },
+    "editable_variant": {
+      "type": "boolean",
+      "default": false
+    },
+    "fingerprint": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 over template.html + styles.css + manifest fields that affect output."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "enum": [
+            "original",
+            "user_learned"
+          ]
+        },
+        "note": {
+          "type": "string"
+        },
+        "source_hash": {
+          "type": "string"
+        }
+      }
+    },
+    "language": {
+      "enum": [
+        "zh",
+        "en"
+      ],
+      "description": "Primary language this template is designed for. Cross-language use is rejected."
+    }
+  },
+  "$defs": {
+    "slot": {
+      "type": "object",
+      "required": [
+        "name",
+        "selector",
+        "kind"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9_]*(\\.[a-z][a-z0-9_]*)+$",
+          "examples": [
+            "identity.name",
+            "experience.item",
+            "experience.item.bullet"
+          ]
+        },
+        "selector": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "enum": [
+            "text",
+            "rich_text",
+            "list",
+            "section",
+            "image",
+            "link",
+            "date"
+          ]
+        },
+        "repeatable": {
+          "type": "boolean",
+          "default": false
+        },
+        "max_items": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "required": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    }
+  }
+}

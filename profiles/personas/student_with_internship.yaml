@@ -1,0 +1,31 @@
+schema_version: "1.0"
+id: student_with_internship
+label: "Student with an internship"
+status: stable
+seniority: student
+markets: [intl_en, cn_internet]
+page_budget:
+  intl_en: 1
+  cn_internet: 2
+minimum_facts:
+  education: 1
+  internships: 1
+  internship_bullets: 2
+  projects: 1
+  project_bullets: 2
+  skills: 6
+  skills_used_in_projects: 3
+required_signals: [education, internship, project, core_skills]
+preferred: [metrics, second_internship, second_project, blog_or_open_source]
+question_ladders:
+  internship: [company, role, dates, team, ownership, action, result, number]
+  project: [name, context, problem, own_contribution, optimization, result, tech]
+  skills: [languages, frameworks, databases, cs_fundamentals, tools_used_at_work]
+prompt_rules:
+  - ask_one_question_at_a_time
+  - require_a_number_or_verifiable_outcome
+  - never_invent
+  - accept_dont_know
+notes:
+  - "One internship with two real bullets beats three internships with duty lists."
+  - "If no metric exists, ask for a verifiable qualitative outcome."

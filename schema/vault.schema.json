@@ -1,0 +1,927 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://resume-pro.dev/schema/vault.schema.json",
+  "title": "Career Vault",
+  "description": "Durable inventory of verified and user-asserted career facts. The vault is the single source of truth; applications select from it and never own facts.",
+  "type": "object",
+  "required": [
+    "schema_version"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "status": {
+      "enum": [
+        "collecting",
+        "ready",
+        "archived"
+      ],
+      "default": "collecting",
+      "description": "collecting: intake in progress. ready: sufficient facts confirmed. archived: no longer active."
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "identity": {
+      "$ref": "#/$defs/identity"
+    },
+    "education": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/education"
+      }
+    },
+    "experience": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/experience"
+      }
+    },
+    "projects": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/project"
+      }
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/skillGroup"
+      }
+    },
+    "awards": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/award"
+      }
+    },
+    "certificates": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/certificate"
+      }
+    },
+    "languages": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/language"
+      }
+    },
+    "publications": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/publication"
+      }
+    },
+    "preferences": {
+      "$ref": "#/$defs/preferences"
+    },
+    "evidence": {
+      "type": "object",
+      "description": "Evidence registry keyed by evidence id. Every bullet must reference at least one entry.",
+      "propertyNames": {
+        "pattern": "^ev_[a-z0-9_]{1,64}$"
+      },
+      "additionalProperties": {
+        "$ref": "#/$defs/evidenceEntry"
+      }
+    },
+    "needs_confirmation": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/confirmation"
+      }
+    }
+  },
+  "$defs": {
+    "localizedText": {
+      "type": "object",
+      "description": "Per-locale phrasing. Never machine-translated at render time; each locale is authored or approved separately.",
+      "additionalProperties": false,
+      "properties": {
+        "en": {
+          "type": "string"
+        },
+        "zh": {
+          "type": "string"
+        }
+      },
+      "minProperties": 1
+    },
+    "localizedList": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "en": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "zh": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "minProperties": 1
+    },
+    "dateOrPresent": {
+      "type": "string",
+      "pattern": "^([0-9]{4}-(0[1-9]|1[0-2])|present)$",
+      "examples": [
+        "2024-06",
+        "present"
+      ]
+    },
+    "factId": {
+      "type": "string",
+      "pattern": "^(edu|exp|proj|skl|awd|cert|lang|pub|bul)_[a-z0-9_]{1,64}$"
+    },
+    "bulletId": {
+      "type": "string",
+      "pattern": "^bul_[a-z0-9_]{1,64}$"
+    },
+    "evidenceRef": {
+      "type": "string",
+      "pattern": "^ev_[a-z0-9_]{1,64}$"
+    },
+    "link": {
+      "type": "object",
+      "required": [
+        "label",
+        "url"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "kind": {
+          "enum": [
+            "portfolio",
+            "github",
+            "blog",
+            "linkedin",
+            "publication",
+            "other"
+          ],
+          "default": "other"
+        }
+      }
+    },
+    "bullet": {
+      "type": "object",
+      "required": [
+        "id",
+        "text",
+        "evidence"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/bulletId"
+        },
+        "text": {
+          "$ref": "#/$defs/localizedText"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidenceRef"
+          },
+          "minItems": 1,
+          "description": "No bullet can exist without a traceable source. Use an evidence entry with status user_asserted when proof is unavailable."
+        },
+        "skill_ids": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/factId"
+          }
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "identity": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "full_name": {
+          "type": "string"
+        },
+        "preferred_name": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string",
+          "format": "email"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "location": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "city": {
+              "type": "string"
+            },
+            "region": {
+              "type": "string"
+            },
+            "country": {
+              "type": "string"
+            },
+            "postal_code": {
+              "type": "string"
+            }
+          }
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/link"
+          }
+        },
+        "photo": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "description": "Local path only. Rendered only when the market profile allows a photo."
+        },
+        "locale": {
+          "enum": [
+            "en",
+            "zh"
+          ]
+        },
+        "headline": {
+          "$ref": "#/$defs/localizedText"
+        },
+        "summary": {
+          "$ref": "#/$defs/localizedText"
+        },
+        "summary_evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidenceRef"
+          }
+        },
+        "personal": {
+          "type": "object",
+          "description": "Sensitive fields for markets that legally expect them. Never rendered unless the market profile explicitly allows the field.",
+          "additionalProperties": false,
+          "properties": {
+            "date_of_birth": {
+              "type": "string",
+              "pattern": "^[0-9]{4}-(0[1-9]|1[0-2])$"
+            },
+            "gender": {
+              "enum": [
+                "female",
+                "male",
+                "nonbinary",
+                "prefer_not_to_say"
+              ]
+            },
+            "marital_status": {
+              "enum": [
+                "single",
+                "married",
+                "prefer_not_to_say"
+              ]
+            },
+            "nationality": {
+              "type": "string"
+            },
+            "political_status": {
+              "type": "string"
+            },
+            "id_number": {
+              "type": "string",
+              "description": "Must never be rendered or logged. Local storage only."
+            }
+          }
+        }
+      }
+    },
+    "education": {
+      "type": "object",
+      "required": [
+        "id",
+        "school"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/factId"
+        },
+        "school": {
+          "type": "string",
+          "minLength": 1
+        },
+        "degree": {
+          "$ref": "#/$defs/localizedText"
+        },
+        "major": {
+          "$ref": "#/$defs/localizedText"
+        },
+        "location": {
+          "type": "string"
+        },
+        "start": {
+          "$ref": "#/$defs/dateOrPresent"
+        },
+        "end": {
+          "$ref": "#/$defs/dateOrPresent"
+        },
+        "gpa": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0
+            },
+            "scale": {
+              "type": "number",
+              "exclusiveMinimum": 0
+            },
+            "rank": {
+              "type": "string"
+            }
+          }
+        },
+        "coursework": {
+          "$ref": "#/$defs/localizedList"
+        },
+        "honors": {
+          "$ref": "#/$defs/localizedList"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidenceRef"
+          }
+        }
+      }
+    },
+    "experience": {
+      "type": "object",
+      "required": [
+        "id",
+        "company",
+        "title",
+        "start"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/factId"
+        },
+        "company": {
+          "type": "string",
+          "minLength": 1
+        },
+        "title": {
+          "$ref": "#/$defs/localizedText"
+        },
+        "employment_type": {
+          "enum": [
+            "internship",
+            "full_time",
+            "part_time",
+            "contract",
+            "freelance",
+            "volunteer"
+          ]
+        },
+        "location": {
+          "type": "string"
+        },
+        "start": {
+          "$ref": "#/$defs/dateOrPresent"
+        },
+        "end": {
+          "$ref": "#/$defs/dateOrPresent"
+        },
+        "is_current": {
+          "type": "boolean"
+        },
+        "team_size": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "scope": {
+          "$ref": "#/$defs/localizedText"
+        },
+        "tech": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "bullets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bullet"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidenceRef"
+          }
+        },
+        "target_roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "project": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "context"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/factId"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "$ref": "#/$defs/localizedText"
+        },
+        "context": {
+          "enum": [
+            "course",
+            "personal",
+            "open_source",
+            "internship",
+            "work",
+            "competition",
+            "research",
+            "volunteer"
+          ]
+        },
+        "start": {
+          "$ref": "#/$defs/dateOrPresent"
+        },
+        "end": {
+          "$ref": "#/$defs/dateOrPresent"
+        },
+        "links": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/link"
+          }
+        },
+        "tech": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "problem": {
+          "$ref": "#/$defs/localizedText"
+        },
+        "approach": {
+          "$ref": "#/$defs/localizedText"
+        },
+        "own_contribution": {
+          "$ref": "#/$defs/localizedText",
+          "description": "What the candidate personally built or decided. Required before a project can pass the demo-only check."
+        },
+        "optimizations": {
+          "$ref": "#/$defs/localizedList"
+        },
+        "outcome": {
+          "$ref": "#/$defs/localizedText"
+        },
+        "bullets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/bullet"
+          }
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidenceRef"
+          }
+        },
+        "target_roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "skillGroup": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "kind",
+        "items"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/factId"
+        },
+        "name": {
+          "$ref": "#/$defs/localizedText"
+        },
+        "kind": {
+          "enum": [
+            "language",
+            "framework",
+            "tool",
+            "platform",
+            "database",
+            "ai_ml",
+            "fundamentals",
+            "other"
+          ]
+        },
+        "items": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "name"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "level": {
+                "enum": [
+                  "expert",
+                  "advanced",
+                  "intermediate",
+                  "beginner",
+                  "unknown"
+                ],
+                "default": "unknown"
+              },
+              "years": {
+                "type": "number",
+                "minimum": 0
+              },
+              "evidence": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/$defs/evidenceRef"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "award": {
+      "type": "object",
+      "required": [
+        "id",
+        "title"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/factId"
+        },
+        "title": {
+          "$ref": "#/$defs/localizedText"
+        },
+        "issuer": {
+          "type": "string"
+        },
+        "date": {
+          "$ref": "#/$defs/dateOrPresent"
+        },
+        "level": {
+          "enum": [
+            "international",
+            "national",
+            "provincial",
+            "school",
+            "company",
+            "other"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidenceRef"
+          }
+        }
+      }
+    },
+    "certificate": {
+      "type": "object",
+      "required": [
+        "id",
+        "name"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/factId"
+        },
+        "name": {
+          "$ref": "#/$defs/localizedText"
+        },
+        "issuer": {
+          "type": "string"
+        },
+        "date": {
+          "$ref": "#/$defs/dateOrPresent"
+        },
+        "credential_id": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidenceRef"
+          }
+        }
+      }
+    },
+    "language": {
+      "type": "object",
+      "required": [
+        "id",
+        "name",
+        "proficiency"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/factId"
+        },
+        "name": {
+          "$ref": "#/$defs/localizedText"
+        },
+        "proficiency": {
+          "enum": [
+            "native",
+            "fluent",
+            "professional",
+            "intermediate",
+            "basic"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidenceRef"
+          }
+        }
+      }
+    },
+    "publication": {
+      "type": "object",
+      "required": [
+        "id",
+        "title"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/factId"
+        },
+        "title": {
+          "type": "string"
+        },
+        "authors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "venue": {
+          "type": "string"
+        },
+        "date": {
+          "$ref": "#/$defs/dateOrPresent"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "evidence": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/evidenceRef"
+          }
+        }
+      }
+    },
+    "preferences": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "target_markets": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "intl_en",
+              "cn_internet",
+              "cn_soe",
+              "cn_finance",
+              "cn_creative",
+              "hk_sg",
+              "academic"
+            ]
+          }
+        },
+        "target_roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "locations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "work_authorization": {
+          "type": "string",
+          "description": "Sensitive. Local only; never rendered."
+        },
+        "salary": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "min": {
+              "type": "number",
+              "minimum": 0
+            },
+            "max": {
+              "type": "number",
+              "minimum": 0
+            },
+            "currency": {
+              "type": "string",
+              "pattern": "^[A-Z]{3}$"
+            },
+            "period": {
+              "enum": [
+                "year",
+                "month",
+                "day",
+                "hour"
+              ]
+            }
+          }
+        },
+        "start_date": {
+          "type": "string"
+        },
+        "remote": {
+          "enum": [
+            "required",
+            "preferred",
+            "negotiable",
+            "no"
+          ]
+        },
+        "deal_breakers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "application_mode": {
+          "enum": [
+            "mass",
+            "targeted",
+            "unknown"
+          ],
+          "default": "unknown"
+        },
+        "preferred_role": {
+          "type": "string"
+        }
+      }
+    },
+    "evidenceEntry": {
+      "type": "object",
+      "required": [
+        "id",
+        "claim",
+        "status",
+        "source"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "$ref": "#/$defs/evidenceRef"
+        },
+        "claim": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "verified",
+            "user_asserted",
+            "estimated",
+            "unknown"
+          ],
+          "description": "Only verified may be presented as a hard fact. estimated and unknown can never render as a number."
+        },
+        "source": {
+          "enum": [
+            "user_statement",
+            "document",
+            "portfolio",
+            "repo",
+            "certificate",
+            "inference"
+          ]
+        },
+        "locator": {
+          "type": "string",
+          "description": "Where the evidence can be checked: file, URL, page, repo path, certificate id."
+        },
+        "captured_at": {
+          "type": "string",
+          "format": "date"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "confirmation": {
+      "type": "object",
+      "required": [
+        "path",
+        "reason",
+        "severity",
+        "question"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "JSON path into the vault, e.g. experience[0].bullets[1].text.zh"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "blocker",
+            "warning"
+          ]
+        },
+        "question": {
+          "type": "string",
+          "description": "One targeted question that would resolve the gap."
+        },
+        "resolved": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    }
+  }
+}

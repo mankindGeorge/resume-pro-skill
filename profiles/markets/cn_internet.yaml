@@ -1,0 +1,56 @@
+schema_version: "1.0"
+id: cn_internet
+label: "中国互联网 / 科技公司"
+status: stable
+language: zh
+locale: zh-CN
+
+page:
+  size: a4
+  student_max_pages: 2
+  early_career_max_pages: 2
+  experienced_max_pages: 3
+  experienced_threshold_years: 3
+
+photo_policy: optional
+
+personal_fields:
+  allowed: [full_name, phone, email]
+  optional: [photo, date_of_birth, gender, city]
+  forbidden: [id_number, marital_status, salary_expectation, political_status]
+
+section_order:
+  campus: [education, skills, experience, projects, awards, open_source]
+  early_career: [education, skills, experience, projects, awards]
+  experienced: [summary, experience, projects, skills, education, awards]
+
+dates:
+  format: "YYYY.MM"
+  present: "至今"
+
+bullets:
+  default_framework: result_first
+  target_per_role: 3
+  max_per_role: 5
+  metrics: quantify_when_verified
+  voice: first_person_implied
+  forbid: [flow_account, cliche, demo_only]
+
+ats:
+  single_column_required: false
+  standard_headings: [教育经历, 实习经历, 项目经历, 专业技能, 荣誉奖项]
+  avoid: [text_in_images, hidden_text, headers_footers]
+
+signals:
+  core: [core_skills, ai_related, internship, projects]
+  education_required: true
+  cs_fundamentals_required_for_campus: true
+  demo_only_projects: reject
+  cliche_opening: reject
+
+notes:
+  - "应届生或 3 年以下：1–2 页；3 年以上：2–3 页。"
+  - "教育经历不能省略。公司简历系统会自动解析，缺字段会反复核对。"
+  - "关键信息往前放；核心技能、AI 相关、实习、项目是校招简历的四个主信号。"
+  - "不强制照片；无照片不扣分。"
+  - "技能不能只有 AI 名词，计算机基础（操作系统、计网、数据结构）必须能在笔试和面试中兑现。"

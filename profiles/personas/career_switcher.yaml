@@ -1,0 +1,25 @@
+schema_version: "1.0"
+id: career_switcher
+label: "Career switcher"
+status: experimental
+seniority: mid
+markets: [intl_en, cn_internet]
+page_budget:
+  intl_en: 1
+  cn_internet: 2
+minimum_facts:
+  education: 1
+  transferable_proof_points: 2
+  skills: 6
+required_signals: [transferable_skills, bridge_narrative, proof]
+preferred: [course_capstone, freelance, open_source, internal_transfer]
+question_ladders:
+  history: [current_role, domain, transferable_skills, reason_for_switch]
+  proof: [project, freelance_work, course, open_source, internal_transfer]
+  target: [target_role, target_market, gap, timeline]
+prompt_rules:
+  - require_a_bridge_narrative
+  - never_disguise_old_experience_as_new
+  - ask_for_proof_not_intent
+notes:
+  - "The bridge narrative is mandatory: why this role, what transfers, what proof exists."

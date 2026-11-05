@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Resume</title>
+<style>
+:root {
+  --font-body: Calibri, Arial, "Helvetica Neue", sans-serif;
+  --font-heading: Georgia, "Times New Roman", serif;
+  --size-body: 10.5pt;
+  --line-height: 1.4;
+  --ink: #1c1c1c;
+  --muted: #4a4a4a;
+  --accent: #7a1f2b;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+@page { size: A4; margin: 18mm; }
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--size-body);
+  line-height: var(--line-height);
+  color: var(--ink);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.header { margin: 0 0 9pt; text-align: left; }
+.header h1 {
+  font-family: var(--font-heading);
+  font-size: 22pt;
+  line-height: 1.12;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  margin: 0 0 3pt;
+}
+.contact, .links { font-size: 9.6pt; color: var(--muted); margin: 1pt 0; }
+a { color: var(--accent); text-decoration: none; }
+
+.section { margin-top: 11pt; }
+.section h2 {
+  font-family: var(--font-heading);
+  font-size: 11.5pt;
+  font-style: italic;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--accent);
+  border-bottom: 0.6pt solid #d9c8ca;
+  padding-bottom: 2pt;
+  margin: 0 0 4pt;
+}
+
+.entry { margin: 0 0 7pt; break-inside: avoid; }
+.entry-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10pt; }
+.entry-title { font-weight: 700; }
+.entry-meta { font-size: 9.4pt; color: var(--muted); white-space: nowrap; }
+.entry-sub { font-size: 9.6pt; color: var(--muted); margin-top: 1pt; }
+
+ul { margin: 2pt 0 0 15pt; padding: 0; }
+li { margin: 1pt 0; }
+.simple-list { margin: 2pt 0 0 15pt; }
+.skill-row { margin: 2pt 0; }
+.skill-label { font-weight: 700; color: var(--accent); margin-right: 5pt; }
+.job-intent { font-weight: 600; margin: 0; }
+
+
+
+/* Optional portrait: the slot collapses completely when empty. */
+.header { position: relative; }
+.photo-slot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 25mm;
+  height: 35mm;
+  overflow: hidden;
+}
+.photo-slot:empty { display: none; }
+.photo-slot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 1.5mm;
+}
+body[data-photo="true"] .header { padding-right: 30mm; min-height: 37mm; }
+
+@media screen {
+  html { background: #e9edf2; }
+  body {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 12mm auto;
+    padding: 18mm;
+    background: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.12);
+  }
+}
+
+@media print {
+  html, body {
+    width: auto;
+    min-height: auto;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    box-shadow: none;
+  }
+  .section { break-inside: avoid; }
+}
+
+</style>
+<style>
+.draft-banner{position:fixed;top:0;left:0;right:0;background:#b00020;color:#fff;text-align:center;
+font:600 10pt Arial,sans-serif;padding:4pt;z-index:9999;letter-spacing:.04em}
+body[data-draft="true"]{padding-top:24pt}
+@media print{.draft-banner{position:fixed;top:0;left:0;right:0}.edit-toolbar{display:none}body.editable{padding-top:0}}
+.edit-toolbar{position:fixed;top:0;left:0;right:0;background:#111;color:#fff;padding:5pt 8pt;
+font:10pt Arial,sans-serif;display:flex;gap:8pt;align-items:center;z-index:9999}
+.edit-toolbar button{font:10pt Arial,sans-serif;padding:2pt 6pt;cursor:pointer}
+.edit-note{font-size:9pt;color:#ddd;margin-left:auto}
+body.editable{padding-top:34pt}
+</style></head>
+<body>
+<header class="header">
+<h1 data-slot="identity.name">Zhao Lin</h1>
+<div class="contact" data-slot="identity.contact">zhaolin@example.com · +86 137 0000 0000 · Wuhan · CN</div>
+<div class="links" data-slot="identity.links"><a href="https://github.com/example-zhaolin" rel="noopener">GitHub</a></div>
+<div class="photo-slot" data-slot="identity.photo"></div>
+</header>
+
+
+
+<section class="section" data-section="education"><h2>Education</h2><div data-slot="section.education"><div class="entry"><div class="entry-head"><span class="entry-title">Example University</span><span class="entry-meta">2023-09 – 2027-06</span></div><div class="entry-sub">B.Eng. · Software Engineering · GPA 3.6/4.0</div></div></div></section><section class="section" data-section="projects"><h2>Selected Projects</h2><div data-slot="section.projects"><div class="entry"><div class="entry-head"><span class="entry-title">Course QA with RAG</span><span class="entry-meta">2025-09 – 2026-03</span></div><div class="entry-sub">Retrieval lead</div><ul><li>Raised Recall@5 from 62% to 81% on 120 human-labeled questions.</li><li>Owned retrieval, designed heading-aware chunking, and added hybrid BM25 retrieval.</li></ul></div><div class="entry"><div class="entry-head"><span class="entry-title">Campus Second-hand Marketplace</span><span class="entry-meta">2025-03 – 2025-08</span></div><div class="entry-sub">Backend developer</div><ul><li>Cut product-detail P95 from 420ms to 160ms under load test.</li><li>Added cache-aside for hot product pages and a mutex for cache misses.</li></ul></div></div></section><section class="section" data-section="skills"><h2>Skills</h2><div data-slot="section.skills"><div class="skill-row"><span class="skill-label">Backend</span><span class="skill-values">Java, Spring Boot, MySQL, Redis</span></div><div class="skill-row"><span class="skill-label">AI / Retrieval</span><span class="skill-values">Python, RAG, FAISS</span></div><div class="skill-row"><span class="skill-label">CS Fundamentals</span><span class="skill-values">Operating Systems, Computer Networks, Data Structures, Algorithms, Databases</span></div></div></section></body>
+</html>

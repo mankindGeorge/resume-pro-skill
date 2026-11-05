@@ -1,0 +1,179 @@
+{
+  "id": "modern-sidebar",
+  "name": "Modern Sidebar",
+  "language": "en",
+  "version": "1.0.0",
+  "status": "stable",
+  "description": "Restrained two-column layout with a logical DOM order and a single-column screen fallback.",
+  "markets": [
+    "intl_en"
+  ],
+  "personas": [
+    "experienced",
+    "career_switcher"
+  ],
+  "page": {
+    "sizes": [
+      "a4"
+    ],
+    "margins_mm": {
+      "top": 16,
+      "right": 16,
+      "bottom": 16,
+      "left": 16
+    },
+    "target_pages": {
+      "min": 1,
+      "max": 2
+    },
+    "columns": "main_sidebar"
+  },
+  "slots": {
+    "required": [
+      {
+        "name": "identity.name",
+        "selector": "[data-slot='identity.name']",
+        "kind": "text"
+      },
+      {
+        "name": "identity.contact",
+        "selector": "[data-slot='identity.contact']",
+        "kind": "text"
+      },
+      {
+        "name": "section.summary",
+        "selector": "[data-slot='section.summary']",
+        "kind": "rich_text"
+      },
+      {
+        "name": "section.experience",
+        "selector": "[data-slot='section.experience']",
+        "kind": "section"
+      },
+      {
+        "name": "section.skills",
+        "selector": "[data-slot='section.skills']",
+        "kind": "section"
+      },
+      {
+        "name": "section.education",
+        "selector": "[data-slot='section.education']",
+        "kind": "section"
+      }
+    ],
+    "optional": [
+      {
+        "name": "identity.links",
+        "selector": "[data-slot='identity.links']",
+        "kind": "list",
+        "repeatable": true
+      },
+      {
+        "name": "identity.photo",
+        "selector": "[data-slot='identity.photo']",
+        "kind": "image"
+      },
+      {
+        "name": "section.projects",
+        "selector": "[data-slot='section.projects']",
+        "kind": "section"
+      },
+      {
+        "name": "section.awards",
+        "selector": "[data-slot='section.awards']",
+        "kind": "section"
+      },
+      {
+        "name": "section.certificates",
+        "selector": "[data-slot='section.certificates']",
+        "kind": "section"
+      },
+      {
+        "name": "section.languages",
+        "selector": "[data-slot='section.languages']",
+        "kind": "section"
+      },
+      {
+        "name": "section.publications",
+        "selector": "[data-slot='section.publications']",
+        "kind": "section"
+      },
+      {
+        "name": "section.open_source",
+        "selector": "[data-slot='section.open_source']",
+        "kind": "section"
+      },
+      {
+        "name": "education.item",
+        "selector": "[data-slot='education.item']",
+        "kind": "list",
+        "repeatable": true
+      },
+      {
+        "name": "experience.item",
+        "selector": "[data-slot='experience.item']",
+        "kind": "list",
+        "repeatable": true
+      },
+      {
+        "name": "experience.item.bullet",
+        "selector": "[data-slot='experience.item.bullet']",
+        "kind": "list",
+        "repeatable": true
+      },
+      {
+        "name": "project.item",
+        "selector": "[data-slot='project.item']",
+        "kind": "list",
+        "repeatable": true
+      },
+      {
+        "name": "project.item.bullet",
+        "selector": "[data-slot='project.item.bullet']",
+        "kind": "list",
+        "repeatable": true
+      }
+    ]
+  },
+  "budgets": {
+    "summary_chars": {
+      "en": 240,
+      "zh": 120
+    },
+    "bullets_per_role": 5,
+    "bullets_per_project": 4,
+    "max_roles": 5,
+    "max_projects": 4,
+    "max_skills": 16
+  },
+  "files": {
+    "html": "template.html",
+    "css": "styles.css",
+    "preview": "preview.html",
+    "print_css": "styles.css"
+  },
+  "print": {
+    "safe_margin_mm": 12,
+    "bleed_mm": 0,
+    "color_mode": "grayscale_safe"
+  },
+  "ats": {
+    "single_column": false,
+    "text_selectable": true,
+    "tables_allowed": false,
+    "standard_headings": [
+      "Summary",
+      "Experience",
+      "Projects",
+      "Skills",
+      "Education"
+    ]
+  },
+  "editable_variant": true,
+  "fingerprint": "b0cfb0bff58a4c1177733406826d09e2fa4619a8b430242f5585b1a9e90bef39",
+  "created_at": "2026-11-05T00:00:00Z",
+  "provenance": {
+    "kind": "original",
+    "note": "Original layout; informed by public resume guidance, not copied from another template."
+  }
+}

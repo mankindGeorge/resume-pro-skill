@@ -1,0 +1,27 @@
+schema_version: "1.0"
+id: student_no_projects
+label: "Student with no internship and no projects"
+status: experimental
+seniority: student
+markets: [intl_en, cn_internet]
+build_mode: true
+page_budget:
+  intl_en: 1
+  cn_internet: 1
+minimum_facts:
+  education: 1
+  projects: 0
+  skills: 4
+required_output: [starter_resume, proof_plan]
+required_signals: [education]
+question_ladders:
+  education: [school, degree, major, start_end, coursework]
+  interests: [what_you_enjoy, what_you_have_tried, time_available]
+  constraints: [target_role, target_market, deadline]
+prompt_rules:
+  - never_invent_projects
+  - propose_a_2_to_4_week_proof_plan
+  - gate_resume_until_one_proof_point_exists
+notes:
+  - "Do not generate a resume from nothing. Produce an honest starter plus a concrete plan to build 1–2 proof points."
+  - "v1.1 route. Experimental until fixtures exist."

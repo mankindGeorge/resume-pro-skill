@@ -1,0 +1,62 @@
+# Evaluation
+
+This is an internal evaluation on fictional fixtures. It is not a user study and it is not an ATS guarantee.
+
+## 1. Automated surface
+
+- Templates are organized under `templates/cn/` and `templates/en/`; no language label is rendered into a resume.
+- 190 tests cover vault validation, evidence rules, intake branching, sufficiency, ingestion, template audit, template learning, selection, writing consent, lint, JD match, recommendation, HTML rendering, six A4 templates, optional portrait slots, mass/targeted role classification, transcreation/parity, QA, and version diffs.
+- Run: `python -m pytest`.
+- Browser QA: headless Edge/Chrome prints the rendered HTML to a temporary PDF, then checks actual pages, extracted text, selected bullets, headings, font floor, and section order.
+- Reproducibility: the same vault + application + template produce byte-identical HTML. Template manifests are signed with SHA-256 over HTML + CSS.
+- Golden preview hashes are stored under `tests/golden/`.
+
+## 2. Fixtures
+
+| Fixture | Purpose |
+|---|---|
+| `vault-student.yaml` | One internship + one project; bilingual; CN campus |
+| `vault-student-projects.yaml` | Two projects, no internship; bilingual |
+| `vault-experienced.yaml` | Two roles, six years; bilingual |
+| `vault-incomplete.yaml` | Deliberately blocked; targeted questions |
+| `vault-student-cn.yaml`, `vault-experienced-cn.yaml` | Chinese-market previews; `campus` and `zh-professional` |
+| `vault-academic.yaml` | Academic-market data for localization tests |
+| Strong/weak DOCX, HTML, PDF, scanned PDF | Ingestion and template audit |
+| Six signed templates with previews | Rendering and A4 print |
+
+## 3. Blind review rubric
+
+A reviewer sees only the rendered resume, not the vault, and scores 1–5:
+
+| Dimension | 1 | 3 | 5 |
+|---|---|---|---|
+| Truth | Unsupported claims | Mostly supported | Every claim traceable |
+| Targeting | Generic | Some JD language | Clear must-have coverage and gaps |
+| Structure | Hard to scan | Standard sections | Strong primacy and hierarchy |
+| Legibility | Cluttered | Readable | 10-second skim finds the signals |
+| Market fit | Wrong conventions | Mostly right | CN/EN fields, order, page count correct |
+
+A resume is shippable only when no dimension is 1 and Truth is at least 4.
+
+## 4. ATS honesty
+
+- The templates are text-based, single-column (except `modern-sidebar`), and use standard headings. No text is placed in images.
+- `modern-sidebar` is a two-column layout; older ATS parsers may struggle. Use `ats-classic` when parseability is the priority.
+- No tool can guarantee an ATS result. Always test against the target company's system when possible, and keep the HTML/PDF text selectable.
+- The tool never claims a specific ATS score. `match` is a transparent rubric, not an employer's actual filter.
+
+## 5. Known limitations
+
+- PDF ingestion and template learning are approximate; scanned PDFs are detected, not OCR'd.
+- Bullet rewriting is agent work guided by the framework; the CLI does not call an LLM.
+- Name order, phone formatting, and address granularity are not automatically transformed.
+- Experimental markets (`cn_soe`, `cn_finance`, `cn_creative`, `hk_sg`, `academic`) are not validated in v1.
+- No DOCX/LaTeX/PDF resume exporter; PDF is a browser print action.
+- No golden image snapshots; QA is text/geometry based.
+- Portrait images are embedded as-is; there is no cropping or face detection.
+- No job-intent section is rendered; the target role is a targeting and filename device.
+- No user study yet; measure with real candidates before making quality claims.
+
+## 6. License and prior art
+
+MIT. No AGPL, CC BY-NC, or unlicensed code/templates/assets are included. See `ATTRIBUTIONS.md` and `docs/open-source-policy.md`.

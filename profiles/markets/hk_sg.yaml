@@ -1,0 +1,21 @@
+schema_version: "1.0"
+id: hk_sg
+label: "Hong Kong / Singapore"
+status: experimental
+language: en
+locale: en-HK
+page: { size: a4, default_max_pages: 2 }
+photo_policy: forbidden
+personal_fields:
+  allowed: [full_name, email, phone, location, links]
+  optional: [work_authorization]
+  forbidden: [photo, date_of_birth, gender, marital_status, id_number]
+section_order:
+  student: [education, experience, projects, skills, awards]
+  experienced: [summary, experience, education, skills, awards]
+signals:
+  prioritize: [bilingual_ability, regional_experience, scope]
+  core: [core_skills, internship, projects]
+notes:
+  - "Experimental profile. Validate before relying on it."
+  - "English-first, A4, no photo. Bilingual ability is a real signal, not a decoration."

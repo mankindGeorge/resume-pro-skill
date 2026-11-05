@@ -1,0 +1,22 @@
+schema_version: "1.0"
+id: cn_creative
+label: "中国设计 / 内容 / 创意行业"
+status: experimental
+language: zh
+locale: zh-CN
+page: { size: a4, default_max_pages: 2 }
+photo_policy: optional
+personal_fields:
+  allowed: [full_name, phone, email, links]
+  optional: [photo, city]
+  forbidden: [id_number, marital_status, salary_expectation]
+section_order:
+  campus: [projects, experience, skills, education, awards, open_source]
+  experienced: [summary, experience, projects, skills, education, awards]
+signals:
+  prioritize: [portfolio, projects, craft, visual_identity]
+  core: [projects, internship, core_skills]
+  demo_only_projects: reject
+notes:
+  - "Experimental profile. Validate before relying on it."
+  - "Portfolio link is part of the resume, not an optional extra."

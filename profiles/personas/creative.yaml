@@ -1,0 +1,25 @@
+schema_version: "1.0"
+id: creative
+label: "Designer / content / creative"
+status: experimental
+seniority: mid
+markets: [intl_en, cn_creative]
+page_budget:
+  intl_en: 1
+  cn_creative: 2
+minimum_facts:
+  education: 1
+  portfolio: 1
+  projects: 2
+  project_bullets: 2
+required_signals: [portfolio, craft, process, outcome]
+preferred: [case_studies, awards, open_source]
+question_ladders:
+  project: [brief, constraint, process, decision, craft_detail, outcome, link]
+  portfolio: [url, best_piece, role, result]
+prompt_rules:
+  - require_a_live_portfolio_link
+  - ask_for_decisions_not_tools
+  - reject_tool_lists_without_work
+notes:
+  - "The portfolio is part of the resume. A dead link is a blocker."

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Resume</title>
+<style>
+:root {
+  --font-body: Calibri, Arial, "Helvetica Neue", sans-serif;
+  --size-body: 10.5pt;
+  --line-height: 1.34;
+  --ink: #1a1a1a;
+  --muted: #444;
+}
+
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+@page { size: A4; margin: 18mm; }
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--size-body);
+  line-height: var(--line-height);
+  color: var(--ink);
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.header { text-align: center; margin: 0 0 10pt; }
+.header h1 { font-size: 21pt; line-height: 1.14; font-weight: 700; letter-spacing: 0.05em; margin: 0 0 3pt; }
+.contact, .links { font-size: 9.6pt; color: var(--muted); margin: 1pt 0; }
+a { color: inherit; text-decoration: none; }
+
+.section { margin-top: 10pt; }
+.section h2 {
+  font-size: 11pt;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  border-bottom: 1pt solid #111;
+  padding-bottom: 2pt;
+  margin: 0 0 4pt;
+}
+
+.entry { margin: 0 0 7pt; break-inside: avoid; }
+.entry-head { display: flex; justify-content: space-between; align-items: baseline; gap: 10pt; }
+.entry-title { font-weight: 700; }
+.entry-meta { font-size: 9.5pt; color: var(--muted); white-space: nowrap; }
+.entry-sub { font-size: 9.7pt; color: var(--muted); margin-top: 1pt; }
+
+ul { margin: 2pt 0 0 15pt; padding: 0; }
+li { margin: 1pt 0; }
+.simple-list { margin: 2pt 0 0 15pt; }
+.skill-row { display: flex; gap: 6pt; margin: 2pt 0; }
+.skill-label { font-weight: 700; min-width: 110pt; }
+.job-intent { font-weight: 600; margin: 0; }
+
+
+
+/* Optional portrait: the slot collapses completely when empty. */
+.header { position: relative; }
+.photo-slot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 25mm;
+  height: 35mm;
+  overflow: hidden;
+}
+.photo-slot:empty { display: none; }
+.photo-slot img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 1.5mm;
+}
+body[data-photo="true"] .header { padding-right: 30mm; min-height: 37mm; }
+
+@media screen {
+  html { background: #e9edf2; }
+  body {
+    width: 210mm;
+    min-height: 297mm;
+    margin: 12mm auto;
+    padding: 18mm;
+    background: #ffffff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.12);
+  }
+}
+
+@media print {
+  html, body {
+    width: auto;
+    min-height: auto;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    box-shadow: none;
+  }
+  .section { break-inside: avoid; }
+}
+
+</style>
+<style>
+.draft-banner{position:fixed;top:0;left:0;right:0;background:#b00020;color:#fff;text-align:center;
+font:600 10pt Arial,sans-serif;padding:4pt;z-index:9999;letter-spacing:.04em}
+body[data-draft="true"]{padding-top:24pt}
+@media print{.draft-banner{position:fixed;top:0;left:0;right:0}.edit-toolbar{display:none}body.editable{padding-top:0}}
+.edit-toolbar{position:fixed;top:0;left:0;right:0;background:#111;color:#fff;padding:5pt 8pt;
+font:10pt Arial,sans-serif;display:flex;gap:8pt;align-items:center;z-index:9999}
+.edit-toolbar button{font:10pt Arial,sans-serif;padding:2pt 6pt;cursor:pointer}
+.edit-note{font-size:9pt;color:#ddd;margin-left:auto}
+body.editable{padding-top:34pt}
+</style></head>
+<body>
+<header class="header">
+<h1 data-slot="identity.name">Chen Wei</h1>
+<div class="contact" data-slot="identity.contact">chen.wei@example.com · +86 139 0000 0000 · Shanghai · CN</div>
+<div class="links" data-slot="identity.links"><a href="https://www.linkedin.com/in/example-chenwei" rel="noopener">LinkedIn</a></div>
+<div class="photo-slot" data-slot="identity.photo"></div>
+</header>
+
+
+
+
+<section class="section" data-section="summary"><h2>Executive Summary</h2><div data-slot="section.summary"><p>Backend engineer with 6 years building payment and order systems, focused on latency, reliability, and migration safety.</p></div></section><section class="section" data-section="experience"><h2>Experience</h2><div data-slot="section.experience"><div class="entry"><div class="entry-head"><span class="entry-title">Example Payments — Senior Backend Engineer</span><span class="entry-meta">2022-04 – Present</span></div><ul><li>Led the ledger migration from a monolith to a partitioned service for 4M daily transactions, cutting p99 write latency from 820ms to 240ms.</li><li>Cut on-call pages by 45% by adding idempotency checks and a replay tool for the top three failure modes.</li><li>Defined the dual-write and reconciliation plan that let the migration ship without a freeze window.</li></ul></div><div class="entry"><div class="entry-head"><span class="entry-title">Example Commerce — Backend Engineer</span><span class="entry-meta">2019-07 – 2022-03</span></div><ul><li>Rebuilt the order-state machine to make refunds idempotent, reducing duplicate refund tickets by 70%.</li><li>Introduced a cache-aside layer for product reads, lowering database QPS by 35% during peak sales.</li><li>Introduced contract tests for the order API, cutting integration regressions by 60%.</li></ul></div></div></section><section class="section" data-section="skills"><h2>Leadership &amp; Skills</h2><div data-slot="section.skills"><div class="skill-row"><span class="skill-label">Backend</span><span class="skill-values">Go, Java, PostgreSQL, Kafka, Kubernetes, Redis, Docker, gRPC</span></div></div></section><section class="section" data-section="education"><h2>Education</h2><div data-slot="section.education"><div class="entry"><div class="entry-head"><span class="entry-title">Example University</span><span class="entry-meta">2016-09 – 2019-06</span></div><div class="entry-sub">M.Eng. · Software Engineering</div></div></div></section></body>
+</html>

@@ -1,0 +1,178 @@
+schema_version: "1.0"
+status: ready
+updated_at: "2026-11-05T10:00:00Z"
+identity:
+  full_name: "Zhao Lin"
+  email: "zhaolin@example.com"
+  phone: "+86 137 0000 0000"
+  location:
+    city: "Wuhan"
+    country: "CN"
+  links:
+    - label: "GitHub"
+      url: "https://github.com/example-zhaolin"
+      kind: github
+  locale: zh
+  summary:
+    zh: "计算机专业应届生，做过两个从零到一的项目，负责检索与后端实现，习惯先测再改。"
+  summary_evidence: [ev_summary]
+
+education:
+  - id: edu_001
+    school: "Example University"
+    degree:
+      zh: "工学学士"
+      en: "B.Eng."
+    major:
+      zh: "软件工程"
+      en: "Software Engineering"
+    start: "2023-09"
+    end: "2027-06"
+    gpa:
+      value: 3.6
+      scale: 4.0
+    coursework:
+      zh: ["数据结构", "操作系统", "计算机网络", "数据库系统"]
+      en: ["Data Structures", "Operating Systems", "Computer Networks", "Database Systems"]
+    evidence: [ev_edu]
+
+projects:
+  - id: proj_001
+    name: "Course QA with RAG"
+    role:
+      zh: "检索负责人"
+      en: "Retrieval lead"
+    context: course
+    start: "2025-09"
+    end: "2026-03"
+    tech: ["Python", "BM25", "FAISS", "FastAPI"]
+    own_contribution:
+      zh: "负责检索链路：设计分块策略、接入 BM25 混合检索，并搭了 120 条人工标注的回归集。"
+      en: "Owned retrieval: designed chunking, added hybrid BM25 retrieval, and built a 120-question regression set."
+    optimizations:
+      zh: ["把固定长度分块改成按标题层级分块，减少上下文断裂。", "用回归集调 BM25 与向量检索的权重。"]
+      en: ["Replaced fixed-size chunking with heading-aware chunking.", "Tuned BM25 and vector weights against the regression set."]
+    outcome:
+      zh: "Recall@5 从 62% 提升到 81%。"
+      en: "Improved Recall@5 from 62% to 81%."
+    bullets:
+      - id: bul_proj_001_1
+        text:
+          zh: "负责检索链路，设计标题感知分块并接入 BM25 混合检索。"
+          en: "Owned retrieval, designed heading-aware chunking, and added hybrid BM25 retrieval."
+        evidence: [ev_proj1]
+        skill_ids: [skl_ai]
+      - id: bul_proj_001_2
+        text:
+          zh: "在 120 条人工标注问题上把 Recall@5 从 62% 提升到 81%。"
+          en: "Raised Recall@5 from 62% to 81% on 120 human-labeled questions."
+        evidence: [ev_proj1]
+        skill_ids: [skl_ai]
+    evidence: [ev_proj1]
+  - id: proj_002
+    name: "Campus Second-hand Marketplace"
+    role:
+      zh: "后端开发"
+      en: "Backend developer"
+    context: personal
+    start: "2025-03"
+    end: "2025-08"
+    tech: ["Java", "Spring Boot", "MySQL", "Redis"]
+    own_contribution:
+      zh: "负责商品搜索和订单接口，先做压测再决定加缓存的位置。"
+      en: "Owned product search and order APIs; profiled before deciding where to cache."
+    optimizations:
+      zh: ["对高频商品详情加 cache-aside，缓存击穿时用互斥锁回源。"]
+      en: ["Added cache-aside for hot product pages, with a mutex on cache misses."]
+    outcome:
+      zh: "压测下商品详情接口 P95 从 420ms 降到 160ms。"
+      en: "Cut product-detail P95 from 420ms to 160ms under load test."
+    bullets:
+      - id: bul_proj_002_1
+        text:
+          zh: "为高频商品详情加 cache-aside，并用互斥锁处理缓存击穿。"
+          en: "Added cache-aside for hot product pages and a mutex for cache misses."
+        evidence: [ev_proj2]
+        skill_ids: [skl_backend]
+      - id: bul_proj_002_2
+        text:
+          zh: "压测下把商品详情接口 P95 从 420ms 降到 160ms。"
+          en: "Cut product-detail P95 from 420ms to 160ms under load test."
+        evidence: [ev_proj2]
+        skill_ids: [skl_backend]
+    evidence: [ev_proj2]
+
+skills:
+  - id: skl_backend
+    name:
+      zh: "后端"
+      en: "Backend"
+    kind: language
+    items:
+      - name: "Java"
+        level: intermediate
+      - name: "Spring Boot"
+        level: intermediate
+      - name: "MySQL"
+        level: intermediate
+      - name: "Redis"
+        level: intermediate
+  - id: skl_ai
+    name:
+      zh: "AI / 检索"
+      en: "AI / Retrieval"
+    kind: ai_ml
+    items:
+      - name: "Python"
+        level: intermediate
+      - name: "RAG"
+        level: intermediate
+      - name: "FAISS"
+        level: intermediate
+  - id: skl_cs
+    name:
+      zh: "计算机基础"
+      en: "CS Fundamentals"
+    kind: fundamentals
+    items:
+      - name: "Operating Systems"
+        level: intermediate
+      - name: "Computer Networks"
+        level: intermediate
+      - name: "Data Structures"
+        level: intermediate
+      - name: "Algorithms"
+        level: intermediate
+      - name: "Databases"
+        level: intermediate
+
+evidence:
+  ev_summary:
+    id: ev_summary
+    claim: "The candidate has two self-directed projects and no internship."
+    status: user_asserted
+    source: user_statement
+    captured_at: "2026-11-05"
+  ev_edu:
+    id: ev_edu
+    claim: "Software Engineering student at Example University, expected 2027."
+    status: verified
+    source: document
+    locator: "transcript.pdf#page=1"
+    captured_at: "2026-11-05"
+  ev_proj1:
+    id: ev_proj1
+    claim: "Course QA project: owned retrieval and evaluation; Recall@5 62% to 81%."
+    status: user_asserted
+    source: repo
+    locator: "https://github.com/example/course-qa"
+    captured_at: "2026-11-05"
+  ev_proj2:
+    id: ev_proj2
+    claim: "Campus marketplace: owned search and order APIs; P95 420ms to 160ms."
+    status: user_asserted
+    source: repo
+    locator: "https://github.com/example/campus-market"
+    captured_at: "2026-11-05"
+
+needs_confirmation: []

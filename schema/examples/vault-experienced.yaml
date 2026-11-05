@@ -1,0 +1,176 @@
+schema_version: "1.0"
+status: ready
+updated_at: "2026-11-05T10:00:00Z"
+identity:
+  full_name: "Chen Wei"
+  email: "chen.wei@example.com"
+  phone: "+86 139 0000 0000"
+  location:
+    city: "Shanghai"
+    country: "CN"
+  links:
+    - label: "LinkedIn"
+      url: "https://www.linkedin.com/in/example-chenwei"
+      kind: linkedin
+  locale: en
+  summary:
+    en: "Backend engineer with 6 years building payment and order systems, focused on latency, reliability, and migration safety."
+    zh: "6 年后端经验，长期做支付与订单系统，关注延迟、稳定性和迁移安全。"
+  summary_evidence: [ev_summary]
+
+education:
+  - id: edu_001
+    school: "Example University"
+    degree:
+      en: "M.Eng."
+      zh: "工程硕士"
+    major:
+      en: "Software Engineering"
+      zh: "软件工程"
+    start: "2016-09"
+    end: "2019-06"
+    evidence: [ev_edu]
+
+experience:
+  - id: exp_001
+    company: "Example Payments"
+    title:
+      en: "Senior Backend Engineer"
+      zh: "高级后端工程师"
+    employment_type: full_time
+    location: "Shanghai"
+    start: "2022-04"
+    end: present
+    is_current: true
+    team_size: 9
+    tech: ["Go", "Kafka", "PostgreSQL", "Kubernetes"]
+    bullets:
+      - id: bul_exp_001
+        text:
+          en: "Led the ledger migration from a monolith to a partitioned service for 4M daily transactions, cutting p99 write latency from 820ms to 240ms."
+          zh: "主导账务系统从单体迁移到分库服务，覆盖日均 400 万笔交易，将 p99 写入延迟从 820ms 降至 240ms。"
+        evidence: [ev_ledger]
+        skill_ids: [skl_backend]
+      - id: bul_exp_002
+        text:
+          en: "Defined the dual-write and reconciliation plan that let the migration ship without a freeze window."
+          zh: "制定双写与对账方案，使迁移无需停机窗口即可上线。"
+        evidence: [ev_ledger]
+        skill_ids: [skl_backend]
+      - id: bul_exp_003
+        text:
+          en: "Cut on-call pages by 45% by adding idempotency checks and a replay tool for the top three failure modes."
+          zh: "针对前三类故障补充幂等校验与重放工具，使 on-call 告警减少 45%。"
+        evidence: [ev_oncall]
+        skill_ids: [skl_backend]
+    evidence: [ev_ledger, ev_oncall]
+  - id: exp_002
+    company: "Example Commerce"
+    title:
+      en: "Backend Engineer"
+      zh: "后端工程师"
+    employment_type: full_time
+    location: "Hangzhou"
+    start: "2019-07"
+    end: "2022-03"
+    tech: ["Java", "MySQL", "Redis"]
+    bullets:
+      - id: bul_exp_004
+        text:
+          en: "Rebuilt the order-state machine to make refunds idempotent, reducing duplicate refund tickets by 70%."
+          zh: "重构订单状态机并实现幂等退款，使重复退款工单减少 70%。"
+        evidence: [ev_orders]
+        skill_ids: [skl_backend]
+      - id: bul_exp_005
+        text:
+          en: "Introduced a cache-aside layer for product reads, lowering database QPS by 35% during peak sales."
+          zh: "为商品读取引入 cache-aside 层，使大促期间数据库 QPS 降低 35%。"
+        evidence: [ev_cache]
+        skill_ids: [skl_backend]
+      - id: bul_exp_006
+        text:
+          en: "Introduced contract tests for the order API, cutting integration regressions by 60%."
+          zh: "为订单 API 引入契约测试，使集成回归问题减少 60%。"
+        evidence: [ev_contract]
+        skill_ids: [skl_backend]
+    evidence: [ev_orders, ev_cache, ev_contract]
+
+skills:
+  - id: skl_backend
+    name:
+      en: "Backend"
+      zh: "后端"
+    kind: language
+    items:
+      - name: "Go"
+        level: advanced
+        evidence: [ev_ledger]
+      - name: "Java"
+        level: advanced
+        evidence: [ev_orders]
+      - name: "PostgreSQL"
+        level: advanced
+        evidence: [ev_ledger]
+      - name: "Kafka"
+        level: advanced
+        evidence: [ev_ledger]
+      - name: "Kubernetes"
+        level: intermediate
+        evidence: [ev_ledger]
+      - name: "Redis"
+        level: intermediate
+        evidence: [ev_cache]
+      - name: "Docker"
+        level: intermediate
+        evidence: [ev_ledger]
+      - name: "gRPC"
+        level: intermediate
+        evidence: [ev_ledger]
+
+evidence:
+  ev_summary:
+    id: ev_summary
+    claim: "Six years of backend experience across payments and commerce."
+    status: verified
+    source: document
+    locator: "resume-source.pdf"
+    captured_at: "2026-11-05"
+  ev_edu:
+    id: ev_edu
+    claim: "M.Eng. in Software Engineering, Example University, 2019."
+    status: verified
+    source: document
+    locator: "degree.pdf"
+    captured_at: "2026-11-05"
+  ev_ledger:
+    id: ev_ledger
+    claim: "Ledger migration covering 4M daily transactions; p99 write latency 820ms to 240ms."
+    status: verified
+    source: document
+    locator: "promotion-packet.pdf#page=3"
+    captured_at: "2026-11-05"
+  ev_oncall:
+    id: ev_oncall
+    claim: "On-call pages reduced by 45% after idempotency and replay work."
+    status: user_asserted
+    source: user_statement
+    captured_at: "2026-11-05"
+  ev_orders:
+    id: ev_orders
+    claim: "Refund idempotency work reduced duplicate refund tickets by 70%."
+    status: verified
+    source: document
+    locator: "performance-review-2021.pdf"
+    captured_at: "2026-11-05"
+  ev_cache:
+    id: ev_cache
+    claim: "Cache-aside layer lowered database QPS by 35% during peak sales."
+    status: user_asserted
+    source: user_statement
+    captured_at: "2026-11-05"
+  ev_contract:
+    id: ev_contract
+    claim: "Contract tests reduced integration regressions by 60%."
+    status: user_asserted
+    source: user_statement
+    captured_at: "2026-11-05"

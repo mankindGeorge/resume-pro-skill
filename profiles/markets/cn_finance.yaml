@@ -1,0 +1,22 @@
+schema_version: "1.0"
+id: cn_finance
+label: "中国金融 / 银行 / 券商"
+status: experimental
+language: zh
+locale: zh-CN
+page: { size: a4, default_max_pages: 1 }
+photo_policy: expected
+personal_fields:
+  allowed: [full_name, phone, email, photo]
+  optional: [date_of_birth, gender, political_status, city]
+  forbidden: [id_number, salary_expectation]
+section_order:
+  campus: [education, certificates, experience, projects, skills, awards]
+  experienced: [summary, experience, certificates, education, skills, awards]
+signals:
+  prioritize: [education, certificates, internship, attention_to_detail]
+  core: [core_skills, internship, projects]
+  cliche_opening: reject
+notes:
+  - "Experimental profile. Validate before relying on it."
+  - "Certificates and school pedigree carry more weight here than in internet companies."

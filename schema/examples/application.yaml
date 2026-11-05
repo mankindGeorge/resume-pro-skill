@@ -1,0 +1,62 @@
+schema_version: "1.0"
+slug: example-student-cn-internet
+created_at: "2026-11-05T10:10:00Z"
+vault_fingerprint: "0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
+target:
+  company: "Example Internet Co."
+  role: "后端开发工程师（校招）"
+  source: company_site
+market: cn_internet
+persona: student_with_internship
+template:
+  id: campus
+  variant: locked
+  source: library
+page_budget:
+  size: a4
+  target: 1
+  max: 2
+selection:
+  sections:
+    - id: education
+      enabled: true
+      order: 1
+    - id: skills
+      enabled: true
+      order: 2
+    - id: experience
+      enabled: true
+      order: 3
+    - id: projects
+      enabled: true
+      order: 4
+    - id: awards
+      enabled: false
+      order: 5
+  fact_ids: [edu_001, exp_001, proj_001, skl_backend, skl_ai, skl_cs]
+  bullet_ids:
+    - bul_exp_001
+    - bul_proj_001
+  summary:
+    zh: "计算机专业 2027 届，有 3 个月后端实习和 RAG 项目经验，关注接口性能与检索质量。"
+  summary_evidence: [ev_summary]
+  dropped:
+    - fact_id: bul_exp_002
+      reason: "Lower priority than the latency result; dropped to hold the one-page target."
+writing:
+  framework: result_first
+  consent: true
+  consent_at: "2026-11-05T10:05:00Z"
+  voice: first_person_implied
+  locale: zh
+output:
+  dir: ".resume/applications/example-student-cn-internet"
+  html: "resume.html"
+  editable_html: "resume-editable.html"
+  draft: false
+localization:
+  source_locale: zh
+  target_locale: zh
+  parity_status: not_run
+qa:
+  status: not_run

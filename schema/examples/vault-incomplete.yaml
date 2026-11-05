@@ -1,0 +1,25 @@
+schema_version: "1.0"
+status: collecting
+updated_at: "2026-11-05T10:00:00Z"
+identity:
+  full_name: "Wang Fang"
+  email: "wangfang@example.com"
+  locale: zh
+education:
+  - id: edu_001
+    school: "Example University"
+    start: "2024-09"
+    end: "2028-06"
+needs_confirmation:
+  - path: "projects"
+    reason: "No project has been provided. A resume cannot pass the gate without at least two projects or one strong project plus coursework evidence."
+    severity: blocker
+    question: "What is one thing you built, even for a course, where you changed or improved something yourself?"
+  - path: "experience"
+    reason: "No internship or work experience has been provided."
+    severity: warning
+    question: "Have you done any internship, part-time job, or unpaid lab work? If not, say so and we will use projects instead."
+  - path: "skills"
+    reason: "No skills have been confirmed."
+    severity: blocker
+    question: "Which programming languages and CS courses can you actually defend in an interview?"

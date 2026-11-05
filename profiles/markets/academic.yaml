@@ -1,0 +1,20 @@
+schema_version: "1.0"
+id: academic
+label: "Academic / Research CV"
+status: experimental
+language: en
+locale: en-US
+page: { size: a4, default_max_pages: 4 }
+photo_policy: forbidden
+personal_fields:
+  allowed: [full_name, email, location, links]
+  optional: []
+  forbidden: [photo, date_of_birth, gender, marital_status, id_number]
+section_order:
+  academic: [education, publications, experience, projects, awards, skills, languages]
+signals:
+  prioritize: [publications, research_experience, teaching, grants]
+  core: [projects, publications]
+notes:
+  - "Experimental profile. This is a CV, not a one-page resume; the product's one-page rules do not apply."
+  - "Out of MVP scope. Do not claim academic optimization until fixtures exist."

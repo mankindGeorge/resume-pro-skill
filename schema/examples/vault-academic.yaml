@@ -1,0 +1,199 @@
+schema_version: "1.0"
+status: ready
+updated_at: "2026-11-05T10:00:00Z"
+identity:
+  full_name: "Alex Chen"
+  email: "alex.chen@example.edu"
+  phone: "+1 555 010 2000"
+  location:
+    city: "Boston"
+    region: "MA"
+    country: "US"
+  links:
+    - label: "Google Scholar"
+      url: "https://scholar.google.com/citations?user=example"
+      kind: publication
+    - label: "GitHub"
+      url: "https://github.com/example-alex"
+      kind: github
+  locale: en
+  summary:
+    en: "Ph.D. candidate in machine learning, focused on retrieval evaluation and efficient inference. Four peer-reviewed papers and two open-source research tools."
+  summary_evidence: [ev_summary]
+
+education:
+  - id: edu_001
+    school: "Example University"
+    degree:
+      en: "Ph.D. in Computer Science"
+    major:
+      en: "Machine Learning"
+    start: "2021-09"
+    end: "2026-06"
+    gpa:
+      value: 3.9
+      scale: 4.0
+    coursework:
+      en: ["Information Retrieval", "Optimization", "Probabilistic Models"]
+    evidence: [ev_edu]
+  - id: edu_002
+    school: "Example Institute of Technology"
+    degree:
+      en: "B.S. in Computer Science"
+    major:
+      en: "Computer Science"
+    start: "2017-09"
+    end: "2021-06"
+    evidence: [ev_edu]
+
+experience:
+  - id: exp_001
+    company: "Example University"
+    title:
+      en: "Graduate Research Assistant"
+    employment_type: part_time
+    location: "Boston, MA"
+    start: "2021-09"
+    end: present
+    target_roles: ["research", "machine learning"]
+    tech: ["PyTorch", "FAISS"]
+    bullets:
+      - id: bul_exp_001
+        text:
+          en: "Built a retrieval evaluation harness used by three lab projects, reducing experiment turnaround from two days to four hours."
+        evidence: [ev_research]
+      - id: bul_exp_002
+        text:
+          en: "Designed a hybrid retrieval method that improved Recall@10 by 12 points on two public benchmarks."
+        evidence: [ev_paper]
+    evidence: [ev_research, ev_paper]
+
+publications:
+  - id: pub_001
+    title: "Hybrid Retrieval for Low-Resource Course QA"
+    authors: ["Alex Chen", "M. Rivera", "S. Patel"]
+    venue: "Example Conference on Information Retrieval"
+    date: "2025-06"
+    evidence: [ev_paper]
+  - id: pub_002
+    title: "Evaluating Retrieval Under Distribution Shift"
+    authors: ["Alex Chen", "L. Nguyen"]
+    venue: "Example Workshop on Evaluation"
+    date: "2024-11"
+    evidence: [ev_paper2]
+
+projects:
+  - id: proj_001
+    name: "Open Retrieval Eval"
+    role:
+      en: "Maintainer"
+    context: open_source
+    start: "2023-02"
+    end: present
+    target_roles: ["research", "open source"]
+    tech: ["Python", "pytest"]
+    own_contribution:
+      en: "Created the evaluation harness and maintained the public leaderboard."
+    optimizations:
+      en: ["Reduced benchmark runtime by 60% with batched inference."]
+    outcome:
+      en: "Used by 40+ external researchers."
+    bullets:
+      - id: bul_proj_001
+        text:
+          en: "Created an open evaluation harness used by 40+ researchers, with reproducible configs and a public leaderboard."
+        evidence: [ev_tool]
+    evidence: [ev_tool]
+
+awards:
+  - id: awd_001
+    title:
+      en: "Best Paper Award"
+    issuer: "Example Workshop on Evaluation"
+    date: "2024-11"
+    level: international
+    evidence: [ev_paper2]
+
+skills:
+  - id: skl_research
+    name:
+      en: "Research"
+    kind: ai_ml
+    items:
+      - name: "Information Retrieval"
+        level: advanced
+        evidence: [ev_paper]
+      - name: "Evaluation Design"
+        level: advanced
+        evidence: [ev_paper]
+      - name: "PyTorch"
+        level: advanced
+        evidence: [ev_research]
+      - name: "Python"
+        level: advanced
+        evidence: [ev_tool]
+
+languages:
+  - id: lang_001
+    name:
+      en: "English"
+    proficiency: fluent
+    evidence: [ev_summary]
+  - id: lang_002
+    name:
+      en: "Mandarin"
+    proficiency: native
+    evidence: [ev_summary]
+
+evidence:
+  ev_summary:
+    id: ev_summary
+    claim: "Ph.D. candidate with four papers and two research tools."
+    status: user_asserted
+    source: user_statement
+    captured_at: "2026-11-05"
+  ev_edu:
+    id: ev_edu
+    claim: "Ph.D. and B.S. records from the listed universities."
+    status: verified
+    source: document
+    locator: "transcript.pdf"
+    captured_at: "2026-11-05"
+  ev_research:
+    id: ev_research
+    claim: "Research assistantship and evaluation harness work."
+    status: verified
+    source: document
+    locator: "advisor-letter.pdf"
+    captured_at: "2026-11-05"
+  ev_paper:
+    id: ev_paper
+    claim: "Hybrid retrieval paper with a 12-point Recall@10 improvement."
+    status: verified
+    source: document
+    locator: "paper-2025.pdf"
+    captured_at: "2026-11-05"
+  ev_paper2:
+    id: ev_paper2
+    claim: "Evaluation-under-shift paper and best paper award."
+    status: verified
+    source: document
+    locator: "paper-2024.pdf"
+    captured_at: "2026-11-05"
+  ev_tool:
+    id: ev_tool
+    claim: "Open Retrieval Eval used by 40+ researchers."
+    status: user_asserted
+    source: repo
+    locator: "https://github.com/example/open-retrieval-eval"
+    captured_at: "2026-11-05"
+
+preferences:
+  application_mode: targeted
+  preferred_role: "Research Scientist"
+  target_roles: ["Research Scientist"]
+  target_markets: [academic]
+  locations: ["Boston"]
+  remote: negotiable
+
+needs_confirmation: []

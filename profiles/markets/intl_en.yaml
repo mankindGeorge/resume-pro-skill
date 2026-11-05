@@ -1,0 +1,50 @@
+schema_version: "1.0"
+id: intl_en
+label: "International / English-language market"
+status: stable
+language: en
+locale: en-US
+
+page:
+  size: a4
+  default_max_pages: 1
+  senior_max_pages: 2
+  senior_threshold_years: 10
+
+photo_policy: forbidden
+
+personal_fields:
+  allowed: [full_name, email, phone, location, links]
+  optional: []
+  forbidden: [photo, date_of_birth, gender, marital_status, nationality, political_status, id_number]
+
+section_order:
+  student: [education, experience, projects, skills, awards, certificates]
+  experienced: [summary, experience, projects, skills, education, awards, certificates]
+  senior: [summary, experience, skills, education, awards]
+
+dates:
+  format: "MMM YYYY"
+  present: "Present"
+
+bullets:
+  default_framework: result_first
+  target_per_role: 3
+  max_per_role: 5
+  metrics: quantify_when_verified
+  voice: first_person_implied
+  forbid: [duties_only, buzzwords, unsupported_metrics]
+
+ats:
+  single_column_required: true
+  standard_headings: [Summary, Experience, Education, Skills, Projects, Awards, Certifications]
+  avoid: [tables, text_in_images, headers_footers, columns]
+
+signals:
+  prioritize: [scope, ownership, measurable_outcome]
+  tolerate: [no_photo, one_page, no_summary]
+  reject: [photo, age, marital_status, id_number]
+
+notes:
+  - "One page is the default for under 10 years of experience; two pages are acceptable for senior and management roles."
+  - "No photo, date of birth, gender, marital status, nationality, or ID number on the resume."

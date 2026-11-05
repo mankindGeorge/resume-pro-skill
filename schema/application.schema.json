@@ -1,0 +1,440 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://resume-pro.dev/schema/application.schema.json",
+  "title": "Resume Application",
+  "description": "A per-job selection over the career vault. It never owns facts; it selects fact ids, chooses a template, records the writing framework consent, and points at generated artifacts.",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "slug",
+    "vault_fingerprint",
+    "target",
+    "market",
+    "persona",
+    "template",
+    "page_budget",
+    "selection",
+    "writing",
+    "output"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,63}$",
+      "description": "Directory name under applications/. Stable for the life of the application."
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "vault_fingerprint": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$",
+      "description": "SHA-256 of the vault file used to build this application. Detects stale outputs."
+    },
+    "target": {
+      "type": "object",
+      "required": [
+        "role"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "company": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string",
+          "minLength": 1
+        },
+        "job_id": {
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "referral",
+            "job_board",
+            "company_site",
+            "recruiter",
+            "other"
+          ]
+        },
+        "url": {
+          "type": "string",
+          "format": "uri"
+        },
+        "jd_path": {
+          "type": "string",
+          "description": "Local path to the saved JD. No live scraping."
+        }
+      }
+    },
+    "market": {
+      "enum": [
+        "intl_en",
+        "cn_internet",
+        "cn_soe",
+        "cn_finance",
+        "cn_creative",
+        "hk_sg",
+        "academic"
+      ]
+    },
+    "persona": {
+      "enum": [
+        "student_no_projects",
+        "student_with_projects",
+        "student_with_internship",
+        "new_grad",
+        "career_switcher",
+        "experienced",
+        "senior_manager",
+        "academic",
+        "creative"
+      ]
+    },
+    "template": {
+      "type": "object",
+      "required": [
+        "id",
+        "variant"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{1,63}$"
+        },
+        "version": {
+          "type": "string"
+        },
+        "variant": {
+          "enum": [
+            "locked",
+            "editable"
+          ]
+        },
+        "fingerprint": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "source": {
+          "enum": [
+            "library",
+            "user_learned"
+          ],
+          "default": "library"
+        }
+      }
+    },
+    "page_budget": {
+      "type": "object",
+      "required": [
+        "size",
+        "target",
+        "max"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "size": {
+          "enum": [
+            "letter",
+            "a4"
+          ]
+        },
+        "target": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        },
+        "max": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 4
+        }
+      }
+    },
+    "selection": {
+      "type": "object",
+      "required": [
+        "sections",
+        "fact_ids"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "sections": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "enabled",
+              "order"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "enum": [
+                  "summary",
+                  "education",
+                  "experience",
+                  "projects",
+                  "skills",
+                  "awards",
+                  "certificates",
+                  "languages",
+                  "publications",
+                  "open_source"
+                ]
+              },
+              "enabled": {
+                "type": "boolean"
+              },
+              "order": {
+                "type": "integer",
+                "minimum": 1
+              }
+            }
+          }
+        },
+        "fact_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^(edu|exp|proj|skl|awd|cert|lang|pub)_[a-z0-9_]{1,64}$"
+          }
+        },
+        "bullet_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^bul_[a-z0-9_]{1,64}$"
+          }
+        },
+        "summary": {
+          "$ref": "#/$defs/localizedText"
+        },
+        "summary_evidence": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^ev_[a-z0-9_]{1,64}$"
+          }
+        },
+        "dropped": {
+          "type": "array",
+          "description": "Facts or bullets considered but not selected. The reason makes every omission reviewable.",
+          "items": {
+            "type": "object",
+            "required": [
+              "fact_id",
+              "reason"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "fact_id": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "required": [
+              "summary"
+            ]
+          },
+          "then": {
+            "required": [
+              "summary_evidence"
+            ],
+            "properties": {
+              "summary_evidence": {
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "writing": {
+      "type": "object",
+      "required": [
+        "framework",
+        "consent"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "framework": {
+          "enum": [
+            "star",
+            "xyz",
+            "fab",
+            "car",
+            "result_first",
+            "user_voice"
+          ]
+        },
+        "consent": {
+          "const": true,
+          "description": "A framework is never applied silently. Build fails when consent is absent."
+        },
+        "consent_at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "voice": {
+          "enum": [
+            "first_person_implied",
+            "third_person",
+            "neutral"
+          ],
+          "default": "first_person_implied"
+        },
+        "locale": {
+          "enum": [
+            "en",
+            "zh"
+          ]
+        }
+      }
+    },
+    "output": {
+      "type": "object",
+      "required": [
+        "dir",
+        "html",
+        "draft"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "dir": {
+          "type": "string"
+        },
+        "html": {
+          "type": "string"
+        },
+        "editable_html": {
+          "type": "string"
+        },
+        "draft": {
+          "type": "boolean",
+          "default": false,
+          "description": "Draft output must be visibly labeled and is never a deliverable."
+        }
+      }
+    },
+    "localization": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "source_locale": {
+          "enum": [
+            "en",
+            "zh"
+          ]
+        },
+        "target_locale": {
+          "enum": [
+            "en",
+            "zh"
+          ]
+        },
+        "parity_status": {
+          "enum": [
+            "not_run",
+            "pass",
+            "fail"
+          ],
+          "default": "not_run"
+        },
+        "parity_report": {
+          "type": "string"
+        },
+        "source_application": {
+          "type": "string"
+        }
+      }
+    },
+    "qa": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "status": {
+          "enum": [
+            "not_run",
+            "pass",
+            "warn",
+            "fail"
+          ],
+          "default": "not_run"
+        },
+        "report": {
+          "type": "string"
+        },
+        "checked_at": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "overrides": {
+      "type": "array",
+      "description": "Explicit, recorded exceptions. Silent overrides are forbidden.",
+      "items": {
+        "type": "object",
+        "required": [
+          "rule",
+          "reason",
+          "at"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "rule": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "scope": {
+            "enum": [
+              "template",
+              "lint",
+              "market",
+              "page_count"
+            ],
+            "default": "lint"
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "localizedText": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "en": {
+          "type": "string"
+        },
+        "zh": {
+          "type": "string"
+        }
+      },
+      "minProperties": 1
+    }
+  }
+}

@@ -1,0 +1,22 @@
+schema_version: "1.0"
+id: cn_soe
+label: "中国国企 / 央企"
+status: experimental
+language: zh
+locale: zh-CN
+page: { size: a4, default_max_pages: 2 }
+photo_policy: optional
+personal_fields:
+  allowed: [full_name, phone, email]
+  optional: [photo, political_status, date_of_birth, city]
+  forbidden: [id_number, salary_expectation]
+section_order:
+  campus: [education, skills, experience, projects, awards, certificates]
+  experienced: [summary, experience, education, skills, awards, certificates]
+signals:
+  prioritize: [education, stability, certificates, awards]
+  core: [core_skills, internship, projects]
+  cliche_opening: reject
+notes:
+  - "Experimental profile. Validate before relying on it."
+  - "Emphasizes education, certificates, stability, and formal awards."

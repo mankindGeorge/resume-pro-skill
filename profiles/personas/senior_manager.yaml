@@ -1,0 +1,26 @@
+schema_version: "1.0"
+id: senior_manager
+label: "Senior professional / manager (10+ years)"
+status: experimental
+seniority: senior
+markets: [intl_en, cn_internet]
+page_budget:
+  intl_en: 2
+  cn_internet: 3
+minimum_facts:
+  education: 1
+  roles: 2
+  bullets_per_role: 3
+  leadership_scope: 1
+  skills: 8
+required_signals: [scope, leadership, business_outcome]
+preferred: [team_size, budget, revenue, org_scale, board_or_strategy]
+question_ladders:
+  role: [company, title, dates, team_size, budget_or_scale, decision, business_result]
+  leadership: [hiring, mentoring, org_design, cross_functional_influence]
+prompt_rules:
+  - prefer_business_outcomes_over_technical_duties
+  - quantify_scope
+  - never_invent_headcount_or_revenue
+notes:
+  - "Two pages are earned by substance, not by stretching. If content does not justify page 2, return to one page."

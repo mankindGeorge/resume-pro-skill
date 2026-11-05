@@ -1,0 +1,83 @@
+id: ats-classic
+name: "ATS Classic"
+version: "0.1.0"
+language: en
+status: experimental
+description: "Single-column, standard headings, no graphics. The default for international applications and any parseability-first case."
+markets: [intl_en]
+personas: [experienced, new_grad, student_with_internship]
+page:
+  sizes: [a4]
+  margins_mm:
+    top: 18
+    right: 18
+    bottom: 18
+    left: 18
+  target_pages:
+    min: 1
+    max: 2
+  columns: single
+slots:
+  required:
+    - name: identity.name
+      selector: "[data-slot='identity.name']"
+      kind: text
+    - name: identity.contact
+      selector: "[data-slot='identity.contact']"
+      kind: text
+    - name: section.summary
+      selector: "[data-slot='section.summary']"
+      kind: rich_text
+    - name: section.education
+      selector: "[data-slot='section.education']"
+      kind: section
+    - name: section.experience
+      selector: "[data-slot='section.experience']"
+      kind: section
+    - name: section.skills
+      selector: "[data-slot='section.skills']"
+      kind: section
+  optional:
+    - name: section.projects
+      selector: "[data-slot='section.projects']"
+      kind: section
+    - name: section.awards
+      selector: "[data-slot='section.awards']"
+      kind: section
+    - name: experience.item
+      selector: "[data-slot='experience.item']"
+      kind: list
+      repeatable: true
+    - name: experience.item.bullet
+      selector: "[data-slot='experience.item.bullet']"
+      kind: list
+      repeatable: true
+budgets:
+  summary_chars:
+    en: 240
+    zh: 120
+  bullets_per_role: 5
+  bullets_per_project: 4
+  max_roles: 5
+  max_projects: 4
+  max_skills: 16
+files:
+  html: template.html
+  css: styles.css
+  preview: preview.html
+  print_css: print.css
+print:
+  safe_margin_mm: 12
+  bleed_mm: 0
+  color_mode: grayscale_safe
+ats:
+  single_column: true
+  text_selectable: true
+  tables_allowed: false
+  standard_headings: [Summary, Experience, Education, Skills, Projects, Awards]
+editable_variant: false
+fingerprint: "fedcba9876543210fedcba9876543210fedcba9876543210fedcba9876543210"
+created_at: "2026-11-05T10:00:00Z"
+provenance:
+  kind: original
+  note: "Original layout; informed by public ATS guidance, not copied from another template."

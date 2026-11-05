@@ -1,0 +1,28 @@
+schema_version: "1.0"
+id: experienced
+label: "Experienced professional (3–9 years)"
+status: stable
+seniority: mid_senior
+markets: [intl_en, cn_internet]
+page_budget:
+  intl_en: 1
+  cn_internet: 2
+minimum_facts:
+  education: 1
+  roles: 2
+  bullets_per_role: 3
+  skills: 8
+required_signals: [scope, ownership, measurable_outcome]
+preferred: [leadership_evidence, selected_projects, certifications, promotion_history]
+question_ladders:
+  role: [company, title, dates, team_size, scope, ownership, decision, result, number]
+  skills: [languages, systems, domain, leadership, tools]
+  education: [school, degree, major, dates]
+prompt_rules:
+  - ask_one_question_at_a_time
+  - require_a_number_or_verifiable_outcome
+  - prefer_decisions_over_duties
+  - never_invent
+notes:
+  - "Two roles with three bullets each. Early unrelated roles compress to one line."
+  - "The strongest result goes first; duties never lead."

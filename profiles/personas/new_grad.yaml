@@ -1,0 +1,32 @@
+schema_version: "1.0"
+id: new_grad
+label: "New graduate"
+status: stable
+seniority: entry
+markets: [intl_en, cn_internet]
+page_budget:
+  intl_en: 1
+  cn_internet: 2
+minimum_facts:
+  education: 1
+  graduation_date: 1
+  internships: 1
+  internship_bullets: 2
+  projects: 1
+  project_bullets: 2
+  skills: 6
+required_signals: [education, internship_or_project, core_skills]
+preferred: [gpa_if_strong, awards, blog_or_open_source, cs_fundamentals]
+question_ladders:
+  education: [school, degree, major, graduation_date, gpa_if_strong, coursework]
+  experience: [company, role, dates, ownership, result, number]
+  project: [name, context, problem, own_contribution, optimization, result]
+  skills: [languages, frameworks, cs_fundamentals, tools]
+prompt_rules:
+  - ask_one_question_at_a_time
+  - require_a_number_or_verifiable_outcome
+  - never_invent
+  - accept_dont_know
+notes:
+  - "Same bar as a student with an internship, plus a confirmed graduation date."
+  - "One substantial project can substitute for a second internship."

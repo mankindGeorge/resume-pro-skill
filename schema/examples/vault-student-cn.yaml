@@ -1,0 +1,200 @@
+schema_version: "1.0"
+status: ready
+updated_at: "2026-11-05T10:00:00Z"
+identity:
+  full_name: "李明"
+  email: "liming@example.com"
+  phone: "+86 138 0000 0000"
+  location:
+    city: "杭州"
+    country: "中国"
+  links:
+    - label: "GitHub"
+      url: "https://github.com/example-liming"
+      kind: github
+  locale: zh
+  summary:
+    zh: "计算机专业应届生，有 3 个月后端实习经历，做过检索增强课程问答项目，关注接口性能与检索质量。"
+  summary_evidence: [ev_summary]
+
+education:
+  - id: edu_001
+    school: "示例大学"
+    degree:
+      zh: "工学学士"
+    major:
+      zh: "计算机科学与技术"
+    start: "2023-09"
+    end: "2027-06"
+    gpa:
+      value: 3.7
+      scale: 4.0
+      rank: "前 15%"
+    coursework:
+      zh: ["操作系统", "计算机网络", "数据结构与算法", "数据库系统"]
+    evidence: [ev_edu]
+
+experience:
+  - id: exp_001
+    company: "示例云科技"
+    title:
+      zh: "后端开发实习生"
+    employment_type: internship
+    location: "杭州"
+    start: "2026-06"
+    end: "2026-09"
+    target_roles: ["后端", "平台"]
+    tech: ["Java", "Spring Boot", "MySQL", "Redis"]
+    bullets:
+      - id: bul_exp_001
+        text:
+          zh: "将订单查询接口的 P95 延迟从 480ms 降至 190ms，覆盖日均 30 万次请求。"
+        evidence: [ev_intern_perf]
+        skill_ids: [skl_backend]
+      - id: bul_exp_002
+        text:
+          zh: "为运营后台补上批量导出能力，减少每周约 6 小时的人工整理。"
+        evidence: [ev_intern_export]
+        skill_ids: [skl_backend]
+    evidence: [ev_intern]
+
+projects:
+  - id: proj_001
+    name: "课程问答检索系统"
+    role:
+      zh: "检索与评估负责人"
+    context: course
+    start: "2025-09"
+    end: "2026-03"
+    target_roles: ["后端", "AI"]
+    tech: ["Python", "BM25", "FAISS", "FastAPI"]
+    own_contribution:
+      zh: "负责检索链路和评估：设计分块策略，接入 BM25 混合检索，搭了 120 条人工标注问题的回归集。"
+    optimizations:
+      zh: ["把固定长度分块改成按标题层级分块，减少上下文断裂。", "用回归集调整 BM25 与向量检索的权重。"]
+    outcome:
+      zh: "在 120 条回归问题上把 Recall@5 从 62% 提升到 81%。"
+    bullets:
+      - id: bul_proj_001
+        text:
+          zh: "在 120 条人工标注问题上把 Recall@5 从 62% 提升到 81%，主要来自标题感知分块和 BM25 混合检索。"
+        evidence: [ev_proj_eval]
+        skill_ids: [skl_ai]
+      - id: bul_proj_002
+        text:
+          zh: "把固定长度分块改成按标题层级分块，并用回归集调整混合检索权重。"
+        evidence: [ev_proj_eval]
+        skill_ids: [skl_ai]
+    evidence: [ev_proj]
+
+skills:
+  - id: skl_backend
+    name:
+      zh: "后端"
+    kind: language
+    items:
+      - name: "Java"
+        level: intermediate
+        evidence: [ev_intern]
+      - name: "Spring Boot"
+        level: intermediate
+        evidence: [ev_intern]
+      - name: "MySQL"
+        level: intermediate
+        evidence: [ev_intern]
+      - name: "Redis"
+        level: intermediate
+        evidence: [ev_intern]
+  - id: skl_ai
+    name:
+      zh: "AI / 检索"
+    kind: ai_ml
+    items:
+      - name: "RAG"
+        level: intermediate
+        evidence: [ev_proj]
+      - name: "FAISS"
+        level: intermediate
+        evidence: [ev_proj]
+      - name: "BM25"
+        level: intermediate
+        evidence: [ev_proj]
+  - id: skl_cs
+    name:
+      zh: "计算机基础"
+    kind: fundamentals
+    items:
+      - name: "操作系统"
+        level: intermediate
+        evidence: [ev_edu]
+      - name: "计算机网络"
+        level: intermediate
+        evidence: [ev_edu]
+      - name: "数据结构"
+        level: intermediate
+        evidence: [ev_edu]
+      - name: "算法"
+        level: intermediate
+        evidence: [ev_edu]
+      - name: "数据库"
+        level: intermediate
+        evidence: [ev_edu]
+
+evidence:
+  ev_summary:
+    id: ev_summary
+    claim: "一段后端实习和一个检索增强课程项目。"
+    status: user_asserted
+    source: user_statement
+    captured_at: "2026-11-05"
+  ev_edu:
+    id: ev_edu
+    claim: "示例大学计算机科学与技术专业，预计 2027 年毕业。"
+    status: verified
+    source: document
+    locator: "transcript.pdf#page=1"
+    captured_at: "2026-11-05"
+  ev_intern:
+    id: ev_intern
+    claim: "2026 年 6 月至 9 月在示例云科技后端开发实习。"
+    status: verified
+    source: document
+    locator: "internship-certificate.pdf"
+    captured_at: "2026-11-05"
+  ev_intern_perf:
+    id: ev_intern_perf
+    claim: "订单查询接口 P95 从 480ms 降至 190ms，日均 30 万次请求。"
+    status: verified
+    source: document
+    locator: "internship-report.pdf#page=2"
+    captured_at: "2026-11-05"
+  ev_intern_export:
+    id: ev_intern_export
+    claim: "批量导出能力每周减少约 6 小时人工整理。"
+    status: user_asserted
+    source: user_statement
+    captured_at: "2026-11-05"
+  ev_proj:
+    id: ev_proj
+    claim: "四人课程项目，候选人负责检索与评估。"
+    status: user_asserted
+    source: repo
+    locator: "https://github.com/example/course-qa"
+    captured_at: "2026-11-05"
+  ev_proj_eval:
+    id: ev_proj_eval
+    claim: "120 条问题集上 Recall@5 从 62% 提升到 81%。"
+    status: user_asserted
+    source: repo
+    locator: "https://github.com/example/course-qa/blob/main/eval/results.md"
+    captured_at: "2026-11-05"
+
+preferences:
+  application_mode: targeted
+  preferred_role: "后端开发工程师"
+  target_roles: ["后端开发工程师"]
+  target_markets: [cn_internet]
+  locations: ["杭州"]
+  remote: "no"
+
+needs_confirmation: []

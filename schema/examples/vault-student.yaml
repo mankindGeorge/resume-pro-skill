@@ -1,0 +1,218 @@
+schema_version: "1.0"
+status: ready
+updated_at: "2026-11-05T10:00:00Z"
+identity:
+  full_name: "Li Ming"
+  email: "liming@example.com"
+  phone: "+86 138 0000 0000"
+  location:
+    city: "Hangzhou"
+    country: "CN"
+  links:
+    - label: "GitHub"
+      url: "https://github.com/example-liming"
+      kind: github
+  locale: zh
+  headline:
+    zh: "后端开发实习生 · 2027 届"
+    en: "Backend Engineering Intern · Class of 2027"
+  summary:
+    zh: "计算机专业应届生，有 3 个月后端实习经历，做过 RAG 课程问答项目，关注检索质量与接口性能。"
+    en: "Computer science student with a 3-month backend internship and a RAG course-QA project, focused on retrieval quality and API performance."
+  summary_evidence: [ev_summary]
+
+education:
+  - id: edu_001
+    school: "Example University"
+    degree:
+      zh: "工学学士"
+      en: "B.Eng."
+    major:
+      zh: "计算机科学与技术"
+      en: "Computer Science"
+    start: "2023-09"
+    end: "2027-06"
+    gpa:
+      value: 3.7
+      scale: 4.0
+      rank: "Top 15%"
+    coursework:
+      zh: ["操作系统", "计算机网络", "数据结构与算法", "数据库系统"]
+      en: ["Operating Systems", "Computer Networks", "Data Structures and Algorithms", "Database Systems"]
+    evidence: [ev_edu]
+
+experience:
+  - id: exp_001
+    company: "Acme Cloud (example)"
+    title:
+      zh: "后端开发实习生"
+      en: "Backend Engineering Intern"
+    employment_type: internship
+    location: "Hangzhou"
+    start: "2026-06"
+    end: "2026-09"
+    is_current: false
+    tech: ["Java", "Spring Boot", "MySQL", "Redis"]
+    bullets:
+      - id: bul_exp_001
+        text:
+          zh: "将订单查询接口的 P95 延迟从 480ms 降至 190ms，覆盖日均 30 万次请求。"
+          en: "Cut order-query P95 latency from 480ms to 190ms across 300K daily requests."
+        evidence: [ev_intern_perf]
+        skill_ids: [skl_backend]
+      - id: bul_exp_002
+        text:
+          zh: "为运营后台补上批量导出能力，减少每周约 6 小时的人工整理。"
+          en: "Shipped bulk export for the operations console, removing about 6 hours of manual work per week."
+        evidence: [ev_intern_export]
+        skill_ids: [skl_backend]
+    evidence: [ev_intern]
+
+projects:
+  - id: proj_001
+    name: "Course QA with RAG"
+    role:
+      zh: "检索与评估负责人"
+      en: "Retrieval and evaluation lead"
+    context: course
+    start: "2025-09"
+    end: "2026-03"
+    tech: ["Python", "BM25", "FAISS", "FastAPI"]
+    problem:
+      zh: "课程资料分散在 1200 份 PDF 和讲义里，同学找答案要翻很久。"
+      en: "Course material was spread across 1,200 PDFs and handouts, so finding an answer took too long."
+    own_contribution:
+      zh: "负责检索链路和评估：设计分块策略，接入 BM25 混合检索，搭了 120 条人工标注问题的回归集。"
+      en: "Owned retrieval and evaluation: designed chunking, added hybrid BM25 retrieval, and built a 120-question regression set."
+    optimizations:
+      zh:
+        - "把固定长度分块改成按标题层级分块，减少上下文断裂。"
+        - "加入 BM25 与向量检索的混合排序，人工评估后再调权重。"
+      en:
+        - "Replaced fixed-size chunking with heading-aware chunking to reduce broken context."
+        - "Added hybrid BM25 plus vector ranking, then tuned weights against human judgments."
+    outcome:
+      zh: "在 120 条回归问题上把 Recall@5 从 62% 提升到 81%。"
+      en: "Improved Recall@5 from 62% to 81% on the 120-question regression set."
+    bullets:
+      - id: bul_proj_001
+        text:
+          zh: "在 120 条人工标注问题上把 Recall@5 从 62% 提升到 81%，主要来自标题感知分块和 BM25 混合检索。"
+          en: "Raised Recall@5 from 62% to 81% on 120 human-labeled questions through heading-aware chunking and hybrid BM25 retrieval."
+        evidence: [ev_proj_eval]
+        skill_ids: [skl_ai]
+      - id: bul_proj_002
+        text:
+          zh: "把固定长度分块改成按标题层级分块，并用回归集调整混合检索权重。"
+          en: "Replaced fixed-size chunking with heading-aware chunking and tuned hybrid retrieval weights against the regression set."
+        evidence: [ev_proj_eval]
+        skill_ids: [skl_ai]
+    evidence: [ev_proj]
+
+skills:
+  - id: skl_backend
+    name:
+      zh: "后端"
+      en: "Backend"
+    kind: language
+    items:
+      - name: "Java"
+        level: intermediate
+        evidence: [ev_intern]
+      - name: "Spring Boot"
+        level: intermediate
+        evidence: [ev_intern]
+      - name: "MySQL"
+        level: intermediate
+        evidence: [ev_intern]
+      - name: "Redis"
+        level: intermediate
+        evidence: [ev_intern]
+  - id: skl_ai
+    name:
+      zh: "AI / 检索"
+      en: "AI / Retrieval"
+    kind: ai_ml
+    items:
+      - name: "RAG"
+        level: intermediate
+        evidence: [ev_proj]
+      - name: "FAISS"
+        level: intermediate
+        evidence: [ev_proj]
+      - name: "BM25"
+        level: intermediate
+        evidence: [ev_proj]
+  - id: skl_cs
+    name:
+      zh: "计算机基础"
+      en: "CS Fundamentals"
+    kind: fundamentals
+    items:
+      - name: "Operating Systems"
+        level: intermediate
+        evidence: [ev_edu]
+      - name: "Computer Networks"
+        level: intermediate
+        evidence: [ev_edu]
+      - name: "Data Structures and Algorithms"
+        level: intermediate
+        evidence: [ev_edu]
+      - name: "Database Systems"
+        level: intermediate
+        evidence: [ev_edu]
+
+evidence:
+  ev_summary:
+    id: ev_summary
+    claim: "The candidate has one backend internship and one RAG course project."
+    status: user_asserted
+    source: user_statement
+    captured_at: "2026-11-05"
+  ev_edu:
+    id: ev_edu
+    claim: "Enrolled in the Computer Science program at Example University, expected 2027."
+    status: verified
+    source: document
+    locator: "transcript.pdf#page=1"
+    captured_at: "2026-11-05"
+  ev_intern:
+    id: ev_intern
+    claim: "Backend engineering internship at Acme Cloud from 2026-06 to 2026-09."
+    status: verified
+    source: document
+    locator: "internship-certificate.pdf"
+    captured_at: "2026-11-05"
+  ev_intern_perf:
+    id: ev_intern_perf
+    claim: "P95 latency moved from 480ms to 190ms on the order-query endpoint; 300K requests per day."
+    status: verified
+    source: document
+    locator: "internship-report.pdf#page=2"
+    captured_at: "2026-11-05"
+  ev_intern_export:
+    id: ev_intern_export
+    claim: "Bulk export feature removed about 6 hours per week of manual work."
+    status: user_asserted
+    source: user_statement
+    captured_at: "2026-11-05"
+  ev_proj:
+    id: ev_proj
+    claim: "Course QA project built by a four-person team; the candidate owned retrieval and evaluation."
+    status: user_asserted
+    source: repo
+    locator: "https://github.com/example/course-qa"
+    captured_at: "2026-11-05"
+  ev_proj_eval:
+    id: ev_proj_eval
+    claim: "Recall@5 improved from 62% to 81% on the 120-question set."
+    status: user_asserted
+    source: repo
+    locator: "https://github.com/example/course-qa/blob/main/eval/results.md"
+    captured_at: "2026-11-05"
+
+needs_confirmation:
+  - path: "experience[0].bullets[1].text"
+    reason: "The 6-hour saving is user-asserted; no spreadsheet or ticket is linked."
+    severity: warning
+    question: "Can you link a ticket or a before/after time estimate for the export work?"
