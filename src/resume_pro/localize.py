@@ -19,7 +19,9 @@ from .select import select_facts
 from .writing import require_consent
 
 MARKET_FOR_LOCALE = {"zh": "cn_internet", "en": "intl_en"}
-NUMBER_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(万|千|[kKmM])?")
+# Units: 万/千 are unambiguous; latin k/m must not be the first letter of a word
+# ("4 module" is 4, never 4 million).
+NUMBER_TOKEN_RE = re.compile(r"(\d+(?:\.\d+)?)\s*(万|千|[kKmM](?![A-Za-z]))?")
 CORE_PREFIXES = ("edu_", "exp_", "proj_", "skl_", "awd_", "cert_", "lang_", "pub_")
 
 

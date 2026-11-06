@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from resume_pro.application import LIBRARY_TEMPLATES, create_application, page_budget, save_application
-from resume_pro.localize import LocalizeError, compare, localize_application
+from resume_pro.localize import LocalizeError, _normalized_numbers, compare, localize_application
 from resume_pro.render import RenderError, render_application
 from resume_pro.select import select_facts
 from tests.test_render import _user_template
@@ -96,6 +96,15 @@ def test_number_unit_conversion_is_parity_clean(student_vault, tmp_path):
     )
     result = localize_application(tmp_path, student_vault, source, target_locale="en", target_role="Backend Intern")
     assert result.parity.number_mismatches == {}
+
+
+def test_number_units_need_word_boundaries():
+    """'4 module' is 4; only a standalone k/m multiplies like 万/千."""
+    assert _normalized_numbers(["delivering 4 module groups"]) == ["4"]
+    assert _normalized_numbers(["covering 4M daily transactions"]) == ["4000000"]
+    assert _normalized_numbers(["在 1 万条样本上训练"]) == ["10000"]
+    assert _normalized_numbers(["over 10K training samples"]) == ["10000"]
+    assert _normalized_numbers(["a 480ms timeout"]) == ["480"]
 
 
 def test_missing_target_locale_raises(student_vault, tmp_path):
