@@ -39,6 +39,8 @@ All notable changes to this project are documented here. The format follows Keep
 - Templates render points as labeled paragraphs or plain lines, never `<ul>` / `<ol>` / `<li>` with a leading dot.
 - Strengthen packaging rules: solutions must explain the pain point and why the approach fits; results must state the problem solved and the change created, not repeat technology or filler dates. QA now checks horizontal text balance so sparse left-biased layouts do not pass silently.
 
+- Add quiet project rescue for small demo projects: classify the project, summarize the framework/难点/成果 expected for that project type, and ask the user to remove it or expand it with confirmed technical depth before writing.
+
 ## [0.1.0] — 2026-11-05
 
 ### Added

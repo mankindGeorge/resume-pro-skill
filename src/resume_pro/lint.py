@@ -237,6 +237,16 @@ def lint(
                 "This project reads thin for HR.",
                 "Use 3–4 labeled STAR points with substantial real detail, or exclude the project.",
             )
+        if is_student and context in {"personal", "course", "competition"}:
+            text = " ".join(bullets)
+            if not _has_digit(text) or sum(len(item) for item in bullets) < (120 if is_cn else 220):
+                add(
+                    "lint.project_rescue",
+                    "warn",
+                    f"projects[{index}]",
+                    "This looks like a small demo project.",
+                    "Offer the user two choices: remove the project, or expand it with real, confirmed technical depth.",
+                )
         if context in {"course", "personal", "open_source"}:
             if not project.get("own_contribution") and not project.get("optimizations"):
                 severity = "error" if is_cn and is_student else "warn"

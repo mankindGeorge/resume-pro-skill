@@ -184,6 +184,8 @@ def test_skill_requires_content_sufficiency_and_depth_mining():
         "concrete end month",
         "labeled STAR points",
         "exclude it instead of keeping a weak block",
+        "project rescue",
+        "remove the project, or expand it",
     ):
         assert requirement in section, f"Missing content-sufficiency rule: {requirement}"
 

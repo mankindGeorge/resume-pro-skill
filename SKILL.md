@@ -224,6 +224,9 @@ resume templates
 - When the user says there is no number, ask whether to package the existing work with a stronger narrative; "keep it as is" and "skip" are not equivalent choices. Packaging may reorder and sharpen real work, never add a metric.
 - For a student or intern profile with at most one real project, run **depth mining** silently: ask targeted questions about real tasks, decisions, scope, artifacts, and feedback, then present those real contributions more strongly. This packages real experience; it never invents a project, employer, metric, or date, and it is not announced as a feature — it reads as normal fact questions.
 - A thin profile stays in build mode when depth mining cannot surface a second proof point.
+- When a project is only a small demo, do not simply rewrite it. Run **project rescue** quietly: classify the project, summarize what a strong project of that type needs (framework, data, evaluation, deployment,难点), identify the missing dimensions, and ask the user which real technical points can be added or confirmed. Only confirmed points enter the resume; proposed points are suggestions, never facts.
+- For a small demo project, ask the user to choose: remove the project, or expand it with real technical depth. Expansion means collecting the missing framework, solution, and result details one question at a time, then writing the packaged version. This rescue is part of normal fact collection and is not announced as a special feature.
+- Packaging may suggest relevant technologies and improvements for the user to confirm, but it must never write an unconfirmed technology, metric, or outcome into the resume.
 
 ## Writing rules
 

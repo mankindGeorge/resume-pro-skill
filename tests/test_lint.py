@@ -123,6 +123,15 @@ def test_thin_bullet_and_thin_project_are_flagged(student_vault):
     assert any(issue.code == "lint.project_thin" for issue in report.warnings)
 
 
+def test_small_demo_project_is_flagged_for_rescue(student_vault):
+    vault = copy.deepcopy(student_vault)
+    vault["projects"][0]["context"] = "personal"
+    vault["projects"][0]["bullets"] = vault["projects"][0]["bullets"][:1]
+    vault["projects"][0]["bullets"][0]["text"] = {"zh": "做了一个课程小 demo，用了 Python 和一个接口。"}
+    report = lint(vault, market="cn_internet", persona="student_with_internship", application=_app())
+    assert any(issue.code == "lint.project_rescue" for issue in report.warnings)
+
+
 def test_skim_fails_without_signals(student_vault):
     vault = copy.deepcopy(student_vault)
     vault["skills"] = []
