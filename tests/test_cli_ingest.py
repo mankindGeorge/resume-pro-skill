@@ -28,6 +28,9 @@ def test_review_writes_report_without_vault(tmp_path, monkeypatch):
     payload = json.loads(result.output)
     assert payload["ok"] is True
     assert Path(payload["report"]).is_file()
+    workspace = Path(payload["workspace"])
+    assert workspace.parent == tmp_path / "workspace"
+    assert (workspace / "review.json").is_file()
     assert not vault_path(tmp_path).exists()
 
 

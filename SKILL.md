@@ -17,6 +17,15 @@ The primary audience is **China's job market**; international applications are s
 - Packaging: `python scripts/package_skill.py` builds a deterministic ZIP, excludes private material, and verifies the extracted copy before reporting `PASS`.
 - If the check fails, report the concrete error and the documented fix; do not pretend the CLI is ready or fall back to writing a resume by hand.
 
+## Workspace
+
+Put every user-facing artifact under `workspace/<project-slug>/` in the current project root. Use one subfolder per application or review and keep the resume, editable copy, reports, and diagnosis together.
+
+- If the skill repository is the working project, use its `workspace/`.
+- When the skill is invoked in another project, create `workspace/` in that project's root.
+- `.resume/` remains internal state. `resume build` and `resume review` publish copies to the workspace; copy any other user-facing report there too.
+- Keep outputs out of the repository root.
+
 ## Non-negotiable rules
 
 1. **Never invent facts.** No new company, title, project, metric, date, certificate, or responsibility. Every bullet must trace to an evidence id in the vault.

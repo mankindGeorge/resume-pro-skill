@@ -28,6 +28,7 @@ All notable changes to this project are documented here. The format follows Keep
 - Add packaging documentation and regression tests for archive completeness, determinism, private-path exclusion, and bootstrap readiness.
 - Add template preview thumbnails to both READMEs and `scripts/build_readme_previews.py` to regenerate them; packaging includes the preview assets.
 - Add the `compact` layout: a one-page campus design with ruled headings, centered entry headers, and a two-column awards list.
+- Publish user-facing files to `workspace/<project-slug>/`: builds copy the resume, editable copy, and reports; reviews publish their report to a review subfolder. Each application or review gets its own folder; `.resume/` remains internal state.
 
 ## [0.1.0] — 2026-11-05
 

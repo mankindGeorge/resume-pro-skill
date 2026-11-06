@@ -14,6 +14,7 @@ build/
 .resume/
 applications/
 templates/user-*/
+/workspace/
 
 # Internal working material — not part of the published skill
 /docs/local/

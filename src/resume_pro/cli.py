@@ -33,6 +33,7 @@ from .qa import run_qa
 from .recommend import recommend as recommend_roles
 from .render import application_locale, load_template, render_application
 from .select import select_facts
+from .workspace import publish_workspace
 from .writing import FRAMEWORK_IDS, require_consent
 from .intake import (
     IntakeEngine,
@@ -491,12 +492,18 @@ def _run_build(
         "checked_at": datetime.now().astimezone().isoformat(timespec="seconds"),
     }
     save_application(root, application)
+    workspace = publish_workspace(
+        root,
+        slug,
+        [result.html_path, result.editable_path, result.report_path, qa_path, lint_path],
+    )
     payload.update(
         {
             "ok": qa.status != "fail",
             "render": result.to_dict(),
             "qa": qa.to_dict(),
             "qa_report": str(qa_path),
+            "workspace": str(workspace),
             "version": version,
         }
     )
@@ -542,6 +549,8 @@ def build(
                 click.echo(f"Template: {render['template_id']} · pages: {render['layout']['pages']}")
                 click.echo(f"HTML: {render['html']}")
                 click.echo(f"Editable preview: {render['editable_html']}")
+                if payload.get("workspace"):
+                    click.echo(f"Workspace: {payload['workspace']}")
                 if payload.get("qa"):
                     _print_qa(payload["qa"])
             elif payload.get("next"):
@@ -730,14 +739,17 @@ def review(ctx: click.Context, file: Path, market: str | None, persona: str | No
         audit = audit_template(result, market=session["market"], persona=session["persona"])
         directory = _report_dir(root, "reviews", file)
         report = {"extraction": result.to_dict(), "audit": audit.to_dict()}
-        (directory / "review.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        report_path = directory / "review.json"
+        report_path.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        workspace = publish_workspace(root, directory.name, [report_path])
         ok = audit.verdict not in (VERDICT_REPLACE, VERDICT_UNMAINTAINABLE)
         if as_json:
-            _json_out({"ok": ok, "report": str(directory / "review.json"), **report})
+            _json_out({"ok": ok, "report": str(report_path), "workspace": str(workspace), **report})
         else:
             _print_ingest(result)
             _print_audit(audit)
-            click.echo(f"Report: {directory / 'review.json'}")
+            click.echo(f"Report: {report_path}")
+            click.echo(f"Workspace: {workspace}")
         ctx.exit(0 if ok else 4)
     except ResumeProError as error:
         _handle(ctx, error)

@@ -56,6 +56,13 @@ def test_build_renders_html_and_editable(tmp_path, monkeypatch):
     assert html_path.is_file()
     assert editable_path.is_file()
     assert html_path.name.startswith("resume-")
+    workspace = Path(payload["workspace"])
+    assert workspace == tmp_path / "workspace" / slug
+    assert (workspace / html_path.name).is_file()
+    assert (workspace / editable_path.name).is_file()
+    assert (workspace / "lint.json").is_file()
+    assert (workspace / "qa.json").is_file()
+    assert (workspace / "render.json").is_file()
     assert not list(app_dir.glob("*.pdf"))
     assert not list(app_dir.glob("*.docx"))
 

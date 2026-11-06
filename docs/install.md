@@ -73,6 +73,8 @@ resume check
 
 Optional portrait: `resume photo portrait.jpg --app <slug>`. Every template reserves the slot; it is invisible when empty. Rebuild to embed the photo.
 
+User-facing files are published to `workspace/<project-slug>/` in the project root. `resume build` copies the resume, editable copy, and reports there; `resume review` publishes its report to a review subfolder. Keep diagnoses and other user-facing reports in that project folder.
+
 Then follow `docs/quickstart.md` or `docs/walkthrough.md`.
 
 ## 5. Print to PDF
