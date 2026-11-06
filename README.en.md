@@ -57,6 +57,8 @@ Editable installation lets the CLI read templates, profiles, and schemas directl
 - Legacy DOC / RTF ingestion requires LibreOffice.
 - To use an agent, load this project as a skill with [SKILL.md](SKILL.md) as its entry point. The agent must be able to run local commands; importing a skill does not establish that Python dependencies are ready. See [installation](docs/install.md).
 
+You can also import the packaged skill. Run `python scripts/package_skill.py` to create `dist/resume-pro-skill-<version>.zip`, unzip it, then run `python bootstrap.py` to check the runtime or `python bootstrap.py --install` to add the `resume` command. Without package installation, use `python resume.py`. The archive excludes `docs/local/`, private template candidates, local workspaces, and caches. See [installation](docs/install.md).
+
 ### 2. Collect career information
 
 This example targets Chinese internet-sector campus / internship applications. Run in a separate job-application working directory:

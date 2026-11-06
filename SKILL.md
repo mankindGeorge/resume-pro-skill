@@ -9,6 +9,14 @@ A resume is a **per-job selection over a verified career vault**, rendered throu
 
 The primary audience is **China's job market**; international applications are supported through `intl_en` and the English template variants. China-first positioning does not relax market or persona rules: always apply the target market's selection, writing, page, photo, and fact-confirmation rules.
 
+## Runtime setup
+
+- After the skill folder is imported, run `python bootstrap.py` once. It checks Python 3.10+, the six runtime dependencies, and that all 12 library template variants load.
+- Prefer `python bootstrap.py --install` to get the `resume` command. If pip cannot install packages, run `python bootstrap.py --deps-only` and call `python resume.py <command>` instead of `resume <command>`.
+- Keep the imported folder on disk. The CLI reads `templates/`, `schema/`, and `profiles/` from it.
+- Packaging: `python scripts/package_skill.py` builds a deterministic ZIP, excludes private material, and verifies the extracted copy before reporting `PASS`.
+- If the check fails, report the concrete error and the documented fix; do not pretend the CLI is ready or fall back to writing a resume by hand.
+
 ## Non-negotiable rules
 
 1. **Never invent facts.** No new company, title, project, metric, date, certificate, or responsibility. Every bullet must trace to an evidence id in the vault.

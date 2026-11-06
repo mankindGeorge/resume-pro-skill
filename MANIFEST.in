@@ -1,6 +1,8 @@
 include README.md
 include README.en.md
 include SKILL.md
+include bootstrap.py
+include resume.py
 include CHANGELOG.md
 include LICENSE
 include ATTRIBUTIONS.md

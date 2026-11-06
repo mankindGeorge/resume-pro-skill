@@ -20,6 +20,9 @@ All notable changes to this project are documented here. The format follows Keep
 
 - Five regression tests for the mandatory interaction instructions, multi-round CLI answers, invalid-input recovery, read-only summary/resume, unknown answers, multiline Chinese input, and confirmation recovery. These are not live host-UI tests.
 - `resume templates` now prints each variant's `preview.html` path in human output and a `preview` field in `--json`, so users can open a design in a browser before choosing. A contract test guards the create/optimize template-choice and preview-location instructions, and listing tests assert the preview paths.
+- Add `scripts/package_skill.py`, which builds a deterministic, private-safe skill ZIP with one top-level folder, excludes private review material, learned templates, local workspaces, caches, and secret-like files, and unzips/bootstrap-checks the archive before reporting success.
+- Add the root `resume.py` launcher and `bootstrap.py` runtime check/install. They verify Python, dependencies, and all 12 template variants; `--install` performs an editable install for the `resume` command, while `--deps-only` supports environments where pip cannot install the package.
+- Add packaging documentation and regression tests for archive completeness, determinism, private-path exclusion, and bootstrap readiness.
 
 ## [0.1.0] — 2026-11-05
 

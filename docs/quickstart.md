@@ -15,6 +15,8 @@ Without installing:
 PYTHONPATH=src python -m resume_pro.cli --version
 ```
 
+For a packaged import, build and unpack the skill archive, then run `python bootstrap.py --check`; see [Install](install.md#31-packaged-zip). The `resume` command requires `python bootstrap.py --install`, while `python resume.py` works with dependencies alone.
+
 ## 2. Create a local workspace
 
 ```bash

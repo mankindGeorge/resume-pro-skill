@@ -22,14 +22,19 @@ def main() -> int:
         if not (ROOT / required).is_file():
             failures.append(f"Missing {required}.")
 
-    for directory in ("src", "tests", "scripts"):
-        for path in sorted((ROOT / directory).rglob("*.py")):
-            first = path.read_text(encoding="utf-8").splitlines()[0] if path.stat().st_size else ""
-            if first.strip() != SPDX:
-                failures.append(f"{path.relative_to(ROOT)}: missing SPDX header.")
-            text = path.read_text(encoding="utf-8")
-            if re.search(r"write_(?:text|bytes)\([^\n]*\.(pdf|docx)", text, re.IGNORECASE):
-                failures.append(f"{path.relative_to(ROOT)}: writes a PDF/DOCX resume; output must be HTML only.")
+    python_files = [
+        path
+        for directory in ("src", "tests", "scripts")
+        for path in sorted((ROOT / directory).rglob("*.py"))
+    ]
+    python_files.extend(path for path in (ROOT / "bootstrap.py", ROOT / "resume.py") if path.is_file())
+    for path in python_files:
+        first = path.read_text(encoding="utf-8").splitlines()[0] if path.stat().st_size else ""
+        if first.strip() != SPDX:
+            failures.append(f"{path.relative_to(ROOT)}: missing SPDX header.")
+        text = path.read_text(encoding="utf-8")
+        if re.search(r"write_(?:text|bytes)\([^\n]*\.(pdf|docx)", text, re.IGNORECASE):
+            failures.append(f"{path.relative_to(ROOT)}: writes a PDF/DOCX resume; output must be HTML only.")
 
     template_dirs = sorted(
         {path.parent for path in (ROOT / "templates").rglob("manifest.json")}
@@ -55,10 +60,7 @@ def main() -> int:
             print(" -", failure)
         return 1
     print("LICENSE SCAN: PASS")
-    print(
-        f"Checked {sum(1 for d in ('src','tests','scripts') for _ in (ROOT/d).rglob('*.py'))} Python files "
-        f"and {len(template_dirs)} templates."
-    )
+    print(f"Checked {len(python_files)} Python files and {len(template_dirs)} templates.")
     return 0
 
 

@@ -28,7 +28,33 @@ python -m pip install .
 
 The repository root is the skill: `SKILL.md` is the entry point. Point your agent's skill directory at this folder.
 
-Common setups:
+### 3.1 Packaged ZIP
+
+Build a private-safe archive from a verified checkout:
+
+```bash
+python scripts/package_skill.py
+# dist/resume-pro-skill-<version>.zip
+```
+
+The archive contains a single `resume-pro-skill/` folder. By default, before reporting `PASS`, the script unzips it and runs the bootstrap check, so a damaged or incomplete package is not reported as importable. It always excludes `.git`, `docs/local/` (including the private design review lab), learned `templates/user-*`, local workspaces, caches, and secret-like files. `--include-tests` adds the public suite; `--json` reports the SHA-256, file count, and archive size.
+
+Unzip it into your agent's skill directory. Keep the folder on disk: the CLI reads `templates/`, `schema/`, and `profiles/` from it.
+
+```bash
+cd resume-pro-skill
+python bootstrap.py              # Python version, dependencies, 12 template variants
+python bootstrap.py --install    # editable install; adds the `resume` command
+# If pip cannot install packages:
+python bootstrap.py --deps-only  # dependencies only
+python resume.py templates       # launcher for environments without `resume`
+```
+
+`--install` uses an editable install on purpose, so the imported folder remains the source of templates, schema, and profiles. Do not copy only the Python package elsewhere. If pip is unavailable entirely, install the packages in `requirements.txt` by hand and use `python resume.py`.
+
+The bootstrap check verifies the package, not the host agent: it does not test an agent's question UI or tool permissions.
+
+### 3.2 Common setups
 
 - **Claude Code:** place or symlink the folder under `~/.claude/skills/resume-pro-skill`.
 - **Codex / Cursor / Qoder:** add the folder as a skill/prompt directory in the agent's settings. The exact path depends on the client version; the agent only needs to read `SKILL.md`.

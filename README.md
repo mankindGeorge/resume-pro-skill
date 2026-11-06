@@ -57,6 +57,8 @@ resume --help
 - 导入旧版 DOC / RTF 文件需要 LibreOffice。
 - 使用 Agent 时，将本项目作为 Skill 加载，入口为 [SKILL.md](SKILL.md)。Agent 需要能够运行本地命令；导入 Skill 不代表 Python 依赖已经就绪。具体配置见[安装说明](docs/install.md)。
 
+也可以导入打包后的 Skill：执行 `python scripts/package_skill.py` 生成 `dist/resume-pro-skill-<version>.zip`，解压后运行 `python bootstrap.py` 检查环境，或用 `python bootstrap.py --install` 安装 `resume` 命令；无法安装依赖时用 `python resume.py` 启动。归档会排除 `docs/local/`、私有模板候选、本地工作区与缓存。详见[安装说明](docs/install.md)。
+
 ### 2. 从零建立简历资料
 
 以下以中文互联网校招 / 实习场景为例。在独立的求职工作目录执行：
