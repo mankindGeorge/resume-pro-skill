@@ -91,8 +91,8 @@ a { color: var(--ink); text-decoration: none; border-bottom: 0.4pt solid #999; }
 .entry-meta { font-size: 9.5pt; white-space: nowrap; }
 .entry-sub { font-size: 9.5pt; color: var(--muted); }
 
-ul { margin: 2pt 0 0 12pt; padding: 0; }
-li { margin: 0 0 1pt; font-size: 9.8pt; line-height: 1.45; }
+.entry-lines { margin: 2pt 0 0 0; padding: 0; width: 100%; }
+.entry-line { margin: 0 0 1pt; font-size: 9.8pt; line-height: 1.45; width: 100%; }
 
 /* Centered entry headers with the date on the left. */
 .section[data-section="education"] .entry,
@@ -124,7 +124,8 @@ li { margin: 0 0 1pt; font-size: 9.8pt; line-height: 1.45; }
   grid-row: 1;
   text-align: right;
 }
-.section[data-section="projects"] ul {
+.section[data-section="experience"] .entry-lines,
+.section[data-section="projects"] .entry-lines {
   grid-column: 1 / -1;
   grid-row: 2;
 }
@@ -160,9 +161,9 @@ html[lang="en"] .skill-label::after { content: ": "; }
   margin: 0;
   padding: 0;
   font-size: 9.5pt;
-  list-style: none;
+  
 }
-.simple-list li { margin: 0; font-size: 9.5pt; }
+.simple-list .entry-line { margin: 0; font-size: 9.5pt; }
 
 @media screen {
   html { background: #e9edf2; }

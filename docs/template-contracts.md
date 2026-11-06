@@ -59,7 +59,7 @@ The library contains **six distinct designs × two resume languages = 12 variant
 |---|---|---|---|---|
 | `ats-classic` | zh, en | A4 · 1–2 pages | single | highest |
 | `campus` | zh, en | A4 · 1–2 pages | single, education-first | high |
-| `compact` | zh, en | A4 · 1 page | single, compact | high |
+| `compact` | zh, en | A4 · 1–2 pages | single, compact | high |
 | `modern-sidebar` | zh, en | A4 · 1–2 pages | main + right sidebar | medium, with single-column fallback |
 | `editorial` | zh, en | A4 · 1 page | single, magazine | medium-high |
 | `executive` | zh, en | A4 · 2 pages | single, centered letterhead | high |
@@ -113,7 +113,7 @@ All designs reserve an optional photo slot; the market determines whether it is 
 - Order: name/contact → education → experience → projects → skills → awards. Students lead with education; professional profiles lead with summary and experience.
 - Required: `identity.name`, `identity.contact`, `section.education`, `section.skills`.
 - Optional: `identity.links`, `identity.photo`, `section.experience`, `section.projects`, `section.awards`, `section.certificates`, `section.languages`, `section.publications`, `section.open_source`, `section.summary`.
-- Rules: ruled section headings; the education entry line shows `major · degree`, with GPA/rank in a smaller note below; centered entry headers with dates on the left, two-column awards, compact spacing. One-page capacity; the optional photo follows market policy.
+- Rules: ruled section headings; the education entry line shows `major · degree`, with GPA/rank in a smaller note below; centered entry headers with dates on the left, two-column awards, compact spacing. One to two-page capacity, with room for a comprehensive project description; the optional photo follows market policy.
 
 ## 4. Content budgets
 

@@ -102,12 +102,12 @@ CONFIG = {
     },
     "compact": {
         "name": {"zh": "紧凑", "en": "Compact"},
-        "description": "Compact one-page campus layout with ruled headings and centered entry headers.",
+        "description": "Compact campus layout with ruled headings and centered entry headers.",
         "personas": ["student_with_projects", "student_with_internship", "new_grad", "career_switcher"],
         "page": {
             "sizes": ["a4"],
             "margins_mm": {"top": 14, "right": 20, "bottom": 14, "left": 20},
-            "target_pages": {"min": 1, "max": 1}, "columns": "single",
+            "target_pages": {"min": 1, "max": 2}, "columns": "single",
         },
         "required": [
             ("identity.name", "text"), ("identity.contact", "text"),
@@ -123,7 +123,7 @@ CONFIG = {
         ],
         "budgets": {
             "summary_chars": {"en": 240, "zh": 120}, "bullets_per_role": 4,
-            "bullets_per_project": 3, "max_roles": 4, "max_projects": 4, "max_skills": 16,
+            "bullets_per_project": 6, "max_roles": 4, "max_projects": 4, "max_skills": 16,
         },
         "ats": {"single_column": True, "text_selectable": True, "tables_allowed": False},
     },
