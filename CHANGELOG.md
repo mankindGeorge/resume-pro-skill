@@ -6,6 +6,7 @@ All notable changes to this project are documented here. The format follows Keep
 
 ### Changed
 
+- Change requests follow the same standards: before applying any user-requested change, re-read the user's input and the governing rules (framework recipe and label set, market rules, the 2/5 line-fill rule, naming and monolingual rules) and write strictly to those standards.
 - The compact templates render one award per line: the awards list is single-column so each honor reads on its own row.
 - STAR packaging keeps merged content inside the recipe: an integrated tool or open-source artifact belongs within the four STAR points instead of extra bullets.
 - Point labels (`项目背景：` / `Background:` and friends) render bold in every resume, so the point structure is visible at a glance in both languages.

@@ -241,6 +241,15 @@ def test_point_labels_render_bold():
     assert "renders bold" in skill
 
 
+def test_change_requests_follow_standards():
+    skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+    section = skill.split("## Non-negotiable rules", 1)[1].split("\n## ", 1)[0]
+    assert "Change requests follow the same standards" in section
+    assert "re-read the user's input and the governing rules" in section
+    assert "write strictly to those standards" in section
+    assert "not a license to improvise" in section
+
+
 def test_no_pdf_or_docx_resume_writer():
     for path in (ROOT / "src").rglob("*.py"):
         text = path.read_text(encoding="utf-8")
