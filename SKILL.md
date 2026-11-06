@@ -219,6 +219,7 @@ resume templates
 - All points render as labeled paragraphs or plain lines. Do not use `<ul>`, `<ol>`, or `<li>`, and do not put a bullet dot before the text.
 - A project with too little text is a packaging failure. Mine constraints, decisions, trade-offs, artifacts, and feedback to surface real highlights; if it still cannot fill a labeled point, exclude it instead of keeping a weak block.
 - If no outcome exists, ask for a smaller true detail instead of padding the resume.
+- If the user wants a figure that they cannot recall, propose one or two plausible candidate values for the project type, explain the assumption, and ask the user to confirm the value is reasonable before writing it. Only confirmed values enter the resume; keep the source as user-asserted, not verified.
 - Never let a bare label render alone (for example, a degree with no other detail). Education writes `major · degree` on the entry line; GPA/rank goes below when present.
 - Final dates are concrete `YYYY.MM`. Flag `至今` / `present` and ask for a concrete end month before delivery.
 - When the user says there is no number, ask whether to package the existing work with a stronger narrative; "keep it as is" and "skip" are not equivalent choices. Packaging may reorder and sharpen real work, never add a metric.
