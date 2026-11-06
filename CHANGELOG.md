@@ -34,7 +34,8 @@ All notable changes to this project are documented here. The format follows Keep
 - Place workspace outputs under the skill root's `workspace/`; one subfolder per application or review.
 - After a diagnosis, ask whether to start fixing; if yes, offer one multi-select P0/P1/P2 choice, ask the writing framework, then work through the selected priorities one question at a time and re-run build/QA. The rest of the flow mirrors Create from zero.
 - Enforce content sufficiency: every kept role/project answers background, role, action, and result; ask for outcomes when only tools are given; use the selected framework's question ladder; and run silent depth mining for thin student/intern profiles, packaging only real contributions without inventing facts. When no number exists, offer to package the existing work with a stronger narrative instead of treating "keep" and "skip" as the same choice.
-- Flag `至今` / `present` end dates during lint and ask for a concrete end month before delivery; keep education supplements attached to their element instead of rendering a bare label on its own line.
+- Flag `至今` / `present` end dates during lint and ask for a concrete end month before delivery; render education as `major · degree` on the entry line with GPA/rank only as a smaller note below.
+- Require each kept project to read as 3–4 labeled STAR points with substantial real detail. Lint flags thin bullets and thin projects; if a project cannot be packaged to that depth, the skill excludes it rather than keeping a weak block.
 
 ## [0.1.0] — 2026-11-05
 

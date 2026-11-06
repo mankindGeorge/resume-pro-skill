@@ -170,6 +170,8 @@ def test_skill_requires_content_sufficiency_and_depth_mining():
         "ask whether to package the existing work",
         "Never let a bare label render alone",
         "concrete end month",
+        "labeled STAR points",
+        "exclude it instead of keeping a weak block",
     ):
         assert requirement in section, f"Missing content-sufficiency rule: {requirement}"
 

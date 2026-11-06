@@ -214,8 +214,10 @@ resume templates
 - When a bullet only names tools or duties, ask for the outcome behind them: a number, scope, artifact, or user-visible change.
 - If the user gives technology without background or results, ask one question: can you supply it, or should I rephrase only what you already gave? Add nothing on my own.
 - Follow the selected framework while collecting: STAR asks situation, task, action, result; XYZ asks the accomplished X measured by Y by doing Z; CAR asks challenge, action, result. Ask only for the slots that are missing.
+- Render each kept project as 3–4 labeled STAR points: `项目背景：`, `核心框架：`, `解决方案：`（或 `难点：`）, `核心成果：`. Each point is a complete, substantial sentence with real detail; never a one-line fragment.
+- A project with too little text is a packaging failure. Mine constraints, decisions, trade-offs, artifacts, and feedback to surface real highlights; if it still cannot fill a labeled point, exclude it instead of keeping a weak block.
 - If no outcome exists, ask for a smaller true detail instead of padding the resume.
-- Never let a bare label render alone (for example, a degree with no other detail). Keep supplements attached to their element.
+- Never let a bare label render alone (for example, a degree with no other detail). Education writes `major · degree` on the entry line; GPA/rank goes below when present.
 - Final dates are concrete `YYYY.MM`. Flag `至今` / `present` and ask for a concrete end month before delivery.
 - When the user says there is no number, ask whether to package the existing work with a stronger narrative; "keep it as is" and "skip" are not equivalent choices. Packaging may reorder and sharpen real work, never add a metric.
 - For a student or intern profile with at most one real project, run **depth mining** silently: ask targeted questions about real tasks, decisions, scope, artifacts, and feedback, then present those real contributions more strongly. This packages real experience; it never invents a project, employer, metric, or date, and it is not announced as a feature — it reads as normal fact questions.

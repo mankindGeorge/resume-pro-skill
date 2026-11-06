@@ -268,7 +268,7 @@ def test_modern_sidebar_keeps_education_in_the_main_column(student_vault, tmp_pa
     assert first["data-section"] == "education"
 
 
-def test_education_splits_major_and_supplement(student_vault, tmp_path):
+def test_education_keeps_degree_after_major_and_gpa_below(student_vault, tmp_path):
     app = _app(
         student_vault, tmp_path, "compact",
         market="cn_internet", persona="student_with_internship", role="后端开发工程师",
@@ -276,9 +276,9 @@ def test_education_splits_major_and_supplement(student_vault, tmp_path):
     soup = BeautifulSoup(render_application(tmp_path, student_vault, app).html_path.read_text(encoding="utf-8"), "html.parser")
     sub = soup.select_one('[data-section="education"] .entry-sub').get_text(" ", strip=True)
     note = soup.select_one('[data-section="education"] .entry-note').get_text(" ", strip=True)
-    assert sub == "计算机科学与技术"
-    assert "工学学士" not in sub
-    assert "工学学士" in note and "绩点" in note
+    assert sub == "计算机科学与技术 · 工学学士"
+    assert "绩点" in note
+    assert "工学学士" not in note
 
 
 @pytest.mark.parametrize("template_id", LIBRARY_TEMPLATES)

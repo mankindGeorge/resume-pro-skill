@@ -20,7 +20,7 @@ Every template must:
 12. Produce byte-stable HTML for the same input.
 13. Reserve an optional `identity.photo` slot in the header. When no photo is set, the slot must collapse completely: no border, no background, no blank box. `intl_en` suppresses photos by policy; CN markets may show one.
 14. Avoid italic/oblique text, alternative serif or display faces, and variant glyph styling. Use one standard system sans-serif stack per resume language, standard lining numerals, and disabled ligatures/contextual alternates so the resume does not substitute alternate character forms.
-15. Render education as school + dates, the major as the entry sub-line, and degree/GPA as a smaller note below.
+15. Render education as school + dates and `major · degree` on the entry line, with GPA/rank as a smaller note below when present.
 
 ## 2. Typography floor
 
@@ -112,7 +112,7 @@ All designs reserve an optional photo slot; the market determines whether it is 
 - Order: name/contact → education → experience → projects → skills → awards. Students lead with education; professional profiles lead with summary and experience.
 - Required: `identity.name`, `identity.contact`, `section.education`, `section.skills`.
 - Optional: `identity.links`, `identity.photo`, `section.experience`, `section.projects`, `section.awards`, `section.certificates`, `section.languages`, `section.publications`, `section.open_source`, `section.summary`.
-- Rules: ruled section headings; the education entry line shows only the major, with degree and GPA in a smaller note below; centered entry headers with dates on the left, two-column awards, compact spacing. One-page capacity; the optional photo follows market policy.
+- Rules: ruled section headings; the education entry line shows `major · degree`, with GPA/rank in a smaller note below; centered entry headers with dates on the left, two-column awards, compact spacing. One-page capacity; the optional photo follows market policy.
 
 ## 4. Content budgets
 

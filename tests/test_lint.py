@@ -114,6 +114,15 @@ def test_present_end_is_flagged_for_a_concrete_month(student_vault):
     assert any(issue.code == "lint.date_open" for issue in report.warnings)
 
 
+def test_thin_bullet_and_thin_project_are_flagged(student_vault):
+    vault = copy.deepcopy(student_vault)
+    vault["projects"][0]["bullets"] = [vault["projects"][0]["bullets"][0]]
+    vault["projects"][0]["bullets"][0]["text"] = {"zh": "修了接口"}
+    report = lint(vault, market="cn_internet", persona="student_with_internship", application=_app())
+    assert any(issue.code == "lint.bullet_thin" for issue in report.warnings)
+    assert any(issue.code == "lint.project_thin" for issue in report.warnings)
+
+
 def test_skim_fails_without_signals(student_vault):
     vault = copy.deepcopy(student_vault)
     vault["skills"] = []

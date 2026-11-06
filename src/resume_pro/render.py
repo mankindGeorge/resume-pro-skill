@@ -192,16 +192,20 @@ def build_render_model(vault: dict[str, Any], application: dict[str, Any], *, ro
     for item in _filtered(vault, "education", fact_ids):
         degree = _localized(item.get("degree"), locale)
         major = _localized(item.get("major"), locale)
-        note = [degree] if degree else []
+        sub = " · ".join(part for part in (major, degree) if part)
+        note = []
         if item.get("gpa"):
             gpa = item["gpa"]
             gpa_label = "绩点" if locale == "zh" else "GPA"
-            note.append(f"{gpa_label} {gpa.get('value')}/{gpa.get('scale')}")
+            value = f"{gpa_label} {gpa.get('value')}/{gpa.get('scale')}"
+            if gpa.get("rank"):
+                value += f"（{gpa['rank']}）"
+            note.append(value)
         education.append(
             {
                 "title": item.get("school") or "",
                 "dates": _dates(item, locale),
-                "sub": major,
+                "sub": sub,
                 "note": " · ".join(note),
             }
         )

@@ -178,6 +178,8 @@ def lint(
             add("lint.no_metric", "info", path, "The bullet has no number.", "Add a real number if one exists; otherwise keep the verifiable outcome.")
         if len(text) > (140 if is_cn else 240):
             add("lint.bullet_too_long", "warn", path, "The bullet is too long for a skim.", "Cut it to one action and one result.")
+        if len(text) < (12 if is_cn else 20):
+            add("lint.bullet_thin", "warn", path, "This bullet is too thin to show ability.", "Expand it with a complete action and outcome, or merge it.")
         if SUPERLATIVES.search(text):
             add("lint.unsupported_superlative", "warn", path, "Superlatives without proof are noise.", "Replace the adjective with a specific result.")
         if PLACEHOLDER_RE.search(text):
@@ -226,6 +228,15 @@ def lint(
 
     for index, project in enumerate(vault.get("projects") or []):
         context = project.get("context")
+        bullets = [_text(bullet) for bullet in project.get("bullets") or []]
+        if len(bullets) < 3 or sum(len(text) for text in bullets) < (90 if is_cn else 160):
+            add(
+                "lint.project_thin",
+                "warn",
+                f"projects[{index}]",
+                "This project reads thin for HR.",
+                "Use 3–4 labeled STAR points with substantial real detail, or exclude the project.",
+            )
         if context in {"course", "personal", "open_source"}:
             if not project.get("own_contribution") and not project.get("optimizations"):
                 severity = "error" if is_cn and is_student else "warn"
