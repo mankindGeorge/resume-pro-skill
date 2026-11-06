@@ -177,7 +177,7 @@ html[lang="en"] .skill-label::after { content: ": "; }
     background: #ffffff;
     box-shadow: none;
   }
-  .section { break-inside: avoid; }
+  .section { break-inside: auto; }
 }
 
 .entry-note { font-size: 9.5pt; color: #444; margin-top: 1pt; }

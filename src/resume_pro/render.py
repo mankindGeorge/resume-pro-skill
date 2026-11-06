@@ -307,13 +307,13 @@ def _entry_head(title: str, dates: str) -> str:
 def _bullets(bullets: list[str]) -> str:
     if not bullets:
         return ""
-    items = "".join(f"<li>{_escape(text)}</li>" for text in bullets if text)
-    return f"<ul>{items}</ul>"
+    items = "".join(f'<div class="entry-line">{_escape(text)}</div>' for text in bullets if text)
+    return f'<div class="entry-lines">{items}</div>'
 
 
 def _list(items: list[str]) -> str:
-    values = "".join(f"<li>{_escape(item)}</li>" for item in items if item)
-    return f'<ul class="simple-list">{values}</ul>' if values else ""
+    values = "".join(f'<div class="simple-item">{_escape(item)}</div>' for item in items if item)
+    return f'<div class="simple-list">{values}</div>' if values else ""
 
 
 def _section_content(section: str, model: dict[str, Any]) -> str:
@@ -362,8 +362,8 @@ def _section_content(section: str, model: dict[str, Any]) -> str:
         rows = []
         for project in model.get("open_source") or []:
             links = " ".join(filter(None, (_link(link) for link in project.get("links") or [])))
-            rows.append(f'<li>{_escape(project["title"])}{(" " + links) if links else ""}</li>')
-        return f'<ul class="simple-list">{"".join(rows)}</ul>' if rows else ""
+            rows.append(f'<div class="simple-item">{_escape(project["title"])}{(" " + links) if links else ""}</div>')
+        return f'<div class="simple-list">{"".join(rows)}</div>' if rows else ""
     return ""
 
 

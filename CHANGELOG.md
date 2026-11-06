@@ -36,6 +36,7 @@ All notable changes to this project are documented here. The format follows Keep
 - Enforce content sufficiency: every kept role/project answers background, role, action, and result; ask for outcomes when only tools are given; use the selected framework's question ladder; and run silent depth mining for thin student/intern profiles, packaging only real contributions without inventing facts. When no number exists, offer to package the existing work with a stronger narrative instead of treating "keep" and "skip" as the same choice.
 - Flag `至今` / `present` end dates during lint and ask for a concrete end month before delivery; render education as `major · degree` on the entry line with GPA/rank only as a smaller note below.
 - Require each kept project to read as 3–4 labeled STAR points with substantial real detail. Lint flags thin bullets and thin projects; if a project cannot be packaged to that depth, the skill excludes it rather than keeping a weak block.
+- Templates render points as labeled paragraphs or plain lines, never `<ul>` / `<ol>` / `<li>` with a leading dot.
 
 ## [0.1.0] — 2026-11-05
 

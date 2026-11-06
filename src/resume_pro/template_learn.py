@@ -157,11 +157,11 @@ def _build_html(market: str, lang: str) -> str:
         <span data-slot="experience.item.title"></span>
         <span data-slot="experience.item.dates"></span>
       </div>
-      <ul>
+      <div class="entry-lines">
         <template data-slot="experience.item.bullet">
-          <li data-slot="experience.item.bullet.text"></li>
+          <div class="entry-line" data-slot="experience.item.bullet.text"></div>
         </template>
-      </ul>
+      </div>
     </article>
   </template>
 
@@ -171,16 +171,16 @@ def _build_html(market: str, lang: str) -> str:
         <span data-slot="project.item.name"></span>
         <span data-slot="project.item.dates"></span>
       </div>
-      <ul>
+      <div class="entry-lines">
         <template data-slot="project.item.bullet">
-          <li data-slot="project.item.bullet.text"></li>
+          <div class="entry-line" data-slot="project.item.bullet.text"></div>
         </template>
-      </ul>
+      </div>
     </article>
   </template>
 
   <template data-slot="skill.item">
-    <li data-slot="skill.item.name"></li>
+    <div class="simple-item" data-slot="skill.item.name"></div>
   </template>
 </body>
 </html>
@@ -254,8 +254,8 @@ body {{
   margin-bottom: 1pt;
 }}
 .entry-head .dates {{ font-weight: 400; white-space: nowrap; color: #444; }}
-ul {{ margin: 2pt 0 0 14pt; padding: 0; }}
-li {{ margin: 1pt 0; }}
+.entry-lines {{ margin: 2pt 0 0 14pt; padding: 0; }}
+.entry-line {{ margin: 1pt 0; }}
 
 a {{ color: var(--accent); text-decoration: none; }}
 
@@ -381,20 +381,20 @@ def _preview_resume(result: IngestResult, lang: str) -> str:
         for entry in fields["experience"]:
             head = " · ".join(str(entry.get(k)) for k in ("company", "title") if entry.get(k))
             dates = " – ".join(str(entry.get(k)) for k in ("start", "end") if entry.get(k))
-            bullets = "".join(f"<li>{html.escape(str(b))}</li>" for b in entry.get("bullets") or [])
-            parts.append(f'<article class="entry"><div class="entry-head"><span>{html.escape(head)}</span><span class="dates">{html.escape(dates)}</span></div><ul>{bullets}</ul></article>')
+            bullets = "".join(f'<div class="entry-line">{html.escape(str(b))}</div>' for b in entry.get("bullets") or [])
+            parts.append(f'<article class="entry"><div class="entry-head"><span>{html.escape(head)}</span><span class="dates">{html.escape(dates)}</span></div><div class="entry-lines">{bullets}</div></article>')
         parts.append("</section>")
     if fields.get("projects"):
         parts.append(f'<section class="section"><h2>{h["projects"]}</h2>')
         for entry in fields["projects"]:
             dates = " – ".join(str(entry.get(k)) for k in ("start", "end") if entry.get(k))
-            bullets = "".join(f"<li>{html.escape(str(b))}</li>" for b in entry.get("bullets") or [])
-            parts.append(f'<article class="entry"><div class="entry-head"><span>{html.escape(str(entry.get("name") or "Project"))}</span><span class="dates">{html.escape(dates)}</span></div><ul>{bullets}</ul></article>')
+            bullets = "".join(f'<div class="entry-line">{html.escape(str(b))}</div>' for b in entry.get("bullets") or [])
+            parts.append(f'<article class="entry"><div class="entry-head"><span>{html.escape(str(entry.get("name") or "Project"))}</span><span class="dates">{html.escape(dates)}</span></div><div class="entry-lines">{bullets}</div></article>')
         parts.append("</section>")
     if fields.get("skills"):
         parts.append(f'<section class="section"><h2>{h["skills"]}</h2><p>{html.escape(", ".join(str(s) for s in fields["skills"]))}</p></section>')
     if fields.get("awards"):
-        parts.append(f'<section class="section"><h2>{h["awards"]}</h2><ul>{"".join(f"<li>{html.escape(str(a))}</li>" for a in fields["awards"])}</ul></section>')
+        parts.append(f'<section class="section"><h2>{h["awards"]}</h2><div class="simple-list">{"".join(f"<div class=\"simple-item\">{html.escape(str(a))}</div>" for a in fields["awards"])}</div></section>')
     return "".join(parts)
 
 

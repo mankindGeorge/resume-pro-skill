@@ -110,7 +110,7 @@ def _html_info(html_text: str) -> dict[str, Any]:
         heading_text = heading.get_text(" ", strip=True) if heading else ""
         sections.append(section_id)
         headings[section_id] = heading_text
-    items = [item.get_text(" ", strip=True) for item in soup.find_all("li")]
+    items = [item.get_text(" ", strip=True) for item in soup.select(".entry-line, .simple-item")]
     return {
         "sections": sections,
         "headings": headings,

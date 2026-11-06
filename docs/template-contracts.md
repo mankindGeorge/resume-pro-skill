@@ -21,6 +21,7 @@ Every template must:
 13. Reserve an optional `identity.photo` slot in the header. When no photo is set, the slot must collapse completely: no border, no background, no blank box. `intl_en` suppresses photos by policy; CN markets may show one.
 14. Avoid italic/oblique text, alternative serif or display faces, and variant glyph styling. Use one standard system sans-serif stack per resume language, standard lining numerals, and disabled ligatures/contextual alternates so the resume does not substitute alternate character forms.
 15. Render education as school + dates and `major · degree` on the entry line, with GPA/rank as a smaller note below when present.
+16. Render every point as a labeled paragraph or plain line. The resume must not use `<ul>`, `<ol>`, or `<li>`; no list marker or dot appears before the text.
 
 ## 2. Typography floor
 

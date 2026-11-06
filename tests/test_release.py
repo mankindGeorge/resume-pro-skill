@@ -112,6 +112,18 @@ def test_templates_avoid_italic_and_variant_typography():
         assert "font-style: italic" not in text.lower(), path
 
 
+def test_templates_use_plain_labeled_lines_without_lists():
+    for path in sorted((ROOT / "templates").glob("*/*")):
+        if path.suffix not in {".html", ".css"}:
+            continue
+        text = path.read_text(encoding="utf-8")
+        assert not re.search(r"<(?:ul|ol|li)(?:\s|>)", text, re.IGNORECASE), path
+        assert "list-style" not in text, path
+    for path in sorted((ROOT / "src" / "resume_pro").glob("*.py")):
+        text = path.read_text(encoding="utf-8")
+        assert not re.search(r"<(?:ul|ol|li)(?:\s|>)", text, re.IGNORECASE), path
+
+
 def test_readme_embeds_template_previews():
     readmes = {
         name: (ROOT / name).read_text(encoding="utf-8")

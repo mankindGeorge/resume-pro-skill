@@ -185,7 +185,7 @@ html[lang="en"] .skill-label::after { content: ": "; }
     background: #ffffff;
     box-shadow: none;
   }
-  .section { break-inside: avoid; }
+  .section { break-inside: auto; }
 }
 
 .entry-note { font-size: 9.5pt; color: #444; margin-top: 1pt; }
@@ -227,7 +227,7 @@ body.editable{padding-top:34pt}
 <div data-slot="section.education"><div class="entry"><div class="entry-head"><span class="entry-title">Example University</span><span class="entry-meta">2023-09 – 2027-06</span></div><div class="entry-sub">Software Engineering · B.Eng.</div><div class="entry-note">GPA 3.6/4.0</div></div></div>
 </section><section class="section" data-section="projects">
 <h2>Projects</h2>
-<div data-slot="section.projects"><div class="entry"><div class="entry-head"><span class="entry-title">Course QA with RAG</span><span class="entry-meta">2025-09 – 2026-03</span></div><div class="entry-sub">Retrieval lead</div><ul><li>Owned retrieval, designed heading-aware chunking, and added hybrid BM25 retrieval.</li><li>Raised Recall@5 from 62% to 81% on 120 human-labeled questions.</li></ul></div><div class="entry"><div class="entry-head"><span class="entry-title">Campus Second-hand Marketplace</span><span class="entry-meta">2025-03 – 2025-08</span></div><div class="entry-sub">Backend developer</div><ul><li>Cut product-detail P95 from 420ms to 160ms under load test.</li><li>Added cache-aside for hot product pages and a mutex for cache misses.</li></ul></div></div>
+<div data-slot="section.projects"><div class="entry"><div class="entry-head"><span class="entry-title">Course QA with RAG</span><span class="entry-meta">2025-09 – 2026-03</span></div><div class="entry-sub">Retrieval lead</div><div class="entry-lines"><div class="entry-line">Owned retrieval, designed heading-aware chunking, and added hybrid BM25 retrieval.</div><div class="entry-line">Raised Recall@5 from 62% to 81% on 120 human-labeled questions.</div></div></div><div class="entry"><div class="entry-head"><span class="entry-title">Campus Second-hand Marketplace</span><span class="entry-meta">2025-03 – 2025-08</span></div><div class="entry-sub">Backend developer</div><div class="entry-lines"><div class="entry-line">Cut product-detail P95 from 420ms to 160ms under load test.</div><div class="entry-line">Added cache-aside for hot product pages and a mutex for cache misses.</div></div></div></div>
 </section><section class="section" data-section="skills">
 <h2>Skills</h2>
 <div data-slot="section.skills"><div class="skill-row"><span class="skill-label">Backend</span><span class="skill-values">Java, Spring Boot, MySQL, Redis</span></div><div class="skill-row"><span class="skill-label">AI / Retrieval</span><span class="skill-values">Python, RAG, FAISS</span></div><div class="skill-row"><span class="skill-label">CS Fundamentals</span><span class="skill-values">Operating Systems, Computer Networks, Data Structures, Algorithms, Databases</span></div></div>

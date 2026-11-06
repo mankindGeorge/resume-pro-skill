@@ -215,6 +215,7 @@ resume templates
 - If the user gives technology without background or results, ask one question: can you supply it, or should I rephrase only what you already gave? Add nothing on my own.
 - Follow the selected framework while collecting: STAR asks situation, task, action, result; XYZ asks the accomplished X measured by Y by doing Z; CAR asks challenge, action, result. Ask only for the slots that are missing.
 - Render each kept project as 3–4 labeled STAR points: `项目背景：`, `核心框架：`, `解决方案：`（或 `难点：`）, `核心成果：`. Each point is a complete, substantial sentence with real detail; never a one-line fragment.
+- All points render as labeled paragraphs or plain lines. Do not use `<ul>`, `<ol>`, or `<li>`, and do not put a bullet dot before the text.
 - A project with too little text is a packaging failure. Mine constraints, decisions, trade-offs, artifacts, and feedback to surface real highlights; if it still cannot fill a labeled point, exclude it instead of keeping a weak block.
 - If no outcome exists, ask for a smaller true detail instead of padding the resume.
 - Never let a bare label render alone (for example, a degree with no other detail). Education writes `major · degree` on the entry line; GPA/rank goes below when present.
