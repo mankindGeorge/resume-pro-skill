@@ -19,7 +19,7 @@ The primary audience is **China's job market**; international applications are s
 
 ## Workspace
 
-Put every user-facing artifact under the skill root's `workspace/`. Use one subfolder per application or review and keep the resume, editable copy, reports, and diagnosis together.
+Put every user-facing artifact under the skill root's `workspace/`. Use one subfolder per application or review. The workspace keeps only the deliverable resume files — the final HTML and its editable copy; QA, lint, render, and parity reports live under `.resume/applications/<slug>/` and are never copied into the workspace.
 
 - The CLI resolves the skill root and publishes there; if the project folder is already inside that workspace, the files stay in that project folder.
 - `.resume/` remains internal state. `resume build` and `resume review` publish copies to the workspace; copy any other user-facing report there too.
@@ -179,6 +179,10 @@ resume localize <slug> --to zh --role "高级后端工程师" --yes
 - Re-derive from facts for the target market; keep the existing cross-market selection and writing workflow.
 - Retain the source design ID by default and resolve its target-language variant; change the design only with an explicit `--template <id>`. A learned template without that language fails clearly.
 - Missing target-language facts exit `3` with a gap list. `--draft` marks them `[NEEDS EN]`/`[NEEDS ZH]`; deliver only after the gaps are resolved.
+- School names: when the user has not provided the target-language school name, look up the official English name on the web, prefer the school's own English site, and confirm it with the user before writing it into the vault.
+- Project names: propose 2–3 target-language candidates interactively and let the user pick or edit; never rename a project silently. School and project names carry per-locale text, so each resume keeps its own name.
+- A target-language resume is strictly monolingual: never mix languages in one resume, and translate every visible field (name, location, school, project names, skill items, awards).
+- When a term cannot be translated directly — person names, program names, competition cups — ask the user first whether to romanize, abbreviate, or translate it; never decide silently.
 - Parity failures block delivery. Review `parity.json` before the user sends anything.
 
 ### Recommend
@@ -220,7 +224,7 @@ resume templates
 - Render each kept project as 3–4 labeled points using the chosen framework's recipe and label set. Each point is a complete, substantial sentence with real detail; never a one-line fragment.
 - 项目/实习介绍每行文字至少占可打印宽度的 2/5。换行后一行只剩几个字时，优先扩句（只展开已有事实），其次精简句子重新排布，不要留孤字行。
 - A `核心成果：` point must say what problem was solved and what changed, not just list an award or repeat the technology. A `解决方案：` point must explain the pain point and why the approach fits it. Remove filler such as launch dates unless they prove impact.
-- All points render as labeled paragraphs or plain lines. Do not use `<ul>`, `<ol>`, or `<li>`, and do not put a bullet dot before the text.
+- All points render as labeled paragraphs or plain lines. Do not use `<ul>`, `<ol>`, or `<li>`, and do not put a bullet dot before the text. The leading label (for example `项目背景：` or `Background:`) renders bold so the point structure is visible at a glance.
 - 内容太少的项目做不出效果。多问约束、决策、取舍、产物和反馈，找出真实亮点；实在填不满一个分点，就去掉这个项目。
 - If no outcome exists, ask for a smaller true detail instead of padding the resume.
 - Data is mandatory wherever it strengthens the story: every result-oriented point should carry a number, scope, ratio, time saved, or measurable change. **Ask the user for the real data first** — that is always the first option. Only when the user explicitly chooses "no data" / "I don't know" may you propose one or two plausible candidate values, explain the assumption, and ask the user to confirm the value is reasonable before writing it. A confirmed candidate is recorded as user-asserted, not verified; an unconfirmed candidate stays out.

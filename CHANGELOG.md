@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows Keep
 
 ### Changed
 
+- Point labels (`项目背景：` / `Background:` and friends) render bold in every resume, so the point structure is visible at a glance in both languages.
+- The workspace keeps only the deliverable resume files (the final HTML and its editable copy). QA, lint, render, and parity reports stay under `.resume/applications/<slug>/` and are never copied into the workspace.
 - Write writing frameworks and content packaging in one document (`references/writing-engine.md`): each of the six frameworks — STAR, XYZ, FAB, CAR, result-first, user voice — carries its own packaging recipe with labeled points and examples. Packaging is no longer shaped like one framework only; lint and skill instructions refer to the chosen framework's recipe.
 - Require the agent to use a host interactive question tool across all resume routes, continuing the same conversation and task after each answer rather than ending with a questionnaire. Preserve free-text answers and pause/resume; report unavailable or denied tools without a silent fallback.
 - Require explicit fact confirmation independently of intake completion and sufficiency. Clarify collection-correction semantics and the boundary between host-tool instructions and CLI enforcement.
@@ -22,6 +24,7 @@ All notable changes to this project are documented here. The format follows Keep
 
 ### Added
 
+- School and project names accept per-locale text (`localizedText`), so the Chinese and English resumes each keep their own name; `localize` now requires target-language names like every other localized field. When sourcing them: look up the school's official English name on the web if the user has not provided one, and propose 2–3 project-name candidates interactively for the user to pick or edit.
 - QA check `qa.layout.short_line`: every rendered line of a project or experience intro must fill at least 2/5 of the printable width. A wrap that leaves only a few characters alone on a line is a hard failure; the fix expands the sentence with real detail (preferred) or tightens the wording. Line measurements use the template's real margins, and the rule is written into the writing engine shared rules.
 - Add a qualified-project content-sufficiency standard: a project presentation covers background/role/trade-offs/difficulties/evaluation/deployment/outcomes/feedback, and guided interaction proactively asks, one question at a time, for the dimensions the user may not have thought to mention instead of waiting for more input.
 - Five regression tests for the mandatory interaction instructions, multi-round CLI answers, invalid-input recovery, read-only summary/resume, unknown answers, multiline Chinese input, and confirmation recovery. These are not live host-UI tests.

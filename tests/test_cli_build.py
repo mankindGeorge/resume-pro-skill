@@ -60,9 +60,9 @@ def test_build_renders_html_and_editable(tmp_path, monkeypatch):
     assert workspace == tmp_path / "workspace" / slug
     assert (workspace / html_path.name).is_file()
     assert (workspace / editable_path.name).is_file()
-    assert (workspace / "lint.json").is_file()
-    assert (workspace / "qa.json").is_file()
-    assert (workspace / "render.json").is_file()
+    published = sorted(path.name for path in workspace.iterdir())
+    assert published == sorted([html_path.name, editable_path.name])
+    assert not list(workspace.glob("*.json"))
     assert not list(app_dir.glob("*.pdf"))
     assert not list(app_dir.glob("*.docx"))
 

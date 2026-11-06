@@ -495,7 +495,7 @@ def _run_build(
     workspace = publish_workspace(
         root,
         slug,
-        [result.html_path, result.editable_path, result.report_path, qa_path, lint_path],
+        [result.html_path, result.editable_path],
     )
     payload.update(
         {

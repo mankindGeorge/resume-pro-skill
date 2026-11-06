@@ -221,6 +221,25 @@ def test_short_line_rule_is_documented():
     assert "qa.layout.short_line" in install
 
 
+def test_localize_sources_names_and_keeps_workspace_clean():
+    skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+    section = skill.split("### Localize", 1)[1].split("\n### ", 1)[0]
+    assert "look up the official English name" in section
+    assert "propose 2–3 target-language candidates interactively" in section
+    assert "never rename a project silently" in section
+    assert "strictly monolingual" in section
+    assert "ask the user first" in section
+    assert "keeps only the deliverable resume files" in skill
+    assert "never copied into the workspace" in skill
+
+
+def test_point_labels_render_bold():
+    engine = (ROOT / "references" / "writing-engine.md").read_text(encoding="utf-8")
+    assert "renders bold" in engine
+    skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+    assert "renders bold" in skill
+
+
 def test_no_pdf_or_docx_resume_writer():
     for path in (ROOT / "src").rglob("*.py"):
         text = path.read_text(encoding="utf-8")
