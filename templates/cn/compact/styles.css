@@ -156,6 +156,7 @@ html[lang="en"] .skill-label::after { content: ": "; }
   
 }
 .simple-list .entry-line { margin: 0; font-size: 9.5pt; }
+section[data-section="awards"] .simple-list { grid-template-columns: 1fr; }
 
 @media screen {
   html { background: #e9edf2; }
