@@ -121,7 +121,7 @@ resume templates [--json]
 | Command | Behavior |
 |---|---|
 | `build` | Runs the gate and lint, then writes `resume.html`, `resume-editable.html`, `render.json`, and `lint.json`. `blocked` exits `2`; `minimum` requires `--yes`; lint errors exit `4`. |
-| `templates` | Lists the 10 public variants (five signed layouts × `templates/cn` and `templates/en`), plus learned `user-*` templates: id, language, markets, personas, pages, columns, fingerprint, directory `path`, and `preview` (the `preview.html` path, also printed in human output). The CLI groups by language folder. |
+| `templates` | Lists the 12 public variants (six signed layouts × `templates/cn` and `templates/en`), plus learned `user-*` templates: id, language, markets, personas, pages, columns, fingerprint, directory `path`, and `preview` (the `preview.html` path, also printed in human output). The CLI groups by language folder. |
 | `localize` | Re-derives from the vault for the target market; writes a parity report and the target HTML. Retains the source layout ID and resolves its target-language variant unless `--template` overrides it. Missing target-locale facts exit `3`; `--draft` marks them. Parity failures exit `4`. Literal translation is not a mode. |
 
 ### 3.5 Verify

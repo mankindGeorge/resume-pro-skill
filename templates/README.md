@@ -1,16 +1,17 @@
 # Template Library
 
-This folder holds **five distinct A4 designs in both Chinese and English: 10 variants**. `cn/` and `en/` indicate resume language; their manifests use `language: zh` and `language: en` respectively.
+This folder holds **six distinct A4 designs in both Chinese and English: 12 variants**. `cn/` and `en/` indicate resume language; their manifests use `language: zh` and `language: en` respectively.
 
 | Design ID | Structure | Chinese (`zh`) | English (`en`) |
 |---|---|---|---|
 | `ats-classic` | Minimal single column | [cn](cn/ats-classic/) | [en](en/ats-classic/) |
 | `campus` | Education-first single column | [cn](cn/campus/) | [en](en/campus/) |
+| `compact` | Compact one-page campus layout | [cn](cn/compact/) | [en](en/compact/) |
 | `modern-sidebar` | Main column + right sidebar | [cn](cn/modern-sidebar/) | [en](en/modern-sidebar/) |
 | `editorial` | One-page editorial | [cn](cn/editorial/) | [en](en/editorial/) |
 | `executive` | Centered letterhead, two pages | [cn](cn/executive/) | [en](en/executive/) |
 
-`resume templates` lists 10 public variants plus private learned templates. Rendering and QA select by `writing.locale`, defaulting to the market profile's `language`. Direct `load_template(id, language=zh|en)` calls must specify language for multilingual IDs; omission is an error, not a preference for `cn`.
+`resume templates` lists 12 public variants plus private learned templates. Rendering and QA select by `writing.locale`, defaulting to the market profile's `language`. Direct `load_template(id, language=zh|en)` calls must specify language for multilingual IDs; omission is an error, not a preference for `cn`.
 
 Every variant:
 

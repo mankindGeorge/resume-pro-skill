@@ -16,7 +16,7 @@ All notable changes to this project are documented here. The format follows Keep
 - Reframe the project as China-first with international support: Chinese-market profiles lead, while `intl_en` and English resume variants remain fully available. Market and persona rules are unchanged.
 - Remove italic and alternative serif/variant typography from all resume templates: editorial headings now use the standard sans stack, and every variant disables synthetic styles, ligatures, contextual alternates, and old-style figures.
 - Order sections by HR priority: students lead with education → experience → projects → skills; professionals lead with summary → experience → projects → education → skills. `modern-sidebar` moves education into the main column and reorders within each column.
-- Reduce the public library to five layouts and ten language variants; recommend `modern-sidebar` for Chinese-market professional profiles.
+- Provide six layouts and twelve language variants, including the compact campus design; recommend `modern-sidebar` for Chinese-market professional profiles.
 - Correct `schema/README.md` to describe locale-based template resolution instead of the removed market-locked match.
 
 ### Added
@@ -24,9 +24,10 @@ All notable changes to this project are documented here. The format follows Keep
 - Five regression tests for the mandatory interaction instructions, multi-round CLI answers, invalid-input recovery, read-only summary/resume, unknown answers, multiline Chinese input, and confirmation recovery. These are not live host-UI tests.
 - `resume templates` now prints each variant's `preview.html` path in human output and a `preview` field in `--json`, so users can open a design in a browser before choosing. A contract test guards the create/optimize template-choice and preview-location instructions, and listing tests assert the preview paths.
 - Add `scripts/package_skill.py`, which builds a deterministic, private-safe skill ZIP with one top-level folder, excludes private review material, learned templates, local workspaces, caches, and secret-like files, and unzips/bootstrap-checks the archive before reporting success.
-- Add the root `resume.py` launcher and `bootstrap.py` runtime check/install. They verify Python, dependencies, and all 10 template variants; `--install` performs an editable install for the `resume` command, while `--deps-only` supports environments where pip cannot install the package.
+- Add the root `resume.py` launcher and `bootstrap.py` runtime check/install. They verify Python, dependencies, and all 12 template variants; `--install` performs an editable install for the `resume` command, while `--deps-only` supports environments where pip cannot install the package.
 - Add packaging documentation and regression tests for archive completeness, determinism, private-path exclusion, and bootstrap readiness.
 - Add template preview thumbnails to both READMEs and `scripts/build_readme_previews.py` to regenerate them; packaging includes the preview assets.
+- Add the `compact` layout: a one-page campus design with ruled headings, centered entry headers, and a two-column awards list.
 
 ## [0.1.0] — 2026-11-05
 

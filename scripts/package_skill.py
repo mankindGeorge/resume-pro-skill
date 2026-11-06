@@ -27,6 +27,7 @@ FIXED_TIMESTAMP = (1980, 1, 1, 0, 0, 0)
 LIBRARY_IDS = (
     "ats-classic",
     "campus",
+    "compact",
     "modern-sidebar",
     "editorial",
     "executive",

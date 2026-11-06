@@ -119,12 +119,13 @@ resume localize <slug> --to en --role "Backend Engineer" --yes
 
 **输入：** DOCX、文本型 PDF、HTML、Markdown、TXT；DOC / RTF 需要 LibreOffice。
 
-**模板：** 提供 **5 种不同设计 × 中英双语，共 10 个变体**。`templates/cn/` 与 `templates/en/` 仅表示简历语言，manifest 分别为 `language: zh` / `en`。下表为各模板的预览截图，点击图片可打开完整 HTML。
+**模板：** 提供 **6 种不同设计 × 中英双语，共 12 个变体**。`templates/cn/` 与 `templates/en/` 仅表示简历语言，manifest 分别为 `language: zh` / `en`。下表为各模板的预览截图，点击图片可打开完整 HTML。
 
 | 设计 ID | 预览 |
 |---|---|
 | `ats-classic` | <a href="templates/en/ats-classic/preview.html"><img src="docs/images/templates/en-ats-classic.png" alt="ATS Classic 预览" width="480"></a> |
 | `campus` | <a href="templates/en/campus/preview.html"><img src="docs/images/templates/en-campus.png" alt="Campus 预览" width="480"></a> |
+| `compact` | <a href="templates/en/compact/preview.html"><img src="docs/images/templates/en-compact.png" alt="Compact 预览" width="480"></a> |
 | `modern-sidebar` | <a href="templates/en/modern-sidebar/preview.html"><img src="docs/images/templates/en-modern-sidebar.png" alt="Modern Sidebar 预览" width="480"></a> |
 | `editorial` | <a href="templates/en/editorial/preview.html"><img src="docs/images/templates/en-editorial.png" alt="Editorial 预览" width="480"></a> |
 | `executive` | <a href="templates/en/executive/preview.html"><img src="docs/images/templates/en-executive.png" alt="Executive 预览" width="480"></a> |

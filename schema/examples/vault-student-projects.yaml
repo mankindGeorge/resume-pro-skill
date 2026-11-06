@@ -15,6 +15,7 @@ identity:
   locale: zh
   summary:
     zh: "计算机专业应届生，做过两个从零到一的项目，负责检索与后端实现，习惯先测再改。"
+    en: "Computer science graduate with two projects built from scratch; owned retrieval and backend work and tests before changing behavior."
   summary_evidence: [ev_summary]
 
 education:

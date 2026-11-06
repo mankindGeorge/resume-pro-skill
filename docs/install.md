@@ -43,7 +43,7 @@ Unzip it into your agent's skill directory. Keep the folder on disk: the CLI rea
 
 ```bash
 cd resume-pro-skill
-python bootstrap.py              # Python version, dependencies, 10 template variants
+python bootstrap.py              # Python version, dependencies, 12 template variants
 python bootstrap.py --install    # editable install; adds the `resume` command
 # If pip cannot install packages:
 python bootstrap.py --deps-only  # dependencies only

@@ -11,7 +11,7 @@ import zipfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATES = ("ats-classic", "campus", "modern-sidebar", "editorial", "executive")
+TEMPLATES = ("ats-classic", "campus", "compact", "modern-sidebar", "editorial", "executive")
 LIBRARY = {(template_id, language) for template_id in TEMPLATES for language in ("zh", "en")}
 PRIVATE_MARKERS = (
     "docs/local/",
@@ -61,7 +61,7 @@ def assert_private_safe(relative_names: list[str]) -> None:
 def test_archive_is_complete_private_safe_and_deterministic(tmp_path):
     first, report = build(tmp_path, "first.zip")
     assert report["ok"] is True
-    assert report["runtime_check"] == {"ok": True, "templates": 10, "errors": []}
+    assert report["runtime_check"] == {"ok": True, "templates": 12, "errors": []}
     assert Path(report["archive"]) == first
     assert report["files"] > 100
     assert report["sha256"] == hashlib.sha256(first.read_bytes()).hexdigest()
@@ -111,7 +111,7 @@ def test_bootstrap_reports_runtime_ready():
     assert report["ok"] is True
     assert report["python_ok"] is True
     assert report["missing_dependencies"] == []
-    assert report["library_templates"] == 10
+    assert report["library_templates"] == 12
     assert set(report["template_variants"]) == {f"{template_id}:{language}" for template_id, language in LIBRARY}
 
 

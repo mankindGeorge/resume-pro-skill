@@ -40,7 +40,7 @@ Every template must:
 
 ## 3. The template library
 
-The library contains **five distinct designs × two resume languages = 10 variants**. Each design has a different structure; its Chinese and English variants share that structure, with language-appropriate typography. Both `templates/cn/` and `templates/en/` contain all five IDs below. Private learned templates remain under `templates/user-<hash>/`, outside the public library.
+The library contains **six distinct designs × two resume languages = 12 variants**. Each design has a different structure; its Chinese and English variants share that structure, with language-appropriate typography. Both `templates/cn/` and `templates/en/` contain all six IDs below. Private learned templates remain under `templates/user-<hash>/`, outside the public library.
 
 ### 3.0 Language variants and routing
 
@@ -48,8 +48,8 @@ The library contains **five distinct designs × two resume languages = 10 varian
 - Chinese variants use CJK-first font stacks and Chinese heading/date conventions; English variants use Latin-first typography and English conventions. Preserve each design's font hierarchy and capacity limits rather than treating the variants as renamed copies.
 - Resolve a design with `load_template(id, language=zh|en)`. When the ID has multiple language variants, omitting language is an explicit ambiguity error; never search `cn` first and silently accept it. A requested but missing language variant also fails explicitly.
 - Rendering and QA use the application's `writing.locale`, falling back to the market profile's `language` only when it is absent. Validate the selected manifest against that resolved language, not against a presumed market-exclusive design ID. `--lang` changes CLI messages, not resume language.
-- `resume templates` lists 10 public variants, including each ID, its manifest language, and its `preview.html` path (printed in human output and a `preview` field in `--json`), plus private learned templates. Open `templates/<cn|en>/<id>/preview.html` in a browser to view a design.
-- During creation and optimization the agent asks the user which layout to use through the interactive question tool before rendering: present the five designs in the resume's language, recommend the market/persona default, show the preview paths, and pass the choice with `--template <id>`. The default is not accepted silently when the user has not been asked.
+- `resume templates` lists 12 public variants, including each ID, its manifest language, and its `preview.html` path (printed in human output and a `preview` field in `--json`), plus private learned templates. Open `templates/<cn|en>/<id>/preview.html` in a browser to view a design.
+- During creation and optimization the agent asks the user which layout to use through the interactive question tool before rendering: present the six designs in the resume's language, recommend the market/persona default, show the preview paths, and pass the choice with `--template <id>`. The default is not accepted silently when the user has not been asked.
 - Existing defaults remain recommendations: `campus` for Chinese-market campus profiles, `modern-sidebar` for Chinese-market professional profiles, `ats-classic` for international default profiles, and `executive` for international senior profiles. Market/persona still govern fact selection, writing, page policy, photos, and fact confirmation.
 - `restyle` changes appearance only, not market, persona, selection, or writing locale. `localize` retains its target-market reselection and rewriting workflow; it keeps the source design ID by default, unless an explicit `--template <id>` overrides it. Neither route translates rendered HTML.
 
@@ -57,6 +57,7 @@ The library contains **five distinct designs × two resume languages = 10 varian
 |---|---|---|---|---|
 | `ats-classic` | zh, en | A4 · 1–2 pages | single | highest |
 | `campus` | zh, en | A4 · 1–2 pages | single, education-first | high |
+| `compact` | zh, en | A4 · 1 page | single, compact | high |
 | `modern-sidebar` | zh, en | A4 · 1–2 pages | main + right sidebar | medium, with single-column fallback |
 | `editorial` | zh, en | A4 · 1 page | single, magazine | medium-high |
 | `executive` | zh, en | A4 · 2 pages | single, centered letterhead | high |
@@ -103,6 +104,14 @@ All designs reserve an optional photo slot; the market determines whether it is 
 - Required: `identity.name`, `identity.contact`, `section.summary`, `section.experience`, `section.education`.
 - Optional: `identity.links`, `identity.photo`, `section.skills`, `section.projects`, `section.awards`, `section.certificates`, `section.languages`, `section.publications`, `section.open_source`.
 - Rules: show verified outcomes, scope, and team size using the consented writing framework. Page 2 must not be filler; the two-page target is enforced by QA. The optional photo follows market policy: `intl_en` suppresses it, not the design itself.
+
+### 3.6 `compact`
+
+- Purpose: a dense one-page campus layout for project-led applications.
+- Order: name/contact → education → experience → projects → skills → awards. Students lead with education; professional profiles lead with summary and experience.
+- Required: `identity.name`, `identity.contact`, `section.education`, `section.skills`.
+- Optional: `identity.links`, `identity.photo`, `section.experience`, `section.projects`, `section.awards`, `section.certificates`, `section.languages`, `section.publications`, `section.open_source`, `section.summary`.
+- Rules: ruled section headings, centered entry headers with dates on the left, two-column awards, compact spacing. One-page capacity; the optional photo follows market policy.
 
 ## 4. Content budgets
 

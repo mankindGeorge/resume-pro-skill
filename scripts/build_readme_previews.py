@@ -11,7 +11,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATES = ("ats-classic", "campus", "modern-sidebar", "editorial", "executive")
+TEMPLATES = ("ats-classic", "campus", "compact", "modern-sidebar", "editorial", "executive")
 OUTPUT = ROOT / "docs" / "images" / "templates"
 WIDTH = 794
 HEIGHT = 1215

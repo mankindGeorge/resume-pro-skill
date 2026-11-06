@@ -384,7 +384,7 @@ For `AskUserQuestion`, custom input is supplied through the built-in Other path;
 | Pause, then resume | No fake answer is saved; intake resumes at the pending question |
 | Final fact confirmation | The summary is shown before consent; completion proceeds to the sufficiency check rather than ending the agent task |
 | Template/framework/localization clarification | The same interactive protocol is used outside intake |
-| Choosing a layout before rendering | The agent asks which design to use through the tool, shows the five layouts in the resume language and each `templates/<cn\|en>/<id>/preview.html` path, recommends the default but lets the user change it, then passes `--template <id>` |
+| Choosing a layout before rendering | The agent asks which design to use through the tool, shows the six layouts in the resume language and each `templates/<cn\|en>/<id>/preview.html` path, recommends the default but lets the user change it, then passes `--template <id>` |
 | Missing or denied host tool | Honest capability-blocker report, no simulated dialog or silent fallback |
 
 Automated tests guard the instruction contract and exercise CLI state transitions with scripted answers. They do not prove a particular agent client displays dialogs or follows instructions; validate those behaviors in a host that exposes the tool.

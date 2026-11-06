@@ -23,7 +23,7 @@ LANGUAGES = {"cn": "zh", "en": "en"}
 MARKETS = ["intl_en", "cn_internet", "cn_soe", "cn_finance", "cn_creative", "hk_sg", "academic"]
 # Provenance only: every ID below is generated in BOTH language folders.
 BASELINE_FOLDERS = {
-    "ats-classic": "en", "campus": "cn", "modern-sidebar": "en",
+    "ats-classic": "en", "campus": "cn", "compact": "cn", "modern-sidebar": "en",
     "editorial": "en", "executive": "en",
 }
 
@@ -75,7 +75,7 @@ CONFIG = {
     },
     "campus": {
         "name": {"zh": "校园", "en": "Campus"},
-        "description": "Education-first resume with visible fundamentals, A4, 1–2 pages; no job-intent section.",
+        "description": "Education-first resume with visible fundamentals, A4, 1–2 pages.",
         "personas": ["student_with_projects", "student_with_internship", "new_grad", "experienced", "career_switcher", "senior_manager"],
         "page": {
             "sizes": ["a4"],
@@ -97,6 +97,33 @@ CONFIG = {
         "budgets": {
             "summary_chars": {"en": 240, "zh": 120}, "bullets_per_role": 4,
             "bullets_per_project": 3, "max_roles": 4, "max_projects": 3, "max_skills": 12,
+        },
+        "ats": {"single_column": True, "text_selectable": True, "tables_allowed": False},
+    },
+    "compact": {
+        "name": {"zh": "紧凑", "en": "Compact"},
+        "description": "Compact one-page campus layout with ruled headings and centered entry headers.",
+        "personas": ["student_with_projects", "student_with_internship", "new_grad", "career_switcher"],
+        "page": {
+            "sizes": ["a4"],
+            "margins_mm": {"top": 14, "right": 20, "bottom": 14, "left": 20},
+            "target_pages": {"min": 1, "max": 1}, "columns": "single",
+        },
+        "required": [
+            ("identity.name", "text"), ("identity.contact", "text"),
+            ("section.education", "section"), ("section.skills", "section"),
+        ],
+        "optional": [
+            ("identity.links", "list"), ("identity.photo", "image"),
+            ("section.experience", "section"), ("section.projects", "section"),
+            ("section.awards", "section"), ("section.open_source", "section"),
+            ("section.certificates", "section"), ("section.languages", "section"),
+            ("section.publications", "section"), ("section.summary", "rich_text"),
+            *COMMON_ITEM_SLOTS,
+        ],
+        "budgets": {
+            "summary_chars": {"en": 240, "zh": 120}, "bullets_per_role": 4,
+            "bullets_per_project": 3, "max_roles": 4, "max_projects": 4, "max_skills": 16,
         },
         "ats": {"single_column": True, "text_selectable": True, "tables_allowed": False},
     },

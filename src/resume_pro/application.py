@@ -23,6 +23,7 @@ from .vault import vault_fingerprint
 LIBRARY_TEMPLATES = (
     "ats-classic",
     "campus",
+    "compact",
     "modern-sidebar",
     "editorial",
     "executive",

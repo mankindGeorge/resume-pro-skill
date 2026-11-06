@@ -119,12 +119,13 @@ For complete workflows, see the [walkthrough](docs/walkthrough.md) and [CLI cont
 
 **Inputs:** DOCX, text-based PDF, HTML, Markdown, and TXT. DOC / RTF require LibreOffice.
 
-**Templates:** **Five distinct designs × two resume languages = 10 variants.** `templates/cn/` and `templates/en/` indicate resume language, with manifest `language: zh` / `en`. Preview screenshots below; click one to open the full HTML.
+**Templates:** **Six distinct designs × two resume languages = 12 variants.** `templates/cn/` and `templates/en/` indicate resume language, with manifest `language: zh` / `en`. Preview screenshots below; click one to open the full HTML.
 
 | Design ID | Preview |
 |---|---|
 | `ats-classic` | <a href="templates/en/ats-classic/preview.html"><img src="docs/images/templates/en-ats-classic.png" alt="ATS Classic preview" width="480"></a> |
 | `campus` | <a href="templates/en/campus/preview.html"><img src="docs/images/templates/en-campus.png" alt="Campus preview" width="480"></a> |
+| `compact` | <a href="templates/en/compact/preview.html"><img src="docs/images/templates/en-compact.png" alt="Compact preview" width="480"></a> |
 | `modern-sidebar` | <a href="templates/en/modern-sidebar/preview.html"><img src="docs/images/templates/en-modern-sidebar.png" alt="Modern Sidebar preview" width="480"></a> |
 | `editorial` | <a href="templates/en/editorial/preview.html"><img src="docs/images/templates/en-editorial.png" alt="Editorial preview" width="480"></a> |
 | `executive` | <a href="templates/en/executive/preview.html"><img src="docs/images/templates/en-executive.png" alt="Executive preview" width="480"></a> |

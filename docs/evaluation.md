@@ -4,8 +4,8 @@ This is an internal evaluation on fictional fixtures. It is not a user study and
 
 ## 1. Automated surface
 
-- Templates are organized under `templates/cn/` and `templates/en/`; the folders identify resume language (`zh`/`en`). Each of the five layouts exists in both languages (ten variants).
-- 257 tests cover vault validation, evidence rules, intake branching, continuous-interaction instructions and CLI state transitions, sufficiency, ingestion, template audit, template learning, selection, writing consent, lint, JD match, recommendation, HTML rendering, five A4 layouts in both languages, language-aware template resolution, education-first ordering, optional portrait slots, mass/targeted role classification, transcreation/parity that preserves the source layout, QA, version diffs, standard template typography, README preview assets, and private-safe skill packaging/bootstrap.
+- Templates are organized under `templates/cn/` and `templates/en/`; the folders identify resume language (`zh`/`en`). Each of the six layouts exists in both languages (twelve variants).
+- 267 tests cover vault validation, evidence rules, intake branching, continuous-interaction instructions and CLI state transitions, sufficiency, ingestion, template audit, template learning, selection, writing consent, lint, JD match, recommendation, HTML rendering, six A4 layouts in both languages, language-aware template resolution, education-first ordering, optional portrait slots, mass/targeted role classification, transcreation/parity that preserves the source layout, QA, version diffs, standard template typography, README preview assets, and private-safe skill packaging/bootstrap.
 - Run: `python -m pytest`.
 - Browser QA: headless Edge/Chrome prints the rendered HTML to a temporary PDF, then checks actual pages, extracted text, selected bullets, headings, font floor, and section order.
 - Reproducibility: the same vault + application + template produce byte-identical HTML. Template manifests are signed with SHA-256 over HTML + CSS.
@@ -22,7 +22,7 @@ This is an internal evaluation on fictional fixtures. It is not a user study and
 | `vault-student-cn.yaml`, `vault-experienced-cn.yaml` | Chinese-language previews; `campus` and `modern-sidebar` |
 | `vault-academic.yaml` | Academic-market data for localization tests |
 | Strong/weak DOCX, HTML, PDF, scanned PDF | Ingestion and template audit |
-| Five signed layouts × two languages (ten previews) | Rendering, language parity, and A4 print |
+| Six signed layouts × two languages (twelve previews) | Rendering, language parity, and A4 print |
 
 ## 3. Blind review rubric
 

@@ -266,7 +266,7 @@ If the facts are insufficient, the system must not fill the gap with plausible c
 
 ## Template language families
 
-- **Chinese:** `campus` (students/new grads) and `modern-sidebar` (experienced/switcher/senior). CJK-first font stacks, 1.5–1.55 leading, `YYYY.MM` dates.
-- **English:** `ats-classic`, `modern-sidebar`, `editorial`, `executive`. Latin-only stacks, 1.3–1.4 leading, `YYYY-MM` dates.
+- **Chinese:** `campus`, `compact` (students/new grads), and `modern-sidebar` (experienced/switcher/senior). CJK-first font stacks, 1.5–1.55 leading, `YYYY.MM` dates.
+- **English:** `ats-classic`, `campus`, `compact`, `modern-sidebar`, `editorial`, `executive`. Latin-only stacks, 1.3–1.4 leading, `YYYY-MM` dates.
 
 Each template variant declares one language. Rendering and QA select the variant by `writing.locale`, falling back to the market profile's `language`; a missing or mismatched variant fails explicitly.

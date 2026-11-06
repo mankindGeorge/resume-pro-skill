@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-TEMPLATES = ("ats-classic", "campus", "modern-sidebar", "editorial", "executive")
+TEMPLATES = ("ats-classic", "campus", "compact", "modern-sidebar", "editorial", "executive")
 
 
 def test_golden_previews_are_stable():
@@ -89,7 +89,7 @@ def test_skill_asks_template_choice_and_preview_location():
 def test_templates_avoid_italic_and_variant_typography():
     """Resume designs use standard sans glyphs: no italic/serif or alternate forms."""
     css_files = sorted((ROOT / "templates").glob("*/*/styles.css"))
-    assert len(css_files) == 10
+    assert len(css_files) == 12
     for path in css_files:
         text = path.read_text(encoding="utf-8")
         lowered = text.lower()

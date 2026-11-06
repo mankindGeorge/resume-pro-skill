@@ -23,6 +23,7 @@ LAUNCHER = ROOT / "resume.py"
 LIBRARY_IDS = (
     "ats-classic",
     "campus",
+    "compact",
     "modern-sidebar",
     "editorial",
     "executive",

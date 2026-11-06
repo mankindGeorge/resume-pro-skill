@@ -1,5 +1,5 @@
 # SPDX-License-Identifier: MIT
-"""Build all ten baseline previews from fictional, locale-matched samples.
+"""Build all twelve baseline previews from fictional, locale-matched samples.
 
 Golden snapshots are written only with --update-golden. This script does not
 change profiles, source vaults, template approval, or legacy golden filenames.
@@ -33,15 +33,18 @@ GOLDEN = ROOT / "tests" / "golden"
 # only to the fictional preview applications.
 LOCALES = {
     "cn": ("zh", "cn_internet", {
-        "student": "vault-student-cn.yaml", "experienced": "vault-experienced-cn.yaml",
+        "student": "vault-student-cn.yaml", "projects": "vault-student-projects.yaml",
+        "experienced": "vault-experienced-cn.yaml",
     }),
     "en": ("en", "intl_en", {
-        "student": "vault-student.yaml", "experienced": "vault-experienced.yaml",
+        "student": "vault-student.yaml", "projects": "vault-student-projects.yaml",
+        "experienced": "vault-experienced.yaml",
     }),
 }
 CASES = {
     "ats-classic": ("experienced", "experienced", {"zh": "高级后端工程师", "en": "Senior Backend Engineer"}),
     "campus": ("student", "student_with_internship", {"zh": "后端开发工程师", "en": "Backend Engineer"}),
+    "compact": ("projects", "student_with_projects", {"zh": "AI应用开发", "en": "AI Application Developer"}),
     "modern-sidebar": ("experienced", "experienced", {"zh": "高级后端工程师", "en": "Senior Backend Engineer"}),
     "editorial": ("student", "student_with_internship", {"zh": "后端开发工程师", "en": "Backend Engineer"}),
     "executive": ("experienced", "senior_manager", {"zh": "工程经理", "en": "Engineering Manager"}),
@@ -77,7 +80,7 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--update-golden", action="store_true",
-        help="Also write all 10 cn-ID.sha256/en-ID.sha256 golden hashes.",
+        help="Also write all 12 cn-ID.sha256/en-ID.sha256 golden hashes.",
     )
     args = parser.parse_args(argv)
     for folder, (language, market, samples) in LOCALES.items():
