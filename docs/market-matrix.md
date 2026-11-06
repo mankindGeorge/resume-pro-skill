@@ -43,8 +43,8 @@ The facts stay the same. The **selection, order, wording, page geometry, and per
 | Page | 应届或 <3 年: 1–2 pages; 3+ years: 2–3 pages |
 | Paper | A4 |
 | Photo | Common and often expected; professional headshot |
-| Personal fields | 姓名, 电话, 邮箱, 城市. Optional: 出生年月, 籍贯, 政治面貌. 求职意向 is not rendered. |
-| Section order | Campus: 个人信息 → 教育背景 → 核心技能 → 实习/工作经历 → 项目经历 → 校园经历 → 荣誉/证书. Experienced: 个人简介 → 工作经历 → 项目经历 → 专业技能 → 教育经历 → 荣誉/证书. No 求职意向. Reorder by strength; see `docs/cn-resume-rules.md` |
+| Personal fields | 姓名, 电话, 邮箱, 城市. Optional: 出生年月, 籍贯, 政治面貌. |
+| Section order | Campus: 个人信息 → 教育背景 → 实习/工作经历 → 项目经历 → 核心技能 → 校园经历 → 荣誉/证书. Experienced: 个人简介 → 工作经历 → 项目经历 → 教育经历 → 专业技能 → 荣誉/证书. See `docs/cn-resume-rules.md` |
 | Proof style | Result-first; data and scale; clarify personal contribution; FAB (Feature–Advantage–Benefit) |
 | Education | School, major, degree, dates, GPA/rank, relevant courses for campus |
 | School signal | 985/211/双一流 is often used as a filter; state it only if true |
@@ -150,7 +150,7 @@ The rule is **transcreation from the fact vault**, not translation of rendered t
 ### 3.2 Fields added when going EN → CN
 
 - Photo (only for `cn_internet`, `cn_soe`, `cn_finance`; ask first)
-- Target role and city are used for targeting and file naming, not as a rendered 求职意向 section.
+- Target role and city are used for targeting and file naming.
 - 教育背景 with school/major/degree/dates/GPA/rank
 - 校园经历 if the candidate is a student or new grad
 - 荣誉奖项 / 技能证书
@@ -266,7 +266,7 @@ If the facts are insufficient, the system must not fill the gap with plausible c
 
 ## Template language families
 
-- **Chinese:** `campus` (students/new grads) and `zh-professional` (experienced/switcher/senior, left sidebar). CJK-first font stacks, 1.5–1.55 leading, `YYYY.MM` dates, no 求职意向.
+- **Chinese:** `campus` (students/new grads) and `modern-sidebar` (experienced/switcher/senior). CJK-first font stacks, 1.5–1.55 leading, `YYYY.MM` dates.
 - **English:** `ats-classic`, `modern-sidebar`, `editorial`, `executive`. Latin-only stacks, 1.3–1.4 leading, `YYYY-MM` dates.
 
-A template declares exactly one language. Cross-language use is rejected at render time; this prevents Chinese and English font metrics from being mixed into an uncoordinated resume.
+Each template variant declares one language. Rendering and QA select the variant by `writing.locale`, falling back to the market profile's `language`; a missing or mismatched variant fails explicitly.

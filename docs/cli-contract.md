@@ -20,7 +20,7 @@ resume <command> [options]
 | Network | No command performs network access in v1. |
 | Secrets | No credentials, tokens, or cookies are read or stored. |
 | Determinism | Same vault + same application + same template → identical HTML bytes. |
-| Output format | Resume output is HTML only. No PDF, DOCX, LaTeX, or image exporter; PDF is a browser print action. |
+| Output format | Resume output is self-contained HTML; PDF comes from the browser print dialog. |
 | Overwrite | Commands never overwrite an existing artifact without `--force`; versions are moved to `versions/`. |
 
 ## 2. Exit codes
@@ -56,7 +56,7 @@ resume photo <image> [--app <slug>] [--clear] [--json]
 | `profile` | Prints the current vault summary and missing dimensions. Never invents. |
 | `photo` | Copies a JPEG/PNG/WebP portrait into `.resume/assets/` and stores `identity.photo`. Every template reserves the slot; it is invisible when empty. `intl_en` suppresses photos by policy. `--clear` removes it. |
 
-`intake` state lives in `.resume/intake-session.json`: answers, skips, branch flags, generated artifact ids, and the confirmation note. Re-answering any non-confirm question reopens the vault. The intake asks whether the resume is mainly for mass applications; if not, it asks for target roles per experience/project and a preferred role. No 求职意向/job-intent section is rendered.
+`intake` state lives in `.resume/intake-session.json`: answers, skips, branch flags, generated artifact ids, and the confirmation note. Re-answering any non-confirm question reopens the vault. The intake asks whether the resume is mainly for mass applications; if not, it asks for target roles per experience/project and a preferred role.
 
 ### 3.2 Optimize an existing resume
 
@@ -80,7 +80,7 @@ Market and persona are required; they come from the flags or `.resume/intake-ses
 
 `--keep-template` without an `excellent` / `good_with_fixes` verdict fails with exit `4` and prints the failing dimensions. `--override <reason>` records an explicit exception in `template-decision.json` and allows the private rebuild.
 
-Supported inputs: DOCX, text-based PDF, HTML, MD, TXT. DOC/RTF require LibreOffice (exit `6` when missing). Scanned/image-only PDFs are detected and refused; OCR is not supported in v1.
+Supported inputs: DOCX, text-based PDF, HTML, MD, TXT. DOC/RTF require LibreOffice (exit `6` when missing). Scanned/image-only PDFs are detected and refused.
 
 ### 3.3 Target
 
@@ -120,8 +120,8 @@ resume templates [--json]
 
 | Command | Behavior |
 |---|---|
-| `build` | Runs the gate and lint, then writes `resume.html`, `resume-editable.html`, `render.json`, and `lint.json`. `blocked` exits `2`; `minimum` requires `--yes`; lint errors exit `4`. HTML only; no PDF/DOCX. |
-| `templates` | Lists the 12 public variants (six signed layouts × `templates/cn` and `templates/en`), plus learned `user-*` templates: id, language, markets, personas, pages, columns, fingerprint, directory `path`, and `preview` (the `preview.html` path, also printed in human output). The CLI groups by language folder; no language badge is rendered into a resume. |
+| `build` | Runs the gate and lint, then writes `resume.html`, `resume-editable.html`, `render.json`, and `lint.json`. `blocked` exits `2`; `minimum` requires `--yes`; lint errors exit `4`. |
+| `templates` | Lists the 10 public variants (five signed layouts × `templates/cn` and `templates/en`), plus learned `user-*` templates: id, language, markets, personas, pages, columns, fingerprint, directory `path`, and `preview` (the `preview.html` path, also printed in human output). The CLI groups by language folder. |
 | `localize` | Re-derives from the vault for the target market; writes a parity report and the target HTML. Retains the source layout ID and resolves its target-language variant unless `--template` overrides it. Missing target-locale facts exit `3`; `--draft` marks them. Parity failures exit `4`. Literal translation is not a mode. |
 
 ### 3.5 Verify

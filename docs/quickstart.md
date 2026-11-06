@@ -111,7 +111,7 @@ resume template-import my-template.html --market intl_en --persona experienced
 resume restyle resume.docx --template user-abc123 --market intl_en --persona experienced
 ```
 
-Inputs: DOCX, text-based PDF, HTML, MD, TXT. DOC/RTF need LibreOffice. Scanned PDFs are detected and refused in v1; there is no OCR.
+Inputs: DOCX, text-based PDF, HTML, MD, TXT. DOC/RTF need LibreOffice. Scanned PDFs are detected and refused in v1.
 
 The audit has seven dimensions and four verdicts:
 
@@ -179,13 +179,13 @@ The rendered HTML is the canonical, self-contained file with inline CSS. The edi
 
 Photos are optional. Every template reserves a portrait slot; it collapses completely when no photo is set. `resume photo <file>` stores the image and the renderer embeds it as a data URI. `intl_en` suppresses photos by policy; CN markets may show one. Choosing another design or resume language does not change that policy.
 
-`--draft` adds a fixed `DRAFT — NOT FOR SUBMISSION` banner. `resume templates` lists **12 public variants: six distinct designs in both Chinese and English**, plus any learned `user-*` templates, and prints each variant's `preview.html` path (also a `preview` field in `--json`). Open that file in a browser to see the design before choosing.
+`--draft` adds a fixed `DRAFT — NOT FOR SUBMISSION` banner. `resume templates` lists **10 public variants: five distinct designs in both Chinese and English**, plus any learned `user-*` templates, and prints each variant's `preview.html` path (also a `preview` field in `--json`). Open that file in a browser to see the design before choosing.
 
-All six IDs — `ats-classic`, `campus`, `modern-sidebar`, `editorial`, `executive`, `zh-professional` — exist in both `templates/cn/` (manifest `language: zh`) and `templates/en/` (`language: en`). The folders mean resume language, not market eligibility. `zh-professional` retains its historical ID and works in English too. Rendering and QA select the variant by `writing.locale`, falling back to the market profile's `language`; missing or mismatched variants fail explicitly. Direct `load_template(id, language=zh|en)` calls must specify language for multilingual IDs: omission fails instead of preferring `cn`. The CLI resolves it from the application, not from message-only `--lang`.
+All five IDs — `ats-classic`, `campus`, `modern-sidebar`, `editorial`, `executive` — exist in both `templates/cn/` (manifest `language: zh`) and `templates/en/` (`language: en`). The folders indicate resume language. Rendering and QA select the variant by `writing.locale`, falling back to the market profile's `language`; missing or mismatched variants fail explicitly. Direct `load_template(id, language=zh|en)` calls must specify language for multilingual IDs: omission fails instead of preferring `cn`. The CLI resolves it from the application, not from message-only `--lang`.
 
-Default recommendations remain `campus` / `zh-professional` for Chinese-market campus / professional profiles and `ats-classic` / `executive` for international default / senior profiles. They are not exclusive choices. During creation the agent asks the user which layout to use through the interactive question tool before rendering — presenting the six designs in the resume's language, recommending the default, and pointing to each `templates/<cn|en>/<id>/preview.html` — then passes the choice with `resume new --template <id>`. The default is never accepted silently when the user has not been asked. `restyle` changes appearance only, preserving facts, market, persona, selection, and writing locale. Market/persona writing, page, photo, and fact-confirmation rules still apply, alongside each layout's capacity budgets and fixed main/sidebar regions. See the [template contract](template-contracts.md); bilingual coverage does not change review status or constitute design approval.
+Default recommendations are `campus` / `modern-sidebar` for Chinese-market campus / professional profiles and `ats-classic` / `executive` for international default / senior profiles. During creation the agent asks the user which layout to use through the interactive question tool before rendering — presenting the five designs in the resume's language, recommending the default, and pointing to each `templates/<cn|en>/<id>/preview.html` — then passes the choice with `resume new --template <id>`. `restyle` changes appearance only, preserving facts, market, persona, selection, and writing locale. Market/persona writing, page, photo, and fact-confirmation rules still apply, alongside each layout's capacity budgets and sections that reorder within their assigned column. See the [template contract](template-contracts.md); bilingual coverage does not change review status or constitute design approval.
 
-Build is **HTML only**. The template is sized to A4: open the HTML, choose A4 in the browser's print dialog, and save as PDF. The tool never writes PDF, DOCX, LaTeX, or image resumes.
+Build produces **self-contained A4 HTML**. Open the HTML, choose A4 in the browser's print dialog, and save as PDF.
 
 ## 9. Audit and diff
 
@@ -217,7 +217,7 @@ resume localize <slug> --to en --role "Backend Intern" --draft
 This is transcreation, not translation:
 
 - Re-selects facts and section order for the target market.
-- CN moves education/experience per the CN profile; EN drops the photo/personal fields. No 求职意向 section is ever rendered.
+- CN moves education/experience per the CN profile; EN drops the photo/personal fields.
 - Missing target-language facts block the build (`exit 3`) with a gap list. `--draft` renders them as `[NEEDS EN]` / `[NEEDS ZH]` under a draft banner.
 - Writes the target application, `resume.html`, editable HTML, and `parity.json`.
 - Parity checks facts, bullet selections, normalized numbers (including 万→K), dates, entities, and links. Failures block a non-draft build (`exit 4`).
@@ -226,7 +226,7 @@ This is transcreation, not translation:
 
 Everything is local. `.resume/` is ignored by git. No network calls, no telemetry, no credentials.
 
-Resume output is **HTML only**. PDF is a browser print action; the tool does not write DOCX, LaTeX, or image resumes.
+Resume output is **self-contained A4 HTML**. PDF is a browser print action.
 
 ## 12. Tests
 

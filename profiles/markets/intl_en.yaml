@@ -20,8 +20,8 @@ personal_fields:
 
 section_order:
   student: [education, experience, projects, skills, awards, certificates]
-  experienced: [summary, experience, projects, skills, education, awards, certificates]
-  senior: [summary, experience, skills, education, awards]
+  experienced: [summary, experience, projects, education, skills, awards, certificates]
+  senior: [summary, experience, projects, education, skills, awards]
 
 dates:
   format: "MMM YYYY"

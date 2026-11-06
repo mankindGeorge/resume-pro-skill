@@ -482,18 +482,21 @@ def _reorder_sections(source: str, model: dict[str, Any]) -> str:
     }
     if not tags:
         return source
-    parents = {id(tag.parent) for tag in tags.values()}
-    if len(parents) != 1:
-        return source
-    parent = next(iter(tags.values())).parent
     ordering = [section["id"] for section in model.get("sections") or [] if section.get("enabled")]
-    ordered = [tags[section] for section in ordering if section in tags]
-    if not ordered:
+    groups: dict[int, tuple[Any, list[Any]]] = {}
+    for section in ordering:
+        tag = tags.get(section)
+        if tag is None or tag.parent is None:
+            continue
+        parent = tag.parent
+        groups.setdefault(id(parent), (parent, []))[1].append(tag)
+    if not groups:
         return source
-    for tag in ordered:
-        tag.extract()
-    for tag in ordered:
-        parent.append(tag)
+    for parent, group in groups.values():
+        for tag in group:
+            tag.extract()
+        for tag in group:
+            parent.append(tag)
     return str(soup)
 
 
@@ -559,8 +562,7 @@ def render_html(
         if photo:
             source = re.sub(r"(<body[^>]*)(>)", r'\1 data-photo="true"\2', source, count=1)
 
-    if (template["manifest"].get("page") or {}).get("columns") == "single":
-        source = _reorder_sections(source, model)
+    source = _reorder_sections(source, model)
 
     extra_styles = _banner_styles()
     source = source.replace("</head>", extra_styles + "</head>", 1)

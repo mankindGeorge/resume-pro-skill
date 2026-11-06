@@ -168,20 +168,20 @@
     "text_selectable": true,
     "tables_allowed": false,
     "standard_headings": [
+      "Education",
       "Summary",
       "Experience",
       "Projects",
       "Publications",
       "Open Source",
       "Skills",
-      "Education",
       "Awards",
       "Certifications",
       "Languages"
     ]
   },
   "editable_variant": true,
-  "fingerprint": "842473ca4ec83aa053392e026fa2b4a2b2929c9d3fab1712a6c46adc6fea46a9",
+  "fingerprint": "6474b0bb6b0e9cf764ed9abcf6d3a6972b7e34029a7a220ef04003336b0c0c9d",
   "created_at": "2026-11-05T00:00:00Z",
   "provenance": {
     "kind": "original",

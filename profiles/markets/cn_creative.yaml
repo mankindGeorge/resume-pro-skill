@@ -11,8 +11,8 @@ personal_fields:
   optional: [photo, city]
   forbidden: [id_number, marital_status, salary_expectation]
 section_order:
-  campus: [projects, experience, skills, education, awards, open_source]
-  experienced: [summary, experience, projects, skills, education, awards]
+  campus: [education, experience, projects, skills, awards, open_source]
+  experienced: [summary, experience, projects, education, skills, awards]
 signals:
   prioritize: [portfolio, projects, craft, visual_identity]
   core: [projects, internship, core_skills]

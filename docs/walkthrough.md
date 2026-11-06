@@ -23,7 +23,7 @@ resume photo portrait.jpg --app <slug>   # optional; invisible when empty
 What good looks like:
 
 - `check` is `STRONG` or a confirmed `MINIMUM`; a `BLOCKED` gate asks one targeted question.
-- The `campus` template is A4, 1–2 pages, education early; no 求职意向 section.
+- The `campus` template is A4, 1–2 pages, education-first.
 - `audit` passes with no hard failures; warnings are readable.
 - `resume.html` is canonical; `resume-editable.html` is a non-canonical preview.
 

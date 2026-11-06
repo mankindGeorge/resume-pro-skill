@@ -40,17 +40,17 @@ Every template must:
 
 ## 3. The template library
 
-The library contains **six distinct designs × two resume languages = 12 variants**. Each design has a different structure; its Chinese and English variants share that structure, with language-appropriate typography. Both `templates/cn/` and `templates/en/` contain all six IDs below. Private learned templates remain under `templates/user-<hash>/`, outside the public library.
+The library contains **five distinct designs × two resume languages = 10 variants**. Each design has a different structure; its Chinese and English variants share that structure, with language-appropriate typography. Both `templates/cn/` and `templates/en/` contain all five IDs below. Private learned templates remain under `templates/user-<hash>/`, outside the public library.
 
 ### 3.0 Language variants and routing
 
-- `templates/cn/<id>/` means Chinese resume text, with manifest `language: zh`; `templates/en/<id>/` means English, with `language: en`. These folders are not market restrictions. No "CN"/"EN" badge is rendered.
+- `templates/cn/<id>/` means Chinese resume text, with manifest `language: zh`; `templates/en/<id>/` means English, with `language: en`. These folders indicate resume language.
 - Chinese variants use CJK-first font stacks and Chinese heading/date conventions; English variants use Latin-first typography and English conventions. Preserve each design's font hierarchy and capacity limits rather than treating the variants as renamed copies.
 - Resolve a design with `load_template(id, language=zh|en)`. When the ID has multiple language variants, omitting language is an explicit ambiguity error; never search `cn` first and silently accept it. A requested but missing language variant also fails explicitly.
 - Rendering and QA use the application's `writing.locale`, falling back to the market profile's `language` only when it is absent. Validate the selected manifest against that resolved language, not against a presumed market-exclusive design ID. `--lang` changes CLI messages, not resume language.
-- `resume templates` lists 12 public variants, including each ID, its manifest language, and its `preview.html` path (printed in human output and a `preview` field in `--json`), plus private learned templates. Open `templates/<cn|en>/<id>/preview.html` in a browser to view a design. Keep the historical `zh-professional` ID compatible in both languages; its name does not restrict it to Chinese.
-- During creation and optimization the agent asks the user which layout to use through the interactive question tool before rendering: present the six designs in the resume's language, recommend the market/persona default, show the preview paths, and pass the choice with `--template <id>`. Never accept the default silently when the user has not been asked.
-- Existing defaults remain recommendations: `campus` for Chinese-market campus profiles, `zh-professional` for Chinese-market professional profiles, `ats-classic` for international default profiles, and `executive` for international senior profiles. They are not exclusive eligibility lists. Market/persona still govern fact selection, writing, page policy, photos, and fact confirmation.
+- `resume templates` lists 10 public variants, including each ID, its manifest language, and its `preview.html` path (printed in human output and a `preview` field in `--json`), plus private learned templates. Open `templates/<cn|en>/<id>/preview.html` in a browser to view a design.
+- During creation and optimization the agent asks the user which layout to use through the interactive question tool before rendering: present the five designs in the resume's language, recommend the market/persona default, show the preview paths, and pass the choice with `--template <id>`. The default is not accepted silently when the user has not been asked.
+- Existing defaults remain recommendations: `campus` for Chinese-market campus profiles, `modern-sidebar` for Chinese-market professional profiles, `ats-classic` for international default profiles, and `executive` for international senior profiles. Market/persona still govern fact selection, writing, page policy, photos, and fact confirmation.
 - `restyle` changes appearance only, not market, persona, selection, or writing locale. `localize` retains its target-market reselection and rewriting workflow; it keeps the source design ID by default, unless an explicit `--template <id>` overrides it. Neither route translates rendered HTML.
 
 | ID | Languages | Layout capacity | Structure | ATS posture |
@@ -60,31 +60,30 @@ The library contains **six distinct designs × two resume languages = 12 variant
 | `modern-sidebar` | zh, en | A4 · 1–2 pages | main + right sidebar | medium, with single-column fallback |
 | `editorial` | zh, en | A4 · 1 page | single, magazine | medium-high |
 | `executive` | zh, en | A4 · 2 pages | single, centered letterhead | high |
-| `zh-professional` | zh, en | A4 · 2–3 pages | left sidebar + main | high |
 
-All designs reserve an optional photo slot; the market determines whether it is shown (`intl_en` suppresses it regardless of resume language). Layout capacity does not replace market/persona page policy: both remain binding, and bilingual availability does not authorize overflow, filler, or automatic redesign. Main/sidebar region assignments stay fixed; market-driven ranking and ordering must operate within those regions. The section orders below describe design structure, not new market-writing rules. ATS posture is a design aim, not a universal compatibility guarantee. Review status is unchanged; language coverage and signed manifests do not constitute design approval or release.
+All designs reserve an optional photo slot; the market determines whether it is shown (`intl_en` suppresses it regardless of resume language). Layout capacity does not replace market/persona page policy: both remain binding, and bilingual availability does not authorize overflow, filler, or automatic redesign. Sections reorder within their assigned column; modern-sidebar keeps education in the main column. The section orders below describe design structure, not new market-writing rules. ATS posture is a design aim, not a universal compatibility guarantee. Review status is unchanged; language coverage and signed manifests do not constitute design approval or release.
 
 ### 3.1 `ats-classic`
 
 - Purpose: the safe default. Recruiter- and parser-friendly.
-- Order: name/contact → summary → experience → projects → skills → education → awards.
+- Order: name/contact → education → experience → projects → skills → awards. Professional profiles lead with summary and experience.
 - Required: `identity.name`, `identity.contact`, `section.education`, `section.experience`, `section.skills`.
 - Optional: `identity.links`, `identity.photo`, `section.summary`, `section.projects`, `section.awards`, `section.certificates`, `section.languages`, `section.publications`, `section.open_source`.
-- Rules: single column, black text, one rule under section headings, no icons, no tables. The photo slot exists for cross-market reuse but `intl_en` policy suppresses rendering.
+- Rules: single column, black text, one rule under section headings. The photo slot exists for cross-market reuse but `intl_en` policy suppresses rendering.
 
 ### 3.2 `campus`
 
 - Purpose: education-first campus and intern applications in either resume language.
-- Order: name/contact → education → skills → experience → projects → awards → open source; labels follow the resume language.
+- Order: name/contact → education → experience → projects → skills → awards → open source; labels follow the resume language.
 - Required: `identity.name`, `identity.contact`, `section.education`, `section.skills`.
 - Optional: `identity.links`, `identity.photo`, `section.experience`, `section.projects`, `section.awards`, `section.open_source`, `section.certificates`, `section.languages`, `section.publications`, `section.summary`.
-- Rules: education before experience; 1–2-page layout capacity; an optional portrait slot collapses completely when empty; for CN campus profiles, render CS fundamentals with the same weight as AI skills; no 求职意向 and no "自我评价" block.
+- Rules: education before experience and projects; 1–2-page layout capacity; an optional portrait slot collapses completely when empty; for CN campus profiles, render CS fundamentals with the same weight as AI skills.
 - CN market page policy remains student and <3 years 1–2 pages; 3+ years 2–3 pages. It does not expand this design's capacity.
 
 ### 3.3 `modern-sidebar`
 
 - Purpose: a restrained two-column layout for experienced candidates who want visual identity without losing parseability.
-- Layout: main column = summary, experience, projects, publications, open source; right sidebar = skills, education, awards, certificates, languages.
+- Layout: main column = education, summary, experience, projects, publications, open source; right sidebar = skills, awards, certificates, languages. Order within the main column follows persona priority: students start with education; professionals start with summary and experience.
 - Required: `identity.name`, `identity.contact`, `section.summary`, `section.experience`, `section.skills`, `section.education`.
 - Optional: `identity.links`, `identity.photo`, `section.projects`, `section.awards`, `section.certificates`, `section.languages`, `section.publications`, `section.open_source`.
 - Rules: DOM order is single-column and logical; CSS grid creates the visual columns. `ats.parse_fallback` points to a single-column variant. Sidebar background must be light enough for grayscale printing. The photo slot exists but `intl_en` policy suppresses rendering.
@@ -92,26 +91,18 @@ All designs reserve an optional photo slot; the market determines whether it is 
 ### 3.4 `editorial`
 
 - Purpose: a distinctive one-page layout for early-career candidates in either resume language, not restricted to international markets.
-- Order: name/contact → summary → selected projects → experience → skills → education → awards.
+- Order: name/contact → education → experience → projects → skills → awards. Professional profiles lead with summary and experience.
 - Required: `identity.name`, `identity.contact`, `section.summary`, `section.projects`, `section.education`.
 - Optional: `identity.links`, `identity.photo`, `section.experience`, `section.skills`, `section.awards`, `section.certificates`, `section.languages`, `section.publications`, `section.open_source`.
-- Rules: one accent color, generous whitespace, serif headings, no decorative graphics, exactly one page. The photo slot exists but `intl_en` policy suppresses rendering. Projects may lead when stronger than experience.
+- Rules: one accent color, generous whitespace, standard sans headings, exactly one page. The photo slot exists but `intl_en` policy suppresses rendering.
 
 ### 3.5 `executive`
 
 - Purpose: two-page senior/manager resume with a centered letterhead.
-- Order: name/contact → executive summary → experience → leadership & skills → education → awards/publications.
+- Order: name/contact → executive summary → experience → projects → education → skills → awards/publications.
 - Required: `identity.name`, `identity.contact`, `section.summary`, `section.experience`, `section.education`.
 - Optional: `identity.links`, `identity.photo`, `section.skills`, `section.projects`, `section.awards`, `section.certificates`, `section.languages`, `section.publications`, `section.open_source`.
-- Rules: show verified outcomes, scope, and team size using the consented writing framework; no decorative timeline. Page 2 must not be filler; the two-page target is enforced by QA. The optional photo follows market policy: `intl_en` suppresses it, not the design itself.
-
-### 3.6 `zh-professional`
-
-- Purpose: an experience-first **left-sidebar** design in either resume language, not a renamed campus sheet. Preserve the historical ID for compatibility; `zh-` does not mean English is excluded.
-- Layout: header spans the page; left sidebar = portrait, skills, education, certificates, languages; main column = summary, experience, projects, awards, publications, open source. Translate labels for the resume language without moving sections between regions.
-- Required: `identity.name`, `identity.contact`, `section.summary`, `section.experience`, `section.education`, `section.skills`.
-- Optional: `identity.links`, `identity.photo`, `section.projects`, `section.awards`, `section.certificates`, `section.languages`, `section.publications`, `section.open_source`.
-- Rules: language-appropriate fonts and leading, no 求职意向, 2–3-page layout capacity, optional portrait slot that collapses when empty. Experience and projects lead; the sidebar carries credentials and skills.
+- Rules: show verified outcomes, scope, and team size using the consented writing framework. Page 2 must not be filler; the two-page target is enforced by QA. The optional photo follows market policy: `intl_en` suppresses it, not the design itself.
 
 ## 4. Content budgets
 

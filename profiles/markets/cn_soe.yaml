@@ -11,8 +11,8 @@ personal_fields:
   optional: [photo, political_status, date_of_birth, city]
   forbidden: [id_number, salary_expectation]
 section_order:
-  campus: [education, skills, experience, projects, awards, certificates]
-  experienced: [summary, experience, education, skills, awards, certificates]
+  campus: [education, experience, projects, skills, awards, certificates]
+  experienced: [summary, experience, projects, education, skills, awards, certificates]
 signals:
   prioritize: [education, stability, certificates, awards]
   core: [core_skills, internship, projects]

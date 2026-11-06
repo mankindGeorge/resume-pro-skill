@@ -84,8 +84,9 @@ page:
   student_or_under_3y: [1, 2]
   over_3y: [2, 3]
 section_order:
-  default: [header, intent, education, core_skills, internships, projects, campus, honors, self_evaluation]
-  order_by_strength: true
+  student: [education, internships, projects, core_skills, campus, honors]
+  experienced: [summary, experience, projects, education, skills, honors]
+  order_by_strength: false
 required_fields: [name, phone, email, city, target_role, school, degree, major, education_dates]
 signal_priority: [core_skills, ai_related, internships, projects, blog_or_open_source]
 skills_require_cs_fundamentals_for_campus_tech: true

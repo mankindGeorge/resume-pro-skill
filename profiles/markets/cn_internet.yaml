@@ -20,9 +20,9 @@ personal_fields:
   forbidden: [id_number, marital_status, salary_expectation, political_status]
 
 section_order:
-  campus: [education, skills, experience, projects, awards, open_source]
-  early_career: [education, skills, experience, projects, awards]
-  experienced: [summary, experience, projects, skills, education, awards]
+  campus: [education, experience, projects, skills, awards, open_source]
+  early_career: [education, experience, projects, skills, awards]
+  experienced: [summary, experience, projects, education, skills, awards]
 
 dates:
   format: "YYYY.MM"

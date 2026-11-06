@@ -168,20 +168,20 @@
     "text_selectable": true,
     "tables_allowed": false,
     "standard_headings": [
+      "教育经历",
       "个人简介",
       "工作经历",
       "项目经历",
       "论文 / 发表",
       "开源项目",
       "专业技能",
-      "教育经历",
       "荣誉奖项",
       "证书",
       "语言能力"
     ]
   },
   "editable_variant": true,
-  "fingerprint": "68d1d17388d99765b66ee9ff215ecf2e4aea52f95788cdef7d52597229e53d14",
+  "fingerprint": "cb5c30c0bd44f0459f478939784c45789a4d00ca251fbe6c77e2a7345ff3bc77",
   "created_at": "2026-11-05T00:00:00Z",
   "provenance": {
     "kind": "original",

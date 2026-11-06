@@ -43,7 +43,7 @@ Unzip it into your agent's skill directory. Keep the folder on disk: the CLI rea
 
 ```bash
 cd resume-pro-skill
-python bootstrap.py              # Python version, dependencies, 12 template variants
+python bootstrap.py              # Python version, dependencies, 10 template variants
 python bootstrap.py --install    # editable install; adds the `resume` command
 # If pip cannot install packages:
 python bootstrap.py --deps-only  # dependencies only
@@ -77,7 +77,7 @@ Then follow `docs/quickstart.md` or `docs/walkthrough.md`.
 
 ## 5. Print to PDF
 
-The library templates are A4. Open `resume.html`, choose **A4** in the browser print dialog, and save as PDF. The tool itself does not write PDF, DOCX, LaTeX, or image resumes.
+The library templates are A4. Open `resume.html`, choose **A4** in the browser print dialog, and save as PDF.
 
 ## 6. Troubleshooting
 

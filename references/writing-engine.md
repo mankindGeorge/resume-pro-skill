@@ -88,6 +88,6 @@ If the answer is "just make something up", refuse and offer a smaller true detai
 The resume output is **HTML only**.
 
 - The tool writes `resume.html` and a non-canonical editable HTML variant.
-- PDF is produced by the user's browser print dialog; the tool never writes a PDF resume.
-- No DOCX, LaTeX, or image export in v1.
+- PDF is produced by the user's browser print dialog.
+- Output is self-contained HTML; PDF comes from the browser print dialog.
 - The vault remains the source of truth; browser edits are not merged back.

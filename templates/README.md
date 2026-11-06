@@ -1,6 +1,6 @@
 # Template Library
 
-This folder holds **six distinct A4 designs in both Chinese and English: 12 variants**. `cn/` and `en/` indicate resume language only, not market eligibility; their manifests use `language: zh` and `language: en` respectively.
+This folder holds **five distinct A4 designs in both Chinese and English: 10 variants**. `cn/` and `en/` indicate resume language; their manifests use `language: zh` and `language: en` respectively.
 
 | Design ID | Structure | Chinese (`zh`) | English (`en`) |
 |---|---|---|---|
@@ -9,21 +9,20 @@ This folder holds **six distinct A4 designs in both Chinese and English: 12 vari
 | `modern-sidebar` | Main column + right sidebar | [cn](cn/modern-sidebar/) | [en](en/modern-sidebar/) |
 | `editorial` | One-page editorial | [cn](cn/editorial/) | [en](en/editorial/) |
 | `executive` | Centered letterhead, two pages | [cn](cn/executive/) | [en](en/executive/) |
-| `zh-professional` | Left sidebar + experience-first main column | [cn](cn/zh-professional/) | [en](en/zh-professional/) |
 
-Keep `zh-professional` as the compatible historical ID, including for English. `resume templates` lists 12 public variants plus private learned templates. Rendering and QA select by `writing.locale`, defaulting to the market profile's `language`. Direct `load_template(id, language=zh|en)` calls must specify language for multilingual IDs; omission is an error, not a preference for `cn`.
+`resume templates` lists 10 public variants plus private learned templates. Rendering and QA select by `writing.locale`, defaulting to the market profile's `language`. Direct `load_template(id, language=zh|en)` calls must specify language for multilingual IDs; omission is an error, not a preference for `cn`.
 
 Every variant:
 
 - is A4 with declared margins and layout capacity budgets, which remain binding alongside market/persona page policy;
 - reserves an optional `identity.photo` slot that collapses when empty; photo visibility follows market policy, not the design or language folder;
-- renders no 求职意向 section and no CN/EN badge;
+- orders sections by HR priority: students lead with education, then experience and projects; professionals lead with summary and experience, with education before skills;
 - uses strict `data-slot` markers and a signed manifest;
 - uses one standard system sans-serif family with no italic, oblique, serif/display, or variant glyph styling; ligatures/contextual alternates are disabled and numerals use lining figures;
-- preserves its design's fixed main/sidebar regions. Language variants do not move sections between columns.
+- reorders sections within their assigned main/sidebar column. Language variants do not move sections between columns; modern-sidebar keeps education in the main column.
 
-Default recommendations remain `campus` / `zh-professional` for Chinese-market campus / professional profiles and `ats-classic` / `executive` for international default / senior profiles. Recommendations do not exclude other designs. Market/persona selection, writing, page, photo, and fact-confirmation rules remain unchanged, as does template review status; a signature is not design approval.
+Default recommendations are `campus` / `modern-sidebar` for Chinese-market campus / professional profiles and `ats-classic` / `executive` for international default / senior profiles. Market/persona selection, writing, page, photo, and fact-confirmation rules remain binding, as does template review status; a signature is not design approval.
 
-`restyle` changes appearance, not market or selection. `localize` still reselects and rewrites from facts for the target market, retaining the source design ID unless `--template` explicitly overrides it. Private learned templates under `templates/user-<hash>/` are never part of the public library. Missing target-language variants fail explicitly without a silent design fallback; legacy flat learned templates remain supported with manifest-language validation.
+`restyle` changes appearance, not market or selection. `localize` still reselects and rewrites from facts for the target market, retaining the source design ID unless `--template` explicitly overrides it. Private learned templates under `templates/user-<hash>/` are never part of the public library. Missing target-language variants fail explicitly without a silent design fallback.
 
 See [`docs/template-contracts.md`](../docs/template-contracts.md) for the full contract.

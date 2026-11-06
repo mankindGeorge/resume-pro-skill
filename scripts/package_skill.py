@@ -30,7 +30,6 @@ LIBRARY_IDS = (
     "modern-sidebar",
     "editorial",
     "executive",
-    "zh-professional",
 )
 TEMPLATE_FILES = ("manifest.json", "template.html", "styles.css", "preview.html")
 

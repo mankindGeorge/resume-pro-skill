@@ -110,9 +110,9 @@ def test_templates_lists_library(tmp_path, monkeypatch):
     result = runner.invoke(cli, ["templates", "--json"])
     assert result.exit_code == 0, result.output
     ids = {item["id"] for item in json.loads(result.output)["templates"]}
-    assert {"ats-classic", "campus", "modern-sidebar", "editorial", "executive", "zh-professional"} <= ids
+    assert {"ats-classic", "campus", "modern-sidebar", "editorial", "executive"} <= ids
     items = json.loads(result.output)["templates"]
-    assert len(items) == 12
+    assert len(items) == 10
     assert {(item["id"], item["language"]) for item in items} == {(name, language) for name in ids for language in ("zh", "en")}
     for item in items:
         assert "error" not in item
@@ -126,7 +126,7 @@ def test_templates_human_output_shows_preview_path(tmp_path, monkeypatch):
     result = CliRunner().invoke(cli, ["templates"])
     assert result.exit_code == 0, result.output
     assert "preview:" in result.output
-    assert result.output.count("preview:") == 12
+    assert result.output.count("preview:") == 10
     assert "preview.html" in result.output
 
 

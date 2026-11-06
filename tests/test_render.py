@@ -36,6 +36,11 @@ def _app(vault, tmp_path, template, market="intl_en", persona="experienced", rol
     return application
 
 
+def _section_ids(html: str) -> list[str]:
+    soup = BeautifulSoup(html, "html.parser")
+    return [tag["data-section"] for tag in soup.find_all("section", attrs={"data-section": True})]
+
+
 def test_render_ats_classic(experienced_vault, tmp_path):
     application = _app(experienced_vault, tmp_path, "ats-classic")
     result = render_application(tmp_path, experienced_vault, application)
@@ -227,6 +232,43 @@ def test_all_layouts_render_both_languages_without_changing_content(student_vaul
 
 
 @pytest.mark.parametrize("template_id", LIBRARY_TEMPLATES)
+def test_student_resumes_start_with_education_then_proof(student_vault, tmp_path, template_id):
+    app = _app(
+        student_vault, tmp_path, template_id,
+        market="cn_internet", persona="student_with_internship", role="后端开发工程师",
+    )
+    order = _section_ids(render_application(tmp_path, student_vault, app).html_path.read_text(encoding="utf-8"))
+    assert order[0] == "education", order
+    assert order.index("experience") < order.index("projects") < order.index("skills"), order
+
+
+@pytest.mark.parametrize("template_id", LIBRARY_TEMPLATES)
+def test_professional_resumes_lead_with_experience_before_education(experienced_vault, tmp_path, template_id):
+    app = _app(
+        experienced_vault, tmp_path, template_id,
+        market="cn_internet", persona="experienced", role="高级后端工程师",
+    )
+    order = _section_ids(render_application(tmp_path, experienced_vault, app).html_path.read_text(encoding="utf-8"))
+    assert order[0] in {"summary", "experience"}, order
+    assert order.index("experience") < order.index("education") < order.index("skills"), order
+
+
+def test_modern_sidebar_keeps_education_in_the_main_column(student_vault, tmp_path):
+    app = _app(
+        student_vault, tmp_path, "modern-sidebar",
+        market="cn_internet", persona="student_with_internship", role="后端开发工程师",
+    )
+    soup = BeautifulSoup(render_application(tmp_path, student_vault, app).html_path.read_text(encoding="utf-8"), "html.parser")
+    main = soup.select_one("main.main")
+    aside = soup.select_one("aside.aside")
+    assert main is not None and aside is not None
+    assert main.select_one('[data-section="education"]') is not None
+    assert aside.select_one('[data-section="education"]') is None
+    first = main.find("section", attrs={"data-section": True})
+    assert first["data-section"] == "education"
+
+
+@pytest.mark.parametrize("template_id", LIBRARY_TEMPLATES)
 def test_language_does_not_override_market_photo_policy(student_vault, tmp_path, template_id):
     vault = copy.deepcopy(student_vault)
     vault["identity"]["photo"] = str(_png(tmp_path / "portrait.png"))
@@ -242,23 +284,6 @@ def test_language_does_not_override_market_photo_policy(student_vault, tmp_path,
     html = result.html_path.read_text(encoding="utf-8")
     assert '<html lang="zh">' in html
     assert "<img" not in html
-
-
-def test_render_zh_professional(experienced_vault, tmp_path):
-    application = _app(
-        experienced_vault,
-        tmp_path,
-        "zh-professional",
-        market="cn_internet",
-        persona="experienced",
-        role="高级后端工程师",
-    )
-    result = render_application(tmp_path, experienced_vault, application)
-    html = Path(result.html_path).read_text(encoding="utf-8")
-    assert "工作经历" in html
-    assert "教育经历" in html
-    assert "求职意向" not in html
-    assert "size: A4" in html
 
 
 def test_layout_budget_error(student_vault, tmp_path):

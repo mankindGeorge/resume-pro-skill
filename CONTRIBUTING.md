@@ -56,4 +56,4 @@ Keep internal plans, research notes, unapproved designs, and their private scrip
 
 ## Scope
 
-This project covers resume creation, optimization, templates, and job-fit recommendation. Cover letters, interview prep, offer comparison, salary negotiation, job-board scraping, and auto-apply are out of scope.
+This project covers resume creation, optimization, templates, and job-fit recommendation.

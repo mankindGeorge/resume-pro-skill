@@ -68,8 +68,8 @@ def test_default_templates():
     assert default_template("cn_internet", "student_with_internship") == "campus"
     assert default_template("intl_en", "senior_manager") == "executive"
     assert default_template("intl_en", "experienced") == "ats-classic"
-    assert default_template("cn_internet", "experienced") == "zh-professional"
-    assert default_template("cn_internet", "senior_manager") == "zh-professional"
+    assert default_template("cn_internet", "experienced") == "modern-sidebar"
+    assert default_template("cn_internet", "senior_manager") == "modern-sidebar"
 
 
 def test_slug_for_non_ascii_role_is_unique():

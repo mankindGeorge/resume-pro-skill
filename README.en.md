@@ -27,16 +27,14 @@ No invented experience, no one-shot generic prose, and no treating Chinese and E
 
 Supports students, interns, new graduates, career switchers, experienced professionals, and other personas. China-first by default: `cn_internet` and other Chinese-market profiles lead, while `intl_en` remains available for international applications; see the [market matrix](docs/market-matrix.md) for each profile's scope.
 
-Cover letters, interview coaching, salary negotiation, job scraping, and auto-apply are out of scope.
-
 ## Core principles
 
 - **Facts and evidence first.** Resume bullets link to sources, distinguishing verified, user-asserted, estimated, and unknown information. Numeric claims supported only by estimated or unknown sources are blocked by checks; a user assertion is not external verification.
 - **Guide before generating.** Missing input must be collected one question at a time through the agent's interactive question tool, continuing the same conversation and task after each answer instead of ending with "reply with your answers". Preserve free-text input, pause, and resume. Ask about mass versus targeted applications before selecting experience. If the host lacks a suitable tool, report the limitation rather than silently falling back to a questionnaire.
 - **Writing frameworks require consent.** Ask before applying STAR, XYZ, FAB, CAR, result-first, or user-voice guidance.
 - **Different markets, different priorities.** Adjust sections, order, page budgets, and photo policies by market and career stage. Chinese campus profiles emphasize education, fundamentals, real internships, and individual project contributions.
-- **No job-intent section.** Use the target role for selection and file naming, not as a separate resume section.
-- **HTML-only, A4.** Deliver self-contained HTML. Users can print to PDF in their browser with A4 selected; there is no DOCX, LaTeX, or image resume export.
+- **Order by HR priority.** Student and campus resumes: education → experience → projects → skills. Professional resumes: experience → projects → education → skills.
+- **HTML, A4.** Deliver self-contained HTML. Users can print to PDF in their browser with A4 selected.
 - **Separate automated checks from judgment.** The CLI checks structure, evidence rules, templates, and output. The agent and user handle wording, fact confirmation, and final review.
 
 ## Quickstart
@@ -119,9 +117,9 @@ For complete workflows, see the [walkthrough](docs/walkthrough.md) and [CLI cont
 
 ## Inputs, templates, and outputs
 
-**Inputs:** DOCX, text-based PDF, HTML, Markdown, and TXT. DOC / RTF require LibreOffice. OCR for scanned PDFs is not currently supported.
+**Inputs:** DOCX, text-based PDF, HTML, Markdown, and TXT. DOC / RTF require LibreOffice.
 
-**Templates:** **Six distinct designs × two resume languages = 12 variants.** `templates/cn/` and `templates/en/` indicate resume language only, with manifest `language: zh` / `en`, not market restrictions. No CN / EN badge appears on the rendered resume.
+**Templates:** **Five distinct designs × two resume languages = 10 variants.** `templates/cn/` and `templates/en/` indicate resume language, with manifest `language: zh` / `en`.
 
 | Design ID | Layout | 中文 | English |
 |---|---|---|---|
@@ -130,9 +128,8 @@ For complete workflows, see the [walkthrough](docs/walkthrough.md) and [CLI cont
 | `modern-sidebar` | Main column + right sidebar | [cn](templates/cn/modern-sidebar/) | [en](templates/en/modern-sidebar/) |
 | `editorial` | One-page editorial | [cn](templates/cn/editorial/) | [en](templates/en/editorial/) |
 | `executive` | Centered letterhead, two pages | [cn](templates/cn/executive/) | [en](templates/en/executive/) |
-| `zh-professional` | Left sidebar + experience-first main column | [cn](templates/cn/zh-professional/) | [en](templates/en/zh-professional/) |
 
-The historical `zh-professional` ID remains compatible and is also available in English. Rendering and QA resolve the variant using the application's `writing.locale`, falling back to the market profile's `language`; missing or mismatched variants fail explicitly. Default recommendations remain `campus` / `zh-professional` for Chinese-market campus / professional profiles and `ats-classic` / `executive` for international default / senior profiles; these are recommendations, not exclusive choices.
+Rendering and QA resolve the variant using the application's `writing.locale`, falling back to the market profile's `language`; missing or mismatched variants fail explicitly. Default recommendations are `campus` / `modern-sidebar` for Chinese-market campus / professional profiles and `ats-classic` / `executive` for international default / senior profiles.
 
 **Viewing and choosing:** Open `templates/<cn|en>/<id>/preview.html` in a browser to preview each layout; `resume templates` lists every variant with its preview path. When building a resume, the agent asks which layout to use through an interactive question before rendering — recommending the default but allowing a change — and points to those previews. It never silently accepts the default when you have not been asked.
 

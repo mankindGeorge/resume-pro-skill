@@ -24,7 +24,7 @@ MARKETS = ["intl_en", "cn_internet", "cn_soe", "cn_finance", "cn_creative", "hk_
 # Provenance only: every ID below is generated in BOTH language folders.
 BASELINE_FOLDERS = {
     "ats-classic": "en", "campus": "cn", "modern-sidebar": "en",
-    "editorial": "en", "executive": "en", "zh-professional": "cn",
+    "editorial": "en", "executive": "en",
 }
 
 
@@ -180,33 +180,6 @@ CONFIG = {
             "bullets_per_project": 4, "max_roles": 7, "max_projects": 4, "max_skills": 20,
         },
         "ats": {"single_column": True, "text_selectable": True, "tables_allowed": False},
-    },
-    "zh-professional": {
-        "name": {"zh": "专业侧栏", "en": "Professional Sidebar"},
-        "description": "Professional sidebar resume: experience-first main column, A4, 2–3 pages.",
-        "personas": ["experienced", "career_switcher", "senior_manager"],
-        "page": {
-            "sizes": ["a4"],
-            "margins_mm": {"top": 16, "right": 16, "bottom": 16, "left": 16},
-            "target_pages": {"min": 2, "max": 3}, "columns": "sidebar_main",
-        },
-        "required": [
-            ("identity.name", "text"), ("identity.contact", "text"),
-            ("section.summary", "rich_text"), ("section.experience", "section"),
-            ("section.education", "section"), ("section.skills", "section"),
-        ],
-        "optional": [
-            ("identity.links", "list"), ("identity.photo", "image"),
-            ("section.projects", "section"), ("section.awards", "section"),
-            ("section.certificates", "section"), ("section.languages", "section"),
-            ("section.publications", "section"), ("section.open_source", "section"),
-            *COMMON_ITEM_SLOTS,
-        ],
-        "budgets": {
-            "summary_chars": {"en": 240, "zh": 120}, "bullets_per_role": 5,
-            "bullets_per_project": 4, "max_roles": 6, "max_projects": 4, "max_skills": 16,
-        },
-        "ats": {"single_column": False, "text_selectable": True, "tables_allowed": False},
     },
 }
 

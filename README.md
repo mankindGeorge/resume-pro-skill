@@ -27,16 +27,14 @@
 
 面向学生、实习生、应届生、转行者、有经验的求职者等不同人群。默认以中国求职市场为主：`cn_internet` 等中文市场配置优先，同时保留 `intl_en` 用于国际场景；各市场配置的适用范围见[市场矩阵](docs/market-matrix.md)。
 
-不包含求职信、面试辅导、薪资谈判、职位抓取或自动投递。
-
 ## 核心原则
 
 - **事实与证据优先。** 简历要点关联来源，区分已核实、用户自述、估计和未知信息。只有估计或未知来源支撑的数字会被检查拦截；用户自述不等于外部核实。
 - **先引导，再生成。** 信息不足时必须通过 Agent 的交互式提问工具逐项追问，收到答案后继续同一会话中的任务，不以“请回复答案”结束执行；支持自由输入、暂停和续答。先询问海投还是定向投递，再决定如何选择经历。宿主未提供可用的交互工具时，会说明限制，而不是悄悄退回问卷式回复。
 - **写作框架由用户选择。** 使用 STAR、XYZ、FAB、CAR、结果优先或保留个人语气前，先获得同意。
 - **不同市场，不同重点。** 按市场与求职阶段调整栏目、顺序、页数和照片策略；中文校园场景强调教育、基础技能、真实实习与项目贡献。
-- **不添加“求职意向”栏目。** 目标岗位用于内容选择和文件命名，不作为简历中的额外一栏。
-- **HTML-only，A4。** 输出自包含 HTML；需要 PDF 时由用户在浏览器中选择 A4 打印。没有 DOCX、LaTeX 或图片简历导出。
+- **按 HR 重点排序。** 学生与校招简历：教育经历 → 实习经历 → 项目经历 → 专业技能；职场简历：工作经历 → 项目经历 → 教育经历 → 专业技能。
+- **HTML，A4。** 输出自包含 HTML；需要 PDF 时由用户在浏览器中选择 A4 打印。
 - **规则校验与人工判断分工。** CLI 负责结构、证据规则、模板和输出检查；Agent 与用户负责表达质量、事实确认和最终审阅。
 
 ## 快速开始
@@ -119,9 +117,9 @@ resume localize <slug> --to en --role "Backend Engineer" --yes
 
 ## 输入、模板与输出
 
-**输入：** DOCX、文本型 PDF、HTML、Markdown、TXT；DOC / RTF 需要 LibreOffice。当前不支持扫描型 PDF 的 OCR。
+**输入：** DOCX、文本型 PDF、HTML、Markdown、TXT；DOC / RTF 需要 LibreOffice。
 
-**模板：** 提供 **6 种不同设计 × 中英双语，共 12 个变体**。`templates/cn/` 与 `templates/en/` 仅表示简历语言，manifest 分别为 `language: zh` / `en`，不是市场限制；正式简历不显示 CN / EN 标签。
+**模板：** 提供 **5 种不同设计 × 中英双语，共 10 个变体**。`templates/cn/` 与 `templates/en/` 仅表示简历语言，manifest 分别为 `language: zh` / `en`。
 
 | 设计 ID | 版式 | 中文 | English |
 |---|---|---|---|
@@ -130,9 +128,8 @@ resume localize <slug> --to en --role "Backend Engineer" --yes
 | `modern-sidebar` | 主栏 + 右侧栏 | [cn](templates/cn/modern-sidebar/) | [en](templates/en/modern-sidebar/) |
 | `editorial` | 单页杂志式 | [cn](templates/cn/editorial/) | [en](templates/en/editorial/) |
 | `executive` | 居中抬头、双页 | [cn](templates/cn/executive/) | [en](templates/en/executive/) |
-| `zh-professional` | 左侧栏 + 经历优先主栏 | [cn](templates/cn/zh-professional/) | [en](templates/en/zh-professional/) |
 
-`zh-professional` 保留历史 ID，英文同样可用。渲染与 QA 按申请的 `writing.locale` 选语言变体，未设置时使用市场 profile 的 `language`；缺失或语言不匹配会明确报错。默认推荐仍为中文市场校园 / 职场的 `campus` / `zh-professional`、国际市场常规 / 高阶的 `ats-classic` / `executive`，推荐不是排他限制。
+渲染与 QA 按申请的 `writing.locale` 选语言变体，未设置时使用市场 profile 的 `language`；缺失或语言不匹配会明确报错。默认推荐为中文市场校园 / 职场的 `campus` / `modern-sidebar`、国际市场常规 / 高阶的 `ats-classic` / `executive`。
 
 **查看与选择：** 在浏览器打开 `templates/<cn|en>/<id>/preview.html` 即可预览每个版式；`resume templates` 会列出全部变体及其预览路径。制作简历时，Agent 会在渲染前用交互式提问询问你选用哪个版式（给出默认推荐但可改选），并告知上述预览入口，不会在你未表态时静默采用默认。
 

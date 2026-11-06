@@ -1,6 +1,6 @@
 ---
 name: resume-pro-skill
-description: "Evidence-backed, China-first market-aware resume builder with international support. Trigger when the user wants to create, optimize, review, restyle, tailor, or translate a resume, compare a resume to a JD, or get job-fit recommendations. Supports students, interns, new grads, career switchers, experienced professionals, and primarily China's job market while also covering international applications. Output is HTML only."
+description: "Evidence-backed, China-first market-aware resume builder with international support. Trigger when the user wants to create, optimize, review, restyle, tailor, or translate a resume, compare a resume to a JD, or get job-fit recommendations. Supports students, interns, new grads, career switchers, experienced professionals, and primarily China's job market while also covering international applications. Produces self-contained A4 HTML."
 ---
 
 # Resume Pro Skill
@@ -11,7 +11,7 @@ The primary audience is **China's job market**; international applications are s
 
 ## Runtime setup
 
-- After the skill folder is imported, run `python bootstrap.py` once. It checks Python 3.10+, the six runtime dependencies, and that all 12 library template variants load.
+- After the skill folder is imported, run `python bootstrap.py` once. It checks Python 3.10+, the six runtime dependencies, and every library template variant.
 - Prefer `python bootstrap.py --install` to get the `resume` command. If pip cannot install packages, run `python bootstrap.py --deps-only` and call `python resume.py <command>` instead of `resume <command>`.
 - Keep the imported folder on disk. The CLI reads `templates/`, `schema/`, and `profiles/` from it.
 - Packaging: `python scripts/package_skill.py` builds a deterministic ZIP, excludes private material, and verifies the extracted copy before reporting `PASS`.
@@ -22,16 +22,16 @@ The primary audience is **China's job market**; international applications are s
 1. **Never invent facts.** No new company, title, project, metric, date, certificate, or responsibility. Every bullet must trace to an evidence id in the vault.
 2. **Never one-shot a resume.** Guide intake, check sufficiency, ask targeted questions, and only then generate.
 3. **Ask before applying a writing framework.** STAR, XYZ, FAB, CAR, result-first, and user voice require explicit consent. Store `writing.framework` and `writing.consent: true`.
-4. **Markets are not translations.** Re-derive the CN or EN resume from facts; never machine-translate rendered HTML.
-5. **HTML only, A4.** The tool writes `resume.html` and a non-canonical editable HTML variant, framed at A4 (210 × 297 mm). PDF is the user's browser print action (choose A4). No DOCX, LaTeX, or image resume export.
+4. **Markets are not translations.** Re-derive the CN or EN resume from the verified facts.
+5. **HTML deliverable.** Write `resume.html` and a non-canonical editable HTML variant, framed at A4 (210 × 297 mm). PDF comes from the browser print dialog with A4 selected.
 6. **Templates are a contract.** A failed template audit cannot be kept without an explicit override; a missing slot fails the build.
 7. **Evidence beats adjectives.** Prefer a real number, scope, or verifiable outcome. If none exists, ask for a smaller true detail.
-8. **Chinese-market rules.** Core skills, AI-related work, internships, and projects are the four campus signals. CS fundamentals are required for campus. Reject demo-only projects. Never omit education. Strongest signal first. 1–2 pages for students/under 3 years; 2–3 for 3+ years. Never render a 求职意向 section.
-9. **Respect the application mode.** Ask whether the resume is mainly for mass applications. If not, classify each experience/project by job family and ask for the preferred role. Use that role for ranking and the file name; do not add a job-intent line.
-10. **Photo slot.** Every template reserves an optional portrait slot. When no photo is set, the slot must be completely invisible.
-11. **Language-matched variants, not market-locked designs.** Offer all six designs (`ats-classic`, `campus`, `modern-sidebar`, `editorial`, `executive`, `zh-professional`) in both resume languages: 12 variants. `templates/cn/` means Chinese (`language: zh`), `templates/en/` English (`language: en`), not market eligibility. Keep the historical `zh-professional` ID for either language. Render and QA using `writing.locale`, falling back to the market profile's `language`; reject a mismatched or missing variant. When calling `load_template(id, language=zh|en)`, specify the language: a multilingual ID without it is ambiguous and must fail, never prefer `cn`. Render no "CN"/"EN" label.
+8. **Chinese-market rules.** Core skills, AI-related work, internships, and projects are the four campus signals. CS fundamentals are required for campus. Reject demo-only projects. Education is always included. Order by HR priority: students lead with education → experience → projects → skills; professionals lead with summary → experience → projects → education → skills. 1–2 pages for students/under 3 years; 2–3 for 3+ years.
+9. **Respect the application mode.** Ask whether the resume is mainly for mass applications. If not, classify each experience/project by job family and ask for the preferred role. Use that role for ranking and the file name.
+10. **Photo slot.** Every template reserves an optional portrait slot. When no photo is set, the slot is completely invisible.
+11. **Language-matched variants.** Offer all five designs (`ats-classic`, `campus`, `modern-sidebar`, `editorial`, `executive`) in both resume languages: 10 variants. `templates/cn/` means Chinese (`language: zh`), `templates/en/` English (`language: en`). Render and QA using `writing.locale`, falling back to the market profile's `language`; a mismatched or missing variant fails. When calling `load_template(id, language=zh|en)`, specify the language for IDs that exist in both variants.
 
-Keep the existing default recommendations (`campus` / `zh-professional` for Chinese-market campus / professional profiles; `ats-classic` / `executive` for international default / senior profiles), but do not treat them as exclusive choices. Market/persona still govern selection, writing, page policy, photos, and fact confirmation. Respect each design's capacity budgets and fixed sidebar/main regions; bilingual availability does not relax those constraints or change template review status.
+Default recommendations are `campus` / `modern-sidebar` for Chinese-market campus / professional profiles and `ats-classic` / `executive` for international default / senior profiles. Market/persona still govern selection, writing, page policy, photos, and fact confirmation. Respect each design's capacity budgets; bilingual availability does not change template review status.
 
 ## Routing
 
@@ -96,7 +96,7 @@ resume photo portrait.jpg --app <slug>
 ```
 
 - Ask exactly one question at a time; explain why.
-- **Choose the template with the user before rendering.** After the gate passes, call the interactive tool to ask which layout to use. Present the six designs available in the resume's language (`resume templates`; each ID exists in both `cn`/`en`), recommend the market/persona default, and let the user pick another or keep the default. Tell the user where to view each design: open `templates/<cn|en>/<id>/preview.html` in a browser (the `preview` path is also in `resume templates --json`). Pass the chosen ID with `--template`; never silently accept the default when the user has not been asked.
+- **Choose the template with the user before rendering.** After the gate passes, call the interactive tool to ask which layout to use. Present the five designs available in the resume's language (`resume templates`; each ID exists in both `cn`/`en`), recommend the market/persona default, and let the user pick another or keep the default. Tell the user where to view each design: open `templates/<cn|en>/<id>/preview.html` in a browser (the `preview` path is also in `resume templates --json`). Pass the chosen ID with `--template`; the default is used only after the user confirms it.
 - If `check` exits `2`, read the targeted questions and ask one. Do not generate.
 - `minimum` is a truthful but modest resume; confirm before building. `strong` can build.
 - Never fill a gap with generic AI prose.
@@ -156,9 +156,9 @@ resume localize <slug> --to en --role "Backend Engineering Intern" --yes
 resume localize <slug> --to zh --role "高级后端工程师" --yes
 ```
 
-- Re-derive from facts for the target market; do not translate rendered text. Keep the existing cross-market selection and writing workflow.
-- Retain the source design ID by default and resolve its target-language variant; change the design only with an explicit `--template <id>`. A private learned template without that language must fail clearly, never silently switch designs. Legacy flat `templates/user-<hash>/` templates remain supported, with their manifest language checked.
-- Missing target-language facts exit `3` with a gap list. `--draft` marks them `[NEEDS EN]`/`[NEEDS ZH]`; do not deliver a draft.
+- Re-derive from facts for the target market; keep the existing cross-market selection and writing workflow.
+- Retain the source design ID by default and resolve its target-language variant; change the design only with an explicit `--template <id>`. A learned template without that language fails clearly.
+- Missing target-language facts exit `3` with a gap list. `--draft` marks them `[NEEDS EN]`/`[NEEDS ZH]`; deliver only after the gaps are resolved.
 - Parity failures block delivery. Review `parity.json` before the user sends anything.
 
 ### Recommend
@@ -167,7 +167,7 @@ resume localize <slug> --to zh --role "高级后端工程师" --yes
 resume recommend --app <slug>
 ```
 
-Role families, fit tiers, missing terms, and a 2–4 week proof plan. No live job-board scraping or auto-apply.
+Role families, fit tiers, missing terms, and a 2–4 week proof plan.
 
 ### Template import
 
@@ -221,12 +221,10 @@ Exit codes: `0` ok; `2` gate blocked/minimum; `3` invalid input or missing targe
 - [Install](docs/install.md)
 - [Evaluation and ATS honesty](docs/evaluation.md)
 
-## Refusals
+## Guardrails
 
-- Do not invent experience, projects, numbers, dates, certificates, or employers.
-- Do not produce a resume from a thin profile without asking; use the gate and targeted questions.
-- Do not deliver a draft, a parity failure, or a hard QA failure as final.
-- Do not clone a commercial template into the public library.
-- Do not output DOCX/LaTeX/PDF resumes; HTML only, PDF via browser print. Templates are A4.
-- Do not add a 求职意向 section; the preferred role belongs in targeting and the file name, not in the resume.
-- Out of scope: cover letters, interview prep, offer comparison, salary negotiation, job-board scraping, auto-apply.
+- Every bullet traces to an evidence id; ask for missing facts instead of filling gaps.
+- A thin profile goes through the gate and targeted questions before writing.
+- Draft markers, parity failures, and hard QA failures stay internal until resolved.
+- The public library contains original layouts informed by public guidance; learned user templates remain private.
+- Deliver HTML; PDF comes from the browser print dialog with A4 selected.

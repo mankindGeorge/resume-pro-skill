@@ -62,9 +62,13 @@ def _section_order(market: str, persona: str) -> list[str]:
     order = list((market_profile.get("section_order") or {}).get(key) or [])
     if not order:
         order = list(DEFAULT_SECTION_ORDER)
-    if persona == "senior_manager" and "summary" not in order:
-        order.insert(0, "summary")
-    return order
+    if persona == "academic":
+        return order
+    if profile.is_student(persona):
+        priority = ["education", "experience", "projects"]
+    else:
+        priority = ["summary", "experience", "projects", "education", "skills"]
+    return priority + [section for section in order if section not in priority]
 
 
 def _bullet_text(bullet: dict[str, Any]) -> str:

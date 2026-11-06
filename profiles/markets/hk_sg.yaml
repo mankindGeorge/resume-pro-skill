@@ -12,7 +12,7 @@ personal_fields:
   forbidden: [photo, date_of_birth, gender, marital_status, id_number]
 section_order:
   student: [education, experience, projects, skills, awards]
-  experienced: [summary, experience, education, skills, awards]
+  experienced: [summary, experience, projects, education, skills, awards]
 signals:
   prioritize: [bilingual_ability, regional_experience, scope]
   core: [core_skills, internship, projects]

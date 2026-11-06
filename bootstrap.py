@@ -26,7 +26,6 @@ LIBRARY_IDS = (
     "modern-sidebar",
     "editorial",
     "executive",
-    "zh-professional",
 )
 DEPENDENCIES = (
     ("click", "click>=8.1"),

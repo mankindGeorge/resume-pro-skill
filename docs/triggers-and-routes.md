@@ -16,7 +16,6 @@
 | "What jobs should I apply for?" | `recommend` | Build capability profile → role families | Fit tiers + gaps + build plan |
 | "I have a template I like, use it" | `template-import` | Audit → learn or reject | Private template + resume |
 | "I have no experience / no projects" | `create` + build mode | Intake → honesty gate → proof plan | Starter resume + 2–4 week plan |
-| "Write a cover letter / prep interviews / compare offers" | out of scope | Explain scope | Route elsewhere |
 
 ## 2. Routing rules
 
@@ -124,7 +123,6 @@ Fidelity expectations:
 - HTML input: highest fidelity; reuse CSS where possible.
 - DOCX input: medium-high; map styles and structure.
 - PDF input: medium; positions and fonts can be approximated, not guaranteed.
-- Image input: not supported in v1.
 
 ### 4.6 Replace protocol
 
@@ -172,18 +170,7 @@ Input: HTML/DOCX/PDF template or resume. Output: audit verdict; if acceptable, a
 
 Input: student with no internship/projects. Output: an honest starter resume + a 2–4 week proof-building plan. Never invent projects.
 
-## 6. Out of scope
-
-Decline and route away:
-
-- cover letters;
-- interview preparation / behavioral stories;
-- offer comparison / salary negotiation;
-- job-board scraping / auto-apply;
-- visa or immigration advice;
-- legal advice.
-
-## 7. CLI mapping
+## 6. CLI mapping
 
 ```
 resume create                  # Route A
@@ -199,7 +186,7 @@ resume check                   # sufficiency
 resume build <app> [--draft]
 ```
 
-## 8. Template quality rubric (summary)
+## 7. Template quality rubric (summary)
 
 A template is `excellent` only if:
 
@@ -214,7 +201,7 @@ A template is `excellent` only if:
 
 Anything less is `good_with_fixes`, `replace`, or `unmaintainable`.
 
-## 9. Privacy and licensing for user templates
+## 8. Privacy and licensing for user templates
 
 - User-provided templates and resumes are processed locally.
 - Rebuilt private templates live under `templates/user-<hash>/` and are never published.
@@ -222,7 +209,7 @@ Anything less is `good_with_fixes`, `replace`, or `unmaintainable`.
 - Do not clone a known commercial template into the public library; personal-use reconstruction only.
 - Do not upload or redistribute user files.
 
-## 10. Recommended v1 scope
+## 9. Recommended v1 scope
 
 Include:
 
@@ -230,10 +217,3 @@ Include:
 - Format ingestion: DOCX, PDF (text-based), HTML, MD/TXT.
 - Template audit and keep-original for HTML/DOCX.
 - Replace-with-our-template for failed audits.
-
-Defer:
-
-- image/OCR ingestion;
-- PDF template reconstruction at high fidelity;
-- `template-import` for arbitrary commercial templates;
-- `update` with automatic merge (start with manual confirmation).

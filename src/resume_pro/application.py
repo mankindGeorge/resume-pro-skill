@@ -26,7 +26,6 @@ LIBRARY_TEMPLATES = (
     "modern-sidebar",
     "editorial",
     "executive",
-    "zh-professional",
 )
 
 _SCHEMA_CACHE: dict[str, Any] = {}
@@ -66,7 +65,7 @@ def filename_role(role: str) -> str:
 
 def default_template(market: str, persona: str) -> str:
     if market.startswith("cn_"):
-        return "campus" if profile.is_student(persona) else "zh-professional"
+        return "campus" if profile.is_student(persona) else "modern-sidebar"
     if persona == "senior_manager":
         return "executive"
     return "ats-classic"
