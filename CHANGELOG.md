@@ -6,6 +6,8 @@ All notable changes to this project are documented here. The format follows Keep
 
 ### Changed
 
+- The compact templates render one award per line: the awards list is single-column so each honor reads on its own row.
+- STAR packaging keeps merged content inside the recipe: an integrated tool or open-source artifact belongs within the four STAR points instead of extra bullets.
 - Point labels (`项目背景：` / `Background:` and friends) render bold in every resume, so the point structure is visible at a glance in both languages.
 - The workspace keeps only the deliverable resume files (the final HTML and its editable copy). QA, lint, render, and parity reports stay under `.resume/applications/<slug>/` and are never copied into the workspace.
 - Write writing frameworks and content packaging in one document (`references/writing-engine.md`): each of the six frameworks — STAR, XYZ, FAB, CAR, result-first, user voice — carries its own packaging recipe with labeled points and examples. Packaging is no longer shaped like one framework only; lint and skill instructions refer to the chosen framework's recipe.

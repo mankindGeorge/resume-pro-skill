@@ -26,6 +26,7 @@ Packaging is the same job in every shape: rewrite raw facts into 「问题—决
 - Collect: situation, task, action, result.
 - Labeled points: `项目背景：`（S）, `核心框架：`（T）, `解决方案：`（A，或 `难点：`）, `核心成果：`（R）.
 - Package: background states the problem and constraint; the framework point states the technical route and why it was chosen; the solution explains the pain point and why the approach fits it; the result states what problem was solved and what changed.
+- Extra content — an integrated tool, an open-source artifact, a merged sub-project — stays inside these four points; do not add bullets outside the recipe.
 
 ### XYZ — `xyz`
 

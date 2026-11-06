@@ -205,6 +205,7 @@ def test_frameworks_and_packaging_share_one_document():
         assert f"`{framework_id}`" in packaging, f"Missing packaging recipe: {framework_id}"
     assert packaging.count("Labeled points:") >= 6
     assert "never tied to one framework" in doc
+    assert "do not add bullets outside the recipe" in doc
 
 
 def test_short_line_rule_is_documented():
