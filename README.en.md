@@ -23,7 +23,6 @@ No invented experience, no one-shot generic prose, and no treating Chinese and E
 | Tailor to a role | Select experience against a job description (JD) and report matches, gaps, and risks |
 | Explore suitable roles | Recommend role families from existing experience and identify evidence to add |
 | Switch between Chinese and English | Reorganize facts and wording for the target market |
-| Change the layout or add a photo | Preserve facts; optional photo slots disappear when unused |
 
 Supports students, interns, new graduates, career switchers, experienced professionals, and other personas. China-first by default: `cn_internet` and other Chinese-market profiles lead, while `intl_en` remains available for international applications; see the [market matrix](docs/market-matrix.md) for each profile's scope.
 
