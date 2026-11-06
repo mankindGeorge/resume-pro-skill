@@ -56,8 +56,8 @@ a { color: var(--accent); text-decoration: none; }
 .entry-meta { font-size: 9.4pt; color: var(--muted); white-space: nowrap; }
 .entry-sub { font-size: 9.6pt; color: var(--muted); margin-top: 1pt; }
 
-ul { margin: 2pt 0 0 15pt; padding: 0; }
-li { margin: 1pt 0; }
+.entry-lines { margin: 2pt 0 0 15pt; padding: 0; }
+.entry-line { margin: 1pt 0; }
 .simple-list { margin: 2pt 0 0 15pt; }
 .skill-row { margin: 2pt 0; }
 .skill-label { font-weight: 700; color: var(--accent); margin-right: 5pt; }

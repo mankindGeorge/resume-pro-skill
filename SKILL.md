@@ -209,12 +209,13 @@ resume templates
 
 ## Content sufficiency
 
-- Packaging real experience is the core product. HR must see substance: context, ownership, action, and result in every kept item. Strengthen real work with decisive verbs and scale; never pad with vague adjectives.
+- Packaging real experience is the core product. HR must see substance: context, ownership, action, and result in every kept item. Rewrite raw facts into problem–decision–impact language; do not merely paraphrase the user's wording.
 - Every kept role or project must answer four things: background or problem, the user's role, the user's action, and the result. Technical stack alone is not a result.
 - When a bullet only names tools or duties, ask for the outcome behind them: a number, scope, artifact, or user-visible change.
 - If the user gives technology without background or results, ask one question: can you supply it, or should I rephrase only what you already gave? Add nothing on my own.
 - Follow the selected framework while collecting: STAR asks situation, task, action, result; XYZ asks the accomplished X measured by Y by doing Z; CAR asks challenge, action, result. Ask only for the slots that are missing.
 - Render each kept project as 3–4 labeled STAR points: `项目背景：`, `核心框架：`, `解决方案：`（或 `难点：`）, `核心成果：`. Each point is a complete, substantial sentence with real detail; never a one-line fragment.
+- A `核心成果：` point must say what problem was solved and what changed, not just list an award or repeat the technology. A `解决方案：` point must explain the pain point and why the approach fits it. Remove filler such as launch dates unless they prove impact.
 - All points render as labeled paragraphs or plain lines. Do not use `<ul>`, `<ol>`, or `<li>`, and do not put a bullet dot before the text.
 - A project with too little text is a packaging failure. Mine constraints, decisions, trade-offs, artifacts, and feedback to surface real highlights; if it still cannot fill a labeled point, exclude it instead of keeping a weak block.
 - If no outcome exists, ask for a smaller true detail instead of padding the resume.

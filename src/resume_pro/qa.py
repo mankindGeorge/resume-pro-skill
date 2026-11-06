@@ -169,6 +169,7 @@ def _browser_pdf(html_path: Path, browser: str) -> tuple[int, list[str], list[di
                                 "bottom": char.get("bottom", 0),
                                 "page_height": page.height or 0,
                                 "page_width": page.width or 0,
+                                "text": char.get("text", ""),
                             }
                         )
                 height = pdf.pages[-1].height if pdf.pages else 0
@@ -438,6 +439,33 @@ def run_qa(
             )
         )
         metrics["bottom_whitespace_pct"] = whitespace
+
+    # Horizontal balance: body points should use the printable width.
+    if template["manifest"].get("page", {}).get("columns") == "single" and page_chars:
+        usable = max(1.0, min(char["page_width"] for char in page_chars) - 2 * 56.0)
+        widths = []
+        grouped: dict[tuple[float, float], list[dict[str, Any]]] = {}
+        for char in page_chars:
+            key = (round(char.get("page_height", 0), 1), round(char["top"], 1))
+            grouped.setdefault(key, []).append(char)
+        for _, chars in grouped.items():
+            line = "".join(c.get("text", "") for c in chars).strip()
+            if len(line) < 25:
+                continue
+            widths.append(max(c["x1"] for c in chars) - min(c["x0"] for c in chars))
+        if widths:
+            widths.sort()
+            median = widths[len(widths) // 2]
+            ratio = median / usable
+            metrics["line_width_ratio"] = round(ratio, 2)
+            checks.append(
+                QACheck(
+                    "qa.layout.text_balance",
+                    "fail" if ratio < 0.45 else "warn" if ratio < 0.65 else "pass",
+                    f"Body lines use about {round(ratio * 100)}% of the printable width.",
+                    "" if ratio >= 0.8 else "Expand points to use the printable width; do not leave the right side empty.",
+                )
+            )
 
     # Content checks on rendered text.
     cliche_hits = [phrase for phrase in CLICHES if phrase in pdf_text]
