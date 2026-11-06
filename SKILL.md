@@ -19,10 +19,9 @@ The primary audience is **China's job market**; international applications are s
 
 ## Workspace
 
-Put every user-facing artifact under `workspace/<project-slug>/` in the current project root. Use one subfolder per application or review and keep the resume, editable copy, reports, and diagnosis together.
+Put every user-facing artifact under the skill root's `workspace/`. Use one subfolder per application or review and keep the resume, editable copy, reports, and diagnosis together.
 
-- If the skill repository is the working project, use its `workspace/`.
-- When the skill is invoked in another project, create `workspace/` in that project's root.
+- The CLI resolves the skill root and publishes there; if the project folder is already inside that workspace, the files stay in that project folder.
 - `.resume/` remains internal state. `resume build` and `resume review` publish copies to the workspace; copy any other user-facing report there too.
 - Keep outputs out of the repository root.
 

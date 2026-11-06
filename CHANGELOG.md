@@ -30,6 +30,8 @@ All notable changes to this project are documented here. The format follows Keep
 - Add the `compact` layout: a one-page campus design with ruled headings, centered entry headers, and a two-column awards list.
 - Publish user-facing files to `workspace/<project-slug>/`: builds copy the resume, editable copy, and reports; reviews publish their report to a review subfolder. Each application or review gets its own folder; `.resume/` remains internal state.
 - Keep Chinese previews Chinese: the compact Chinese preview uses the Chinese student sample, with only proper nouns and technical terms left in English.
+- Render education as major on the entry line and degree/GPA as a smaller note below, instead of one combined line.
+- Place workspace outputs under the skill root's `workspace/`; one subfolder per application or review.
 - After a diagnosis, ask whether to start fixing; if yes, offer one multi-select P0/P1/P2 choice, then work through the selected priorities one question at a time and re-run build/QA.
 
 ## [0.1.0] — 2026-11-05

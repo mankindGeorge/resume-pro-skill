@@ -14,6 +14,11 @@ ROOT = Path(__file__).resolve().parents[1]
 EXAMPLES = ROOT / "schema" / "examples"
 
 
+@pytest.fixture(autouse=True)
+def isolated_workspace(tmp_path, monkeypatch):
+    monkeypatch.setenv("RESUME_PRO_WORKSPACE_DIR", str(tmp_path / "workspace"))
+
+
 def load_example(name: str) -> dict[str, Any]:
     with (EXAMPLES / name).open(encoding="utf-8") as handle:
         return yaml.safe_load(handle)

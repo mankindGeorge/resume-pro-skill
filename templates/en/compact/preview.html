@@ -188,6 +188,8 @@ html[lang="en"] .skill-label::after { content: ": "; }
   .section { break-inside: avoid; }
 }
 
+.entry-note { font-size: 9.5pt; color: #444; margin-top: 1pt; }
+
 </style>
 <style>
 .draft-banner{position:fixed;top:0;left:0;right:0;background:#b00020;color:#fff;text-align:center;
@@ -214,7 +216,7 @@ body.editable{padding-top:34pt}
 
 <section class="section" data-section="education">
 <h2>Education</h2>
-<div data-slot="section.education"><div class="entry"><div class="entry-head"><span class="entry-title">Example University</span><span class="entry-meta">2023-09 – 2027-06</span></div><div class="entry-sub">B.Eng. · Software Engineering · GPA 3.6/4.0</div></div></div>
+<div data-slot="section.education"><div class="entry"><div class="entry-head"><span class="entry-title">Example University</span><span class="entry-meta">2023-09 – 2027-06</span></div><div class="entry-sub">Software Engineering</div><div class="entry-note">B.Eng. · GPA 3.6/4.0</div></div></div>
 </section><section class="section" data-section="projects">
 <h2>Projects</h2>
 <div data-slot="section.projects"><div class="entry"><div class="entry-head"><span class="entry-title">Course QA with RAG</span><span class="entry-meta">2025-09 – 2026-03</span></div><div class="entry-sub">Retrieval lead</div><ul><li>Owned retrieval, designed heading-aware chunking, and added hybrid BM25 retrieval.</li><li>Raised Recall@5 from 62% to 81% on 120 human-labeled questions.</li></ul></div><div class="entry"><div class="entry-head"><span class="entry-title">Campus Second-hand Marketplace</span><span class="entry-meta">2025-03 – 2025-08</span></div><div class="entry-sub">Backend developer</div><ul><li>Cut product-detail P95 from 420ms to 160ms under load test.</li><li>Added cache-aside for hot product pages and a mutex for cache misses.</li></ul></div></div>

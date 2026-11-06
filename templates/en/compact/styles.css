@@ -179,3 +179,5 @@ html[lang="en"] .skill-label::after { content: ": "; }
   }
   .section { break-inside: avoid; }
 }
+
+.entry-note { font-size: 9.5pt; color: #444; margin-top: 1pt; }

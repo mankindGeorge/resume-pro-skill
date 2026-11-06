@@ -175,7 +175,7 @@ Build behavior:
 - `blocked` → exit `2`, nothing is written.
 - `minimum` → exit `2` unless `--yes`.
 - Lint errors → exit `4`, nothing is rendered.
-- Success → writes the rendered HTML, editable HTML, `render.json`, and `lint.json`, then copies them to `workspace/<slug>/`. Targeted applications include the preferred role in the file name (for example `resume-backend-engineer.html`); mass applications use `resume.html`.
+- Success → writes the rendered HTML, editable HTML, `render.json`, and `lint.json`, then copies them to the skill root's `workspace/<slug>/`. Targeted applications include the preferred role in the file name (for example `resume-backend-engineer.html`); mass applications use `resume.html`.
 
 The rendered HTML is the canonical, self-contained file with inline CSS. The editable HTML is a non-canonical preview with `contenteditable` text slots and a toolbar; browser edits are not merged back.
 

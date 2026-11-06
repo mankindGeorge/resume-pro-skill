@@ -190,16 +190,19 @@ def build_render_model(vault: dict[str, Any], application: dict[str, Any], *, ro
 
     education = []
     for item in _filtered(vault, "education", fact_ids):
-        detail = [ _localized(item.get("degree"), locale), _localized(item.get("major"), locale) ]
+        degree = _localized(item.get("degree"), locale)
+        major = _localized(item.get("major"), locale)
+        note = [degree] if degree else []
         if item.get("gpa"):
             gpa = item["gpa"]
             gpa_label = "绩点" if locale == "zh" else "GPA"
-            detail.append(f"{gpa_label} {gpa.get('value')}/{gpa.get('scale')}")
+            note.append(f"{gpa_label} {gpa.get('value')}/{gpa.get('scale')}")
         education.append(
             {
                 "title": item.get("school") or "",
                 "dates": _dates(item, locale),
-                "sub": " · ".join(part for part in detail if part),
+                "sub": major,
+                "note": " · ".join(note),
             }
         )
     education.sort(key=lambda entry: str(entry.get("dates", "")), reverse=True)
@@ -317,7 +320,9 @@ def _section_content(section: str, model: dict[str, Any]) -> str:
     if section == "education":
         return "".join(
             f'<div class="entry">{_entry_head(entry["title"], entry["dates"])}'
-            f'<div class="entry-sub">{_escape(entry["sub"])}</div></div>'
+            + (f'<div class="entry-sub">{_escape(entry["sub"])}</div>' if entry.get("sub") else "")
+            + (f'<div class="entry-note">{_escape(entry["note"])}</div>' if entry.get("note") else "")
+            + "</div>"
             for entry in model.get("education") or []
         )
     if section == "experience":

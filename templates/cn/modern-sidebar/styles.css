@@ -138,3 +138,5 @@ body[data-photo="true"] .header { padding-right: 30mm; min-height: 37mm; }
   .section { break-inside: avoid; }
   .aside { background: #f2f4f6 !important; }
 }
+
+.entry-note { font-size: 9.5pt; color: #444; margin-top: 1pt; }

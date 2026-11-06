@@ -72,7 +72,7 @@ resume template-import <file> [--market <id>] [--persona <id>] [--force] [--json
 | Command | Behavior |
 |---|---|
 | `optimize` | Ingest → extraction report → template audit → merge facts → keep/replace decision. Writes `.resume/imports/<timestamp>-<slug>/`. If the existing vault belongs to a different name, it is replaced unless `--merge` is explicit. The vault is not written when a requested keep is refused. |
-| `review` | Diagnostic report only. Writes `.resume/reviews/<timestamp>-<slug>/review.json`, then publishes it to `workspace/<timestamp>-<slug>/`; never writes the vault or the source file. Exit `4` when the verdict is `replace` or `unmaintainable`. |
+| `review` | Diagnostic report only. Writes `.resume/reviews/<timestamp>-<slug>/review.json`, then publishes it to the skill-root `workspace/<timestamp>-<slug>/`; never writes the vault or the source file. Exit `4` when the verdict is `replace` or `unmaintainable`. |
 | `restyle` | Appearance only: preserve facts, market, persona, selection, and writing locale. `--app` updates the template and rebuilds HTML with its matching language variant; a file produces `.resume/restyles/<timestamp>-<slug>/preview.html` for a learned template. Never switch markets or reselect facts to make a design fit. |
 | `template-import` | Audit a user template; learn it only when the verdict is `excellent` or `good_with_fixes`. Writes `.resume/template-imports/<timestamp>-<slug>/` and `templates/user-<hash>/`. |
 
@@ -120,7 +120,7 @@ resume templates [--json]
 
 | Command | Behavior |
 |---|---|
-| `build` | Runs the gate and lint, then writes `resume.html`, `resume-editable.html`, `render.json`, and `lint.json`. `blocked` exits `2`; `minimum` requires `--yes`; lint errors exit `4`. Copies the user-facing files to `workspace/<slug>/`. |
+| `build` | Runs the gate and lint, then writes `resume.html`, `resume-editable.html`, `render.json`, and `lint.json`. `blocked` exits `2`; `minimum` requires `--yes`; lint errors exit `4`. Copies the user-facing files to the skill-root `workspace/<slug>/`. |
 | `templates` | Lists the 12 public variants (six signed layouts × `templates/cn` and `templates/en`), plus learned `user-*` templates: id, language, markets, personas, pages, columns, fingerprint, directory `path`, and `preview` (the `preview.html` path, also printed in human output). The CLI groups by language folder. |
 | `localize` | Re-derives from the vault for the target market; writes a parity report and the target HTML. Retains the source layout ID and resolves its target-language variant unless `--template` overrides it. Missing target-locale facts exit `3`; `--draft` marks them. Parity failures exit `4`. Literal translation is not a mode. |
 

@@ -268,6 +268,19 @@ def test_modern_sidebar_keeps_education_in_the_main_column(student_vault, tmp_pa
     assert first["data-section"] == "education"
 
 
+def test_education_splits_major_and_supplement(student_vault, tmp_path):
+    app = _app(
+        student_vault, tmp_path, "compact",
+        market="cn_internet", persona="student_with_internship", role="后端开发工程师",
+    )
+    soup = BeautifulSoup(render_application(tmp_path, student_vault, app).html_path.read_text(encoding="utf-8"), "html.parser")
+    sub = soup.select_one('[data-section="education"] .entry-sub').get_text(" ", strip=True)
+    note = soup.select_one('[data-section="education"] .entry-note').get_text(" ", strip=True)
+    assert sub == "计算机科学与技术"
+    assert "工学学士" not in sub
+    assert "工学学士" in note and "绩点" in note
+
+
 @pytest.mark.parametrize("template_id", LIBRARY_TEMPLATES)
 def test_language_does_not_override_market_photo_policy(student_vault, tmp_path, template_id):
     vault = copy.deepcopy(student_vault)
