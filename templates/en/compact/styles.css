@@ -181,3 +181,11 @@ html[lang="en"] .skill-label::after { content: ": "; }
 }
 
 .entry-note { font-size: 9.5pt; color: #444; margin-top: 1pt; }
+
+.section[data-section="education"] .entry-note {
+  grid-column: 3;
+  grid-row: 2;
+  text-align: right;
+  font-size: 9pt;
+  color: #333;
+}

@@ -107,6 +107,13 @@ def test_date_order_is_an_error(student_vault):
     assert any(issue.code == "lint.date_order" for issue in report.errors)
 
 
+def test_present_end_is_flagged_for_a_concrete_month(student_vault):
+    vault = copy.deepcopy(student_vault)
+    vault["projects"][0]["end"] = "present"
+    report = lint(vault, market="cn_internet", persona="student_with_internship", application=_app())
+    assert any(issue.code == "lint.date_open" for issue in report.warnings)
+
+
 def test_skim_fails_without_signals(student_vault):
     vault = copy.deepcopy(student_vault)
     vault["skills"] = []

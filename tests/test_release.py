@@ -168,6 +168,8 @@ def test_skill_requires_content_sufficiency_and_depth_mining():
         "depth mining",
         "never invents",
         "ask whether to package the existing work",
+        "Never let a bare label render alone",
+        "concrete end month",
     ):
         assert requirement in section, f"Missing content-sufficiency rule: {requirement}"
 

@@ -250,6 +250,17 @@ def lint(
         if isinstance(start, str) and start[:4].isdigit() and int(start[:4]) > datetime.now().year + 1:
             add("lint.date_future", "warn", f"experience[{index}].start", "The start date is in the future.", "Confirm the date.")
 
+    for section in ("education", "experience", "projects"):
+        for index, item in enumerate(vault.get(section) or []):
+            if item.get("end") == "present":
+                add(
+                    "lint.date_open",
+                    "warn",
+                    f"{section}[{index}].end",
+                    "This period ends with 至今/Present.",
+                    "Ask for a concrete end month before delivery.",
+                )
+
     for link in (vault.get("identity") or {}).get("links") or []:
         url = str(link.get("url") or "")
         if PLACEHOLDER_RE.search(url) or url in {"#", ""}:
