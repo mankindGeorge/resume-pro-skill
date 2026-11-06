@@ -104,6 +104,30 @@ def test_sensitive_field_in_intl_fails(experienced_vault, tmp_path):
 
 
 @pytest.mark.skipif(find_browser() is None, reason="No headless browser available")
+def test_short_line_check_passes_on_clean_render(student_vault, tmp_path):
+    app, _ = _rendered(student_vault, tmp_path)
+    qa = run_qa(tmp_path, student_vault, app)
+    check = next(item for item in qa.checks if item.id == "qa.layout.short_line")
+    assert check.status == "pass"
+    assert qa.metrics["short_line_count"] == 0
+
+
+@pytest.mark.skipif(find_browser() is None, reason="No headless browser available")
+def test_short_tail_line_in_intro_fails(student_vault, tmp_path):
+    app, render = _rendered(student_vault, tmp_path)
+    html = Path(render.html_path).read_text(encoding="utf-8")
+    bullet = student_vault["experience"][0]["bullets"][0]
+    old = bullet["text"]["zh"]
+    bullet["text"]["zh"] = "完成上线。"
+    Path(render.html_path).write_text(html.replace(old, "完成上线。", 1), encoding="utf-8")
+    qa = run_qa(tmp_path, student_vault, app)
+    check = next(item for item in qa.checks if item.id == "qa.layout.short_line")
+    assert check.status == "fail"
+    assert qa.metrics["short_line_count"] >= 1
+    assert "2/5" in check.detail or "2/5" in check.fix
+
+
+@pytest.mark.skipif(find_browser() is None, reason="No headless browser available")
 def test_page_count_uses_browser_and_can_fail(student_vault, tmp_path):
     app, render = _rendered(student_vault, tmp_path)
     html = Path(render.html_path).read_text(encoding="utf-8")

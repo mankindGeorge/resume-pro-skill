@@ -22,6 +22,7 @@ All notable changes to this project are documented here. The format follows Keep
 
 ### Added
 
+- QA check `qa.layout.short_line`: every rendered line of a project or experience intro must fill at least 2/5 of the printable width. A wrap that leaves only a few characters alone on a line is a hard failure; the fix expands the sentence with real detail (preferred) or tightens the wording. Line measurements use the template's real margins, and the rule is written into the writing engine shared rules.
 - Add a qualified-project content-sufficiency standard: a project presentation covers background/role/trade-offs/difficulties/evaluation/deployment/outcomes/feedback, and guided interaction proactively asks, one question at a time, for the dimensions the user may not have thought to mention instead of waiting for more input.
 - Five regression tests for the mandatory interaction instructions, multi-round CLI answers, invalid-input recovery, read-only summary/resume, unknown answers, multiline Chinese input, and confirmation recovery. These are not live host-UI tests.
 - `resume templates` now prints each variant's `preview.html` path in human output and a `preview` field in `--json`, so users can open a design in a browser before choosing. A contract test guards the create/optimize template-choice and preview-location instructions, and listing tests assert the preview paths.

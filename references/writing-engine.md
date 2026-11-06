@@ -60,6 +60,7 @@ Packaging is the same job in every shape: rewrite raw facts into 「问题—决
 Shared rules for every recipe:
 
 - Each point is a complete, substantial sentence with real detail; never a one-line fragment.
+- Every rendered line of a project or experience intro must fill at least 2/5 of the printable width. When a wrap would leave only a few characters alone on a line, expand the sentence with real detail (preferred) or tighten the wording so the line fills or merges; never deliver a one- or two-character line.
 - A result point must say what problem was solved and what changed, not just list an award or repeat the technology. A solution point must explain the pain point and why the approach fits it. Remove filler such as launch dates unless they prove impact.
 - Data fallback order: ask for the real value → ask permission to estimate → propose candidate values → the user confirms → write.
 - All points render as labeled paragraphs or plain lines — never `<ul>`, `<ol>`, or `<li>`, and no dot before the text.

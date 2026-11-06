@@ -91,5 +91,6 @@ The library templates are A4. Open `resume.html`, choose **A4** in the browser p
 | `localize.locale_gaps` | Write the target-language facts in the vault, or use `--draft` to inspect markers. |
 | `render.page_size_mismatch` | Use an A4 library template; the application must be A4. |
 | `qa.layout.font_size` fails | Keep body text at 10pt or larger; 9pt is the floor. |
+| `qa.layout.short_line` fails | A project/experience line fills under 2/5 of the printable width. Expand the sentence with real detail (preferred) or tighten the wording so every line fills at least 2/5. |
 | QA says no browser | Install Edge/Chrome or set `RESUME_PRO_BROWSER`. |
 | `.doc`/`.rtf` fails | Install LibreOffice or export to DOCX/PDF. |

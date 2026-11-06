@@ -205,7 +205,7 @@ resume diff <slug> <version> current
 resume templates
 ```
 
-`audit` checks the rendered HTML with a headless browser: pages, extracted text, selected bullets, headings, section order, font floor, sensitive fields, and privacy. Hard failures exit `4`. Every rebuild snapshots a version.
+`audit` checks the rendered HTML with a headless browser: pages, extracted text, selected bullets, headings, section order, font floor, line fill in project/experience intros, sensitive fields, and privacy. Hard failures exit `4`. Every rebuild snapshots a version.
 
 ## Content sufficiency
 
@@ -218,6 +218,7 @@ resume templates
 - 框架和内容包装写在同一个文档：[Writing engine](references/writing-engine.md)。六个框架（STAR/XYZ/FAB/CAR/结果优先/个人语气）各有自己的包装配方、标签分点和示例，按所选框架的配方写，不要都按一种框架写。
 - Follow the selected framework's packaging recipe while collecting; it lists exactly which slots to ask for. Ask only for the slots that are missing.
 - Render each kept project as 3–4 labeled points using the chosen framework's recipe and label set. Each point is a complete, substantial sentence with real detail; never a one-line fragment.
+- 项目/实习介绍每行文字至少占可打印宽度的 2/5。换行后一行只剩几个字时，优先扩句（只展开已有事实），其次精简句子重新排布，不要留孤字行。
 - A `核心成果：` point must say what problem was solved and what changed, not just list an award or repeat the technology. A `解决方案：` point must explain the pain point and why the approach fits it. Remove filler such as launch dates unless they prove impact.
 - All points render as labeled paragraphs or plain lines. Do not use `<ul>`, `<ol>`, or `<li>`, and do not put a bullet dot before the text.
 - 内容太少的项目做不出效果。多问约束、决策、取舍、产物和反馈，找出真实亮点；实在填不满一个分点，就去掉这个项目。

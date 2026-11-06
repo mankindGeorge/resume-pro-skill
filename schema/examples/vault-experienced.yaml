@@ -47,7 +47,7 @@ experience:
     bullets:
       - id: bul_exp_001
         text:
-          en: "Led the ledger migration from a monolith to a partitioned service for 4M daily transactions, cutting p99 write latency from 820ms to 240ms."
+          en: "Led the ledger migration from a monolith to a partitioned service for 4M daily transactions, cutting p99 write latency from 820ms to 240ms under the same daily load."
           zh: "主导账务系统从单体迁移到分库服务，覆盖日均 400 万笔交易，将 p99 写入延迟从 820ms 降至 240ms。"
         evidence: [ev_ledger]
         skill_ids: [skl_backend]

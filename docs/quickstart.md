@@ -200,7 +200,7 @@ resume diff <slug> <version> current
 
 - actual page count vs the application budget;
 - section headings, selected bullets, section order, and outside-page text;
-- body font floor, orphan headings, and bottom whitespace;
+- body font floor, short tail lines in project/experience intros, orphan headings, and bottom whitespace;
 - clichés, bullet voice, CS fundamentals, locale markers;
 - photo/sensitive fields, page size, and privacy.
 

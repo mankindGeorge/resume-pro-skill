@@ -98,13 +98,13 @@ projects:
       - id: bul_proj_001
         text:
           zh: "在 120 条人工标注问题上把 Recall@5 从 62% 提升到 81%，主要来自标题感知分块和 BM25 混合检索。"
-          en: "Raised Recall@5 from 62% to 81% on 120 human-labeled questions through heading-aware chunking and hybrid BM25 retrieval."
+          en: "Raised Recall@5 from 62% to 81% on 120 human-labeled questions through heading-aware chunking and hybrid BM25 retrieval, with the gain coming from retrieval structure, not more data."
         evidence: [ev_proj_eval]
         skill_ids: [skl_ai]
       - id: bul_proj_002
         text:
           zh: "把固定长度分块改成按标题层级分块，并用回归集调整混合检索权重。"
-          en: "Replaced fixed-size chunking with heading-aware chunking and tuned hybrid retrieval weights against the regression set."
+          en: "Replaced fixed-size chunking with heading-aware chunking and tuned hybrid retrieval weights against the regression set, so every retrieval change was measured instead of guessed."
         evidence: [ev_proj_eval]
         skill_ids: [skl_ai]
     evidence: [ev_proj]

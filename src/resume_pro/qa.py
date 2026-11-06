@@ -44,6 +44,10 @@ CS_TERMS = (
     "algorithms", "algorithm", "databases", "database",
     "操作系统", "计算机网络", "网络", "数据结构", "算法", "数据库",
 )
+# Every rendered line of a project/experience intro must fill at least 2/5 of
+# the printable width; a wrap that leaves a few characters alone on a line is a
+# defect the writer fixes by expanding the sentence (preferred) or tightening it.
+SHORT_LINE_RATIO = 2 / 5
 
 
 class QAError(ResumeProError):
@@ -159,7 +163,7 @@ def _browser_pdf(html_path: Path, browser: str) -> tuple[int, list[str], list[di
             with pdfplumber.open(str(pdf_path)) as pdf:
                 texts = [(page.extract_text() or "") for page in pdf.pages]
                 chars = []
-                for page in pdf.pages:
+                for page_number, page in enumerate(pdf.pages):
                     for char in page.chars or []:
                         chars.append(
                             {
@@ -167,6 +171,7 @@ def _browser_pdf(html_path: Path, browser: str) -> tuple[int, list[str], list[di
                                 "x1": char.get("x1", 0),
                                 "top": char.get("top", 0),
                                 "bottom": char.get("bottom", 0),
+                                "page": page_number,
                                 "page_height": page.height or 0,
                                 "page_width": page.width or 0,
                                 "text": char.get("text", ""),
@@ -176,6 +181,45 @@ def _browser_pdf(html_path: Path, browser: str) -> tuple[int, list[str], list[di
                 return len(pdf.pages), texts, chars, height
         except Exception:
             return None
+
+
+def _rendered_lines(page_chars: list[dict[str, Any]]) -> list[tuple[int, list[dict[str, Any]]]]:
+    """Group characters into visual lines per page.
+
+    Characters on the same visual line can report slightly different ``top``
+    values (mixed CJK/Latin glyphs or font sizes), so clusters use a small
+    tolerance instead of exact equality. Returns ``(page, chars)`` with each
+    line's chars sorted left to right.
+    """
+    by_page: dict[int, list[dict[str, Any]]] = {}
+    for char in page_chars:
+        by_page.setdefault(int(char.get("page", 0)), []).append(char)
+    lines: list[tuple[int, list[dict[str, Any]]]] = []
+    for page in sorted(by_page):
+        ordered = sorted(by_page[page], key=lambda c: (c["top"], c["x0"]))
+        cluster: list[dict[str, Any]] = []
+        mean_top = 0.0
+        for char in ordered:
+            if cluster and char["top"] - mean_top > 3.0:
+                lines.append((page, sorted(cluster, key=lambda c: c["x0"])))
+                cluster = []
+                mean_top = 0.0
+            cluster.append(char)
+            mean_top += (char["top"] - mean_top) / len(cluster)
+        if cluster:
+            lines.append((page, sorted(cluster, key=lambda c: c["x0"])))
+    return lines
+
+
+def _usable_width(page_chars: list[dict[str, Any]]) -> float:
+    """Printable width measured from the render: page width minus both margins.
+
+    Templates choose their own margins, so the left edge of the rendered text
+    is the ground truth; margins are assumed symmetric.
+    """
+    page_width = min((char["page_width"] for char in page_chars), default=0.0)
+    left = min((char["x0"] for char in page_chars if char["x0"] >= 0), default=56.0)
+    return max(1.0, page_width - 2 * left)
 
 
 def _redact(value: Any, vault: dict[str, Any]) -> Any:
@@ -442,13 +486,9 @@ def run_qa(
 
     # Horizontal balance: body points should use the printable width.
     if template["manifest"].get("page", {}).get("columns") == "single" and page_chars:
-        usable = max(1.0, min(char["page_width"] for char in page_chars) - 2 * 56.0)
+        usable = _usable_width(page_chars)
         widths = []
-        grouped: dict[tuple[float, float], list[dict[str, Any]]] = {}
-        for char in page_chars:
-            key = (round(char.get("page_height", 0), 1), round(char["top"], 1))
-            grouped.setdefault(key, []).append(char)
-        for _, chars in grouped.items():
+        for _, chars in _rendered_lines(page_chars):
             line = "".join(c.get("text", "") for c in chars).strip()
             if len(line) < 25:
                 continue
@@ -464,6 +504,50 @@ def run_qa(
                     "fail" if ratio < 0.45 else "warn" if ratio < 0.65 else "pass",
                     f"Body lines use about {round(ratio * 100)}% of the printable width.",
                     "" if ratio >= 0.8 else "Expand points to use the printable width; do not leave the right side empty.",
+                )
+            )
+
+    # Short lines in project/internship intros: a wrap that leaves only a few
+    # characters alone on a line is a defect. Every rendered line of a selected
+    # experience or project bullet must fill at least 2/5 of the printable width.
+    scope = [_norm(row["text"]) for row in bullets]
+    if not page_chars:
+        checks.append(QACheck("qa.layout.short_line", "warn", "Short-line check needs a browser render.", "Install a headless browser."))
+    elif template["manifest"].get("page", {}).get("columns") != "single":
+        checks.append(QACheck("qa.layout.short_line", "pass", "Two-column template; the 2/5 line rule is not applied."))
+    elif not scope:
+        checks.append(QACheck("qa.layout.short_line", "pass", "No project or experience bullets to check."))
+    else:
+        usable = _usable_width(page_chars)
+        short: list[tuple[int, str, float]] = []
+        checked = 0
+        for page, chars in _rendered_lines(page_chars):
+            line_text = "".join(c.get("text", "") for c in chars).strip()
+            line_norm = _norm(line_text)
+            if len(line_norm) < 2 or not any(line_norm in item for item in scope):
+                continue
+            checked += 1
+            width = max(c["x1"] for c in chars) - min(c["x0"] for c in chars)
+            if width < SHORT_LINE_RATIO * usable:
+                short.append((page + 1, line_text, width / usable))
+        metrics["short_line_count"] = len(short)
+        if short:
+            worst = min(ratio for _, _, ratio in short)
+            samples = "; ".join(f"p{page} {text[:12]!r} ({round(ratio * 100)}%)" for page, text, ratio in short[:3])
+            checks.append(
+                QACheck(
+                    "qa.layout.short_line",
+                    "fail",
+                    f"{len(short)} of {checked} project/experience line(s) fill less than 2/5 of the printable width (worst {round(worst * 100)}%): {samples}.",
+                    "Expand the sentence with real detail (preferred) or tighten the wording so every project/experience line fills at least 2/5 of the printable width.",
+                )
+            )
+        else:
+            checks.append(
+                QACheck(
+                    "qa.layout.short_line",
+                    "pass",
+                    f"All {checked} project/experience line(s) fill at least 2/5 of the printable width.",
                 )
             )
 
