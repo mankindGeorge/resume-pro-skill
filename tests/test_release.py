@@ -129,6 +129,29 @@ def test_readme_embeds_template_previews():
             assert 'width="480"' in text, name
 
 
+def test_chinese_previews_use_chinese_content():
+    for path in sorted((ROOT / "templates" / "cn").glob("*/preview.html")):
+        text = path.read_text(encoding="utf-8")
+        for marker in ("Example University", "Zhao Lin", "Course QA with RAG", "Operating Systems"):
+            assert marker not in text, f"{path}: {marker}"
+
+
+def test_skill_requires_prioritized_diagnosis_followup():
+    text = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+    section = text.split("### After a diagnosis", 1)[1].split("\n### ", 1)[0]
+    for requirement in (
+        "whether to start fixing",
+        "multi-select",
+        "`P0`",
+        "`P1`",
+        "`P2`",
+        "one question at a time",
+        "same conversation and task",
+        "optimize",
+    ):
+        assert requirement in section, f"Missing diagnosis follow-up rule: {requirement}"
+
+
 def test_no_pdf_or_docx_resume_writer():
     for path in (ROOT / "src").rglob("*.py"):
         text = path.read_text(encoding="utf-8")

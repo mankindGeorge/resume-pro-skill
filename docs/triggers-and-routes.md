@@ -27,6 +27,7 @@
 6. **Ambiguous intent gets one interactive question.** Example: "你是想保持内容只换版式，还是连内容一起优化？"
 7. **Out-of-scope requests are declined clearly** and, if useful, mapped to the right tool.
 8. **All routes require continuous interactive questioning when input is missing.** Follow the [mandatory host-tool protocol](../SKILL.md#mandatory-continuous-interaction): use `AskUserQuestion` or an available equivalent, wait for the answer, and continue the same conversation and task. This includes extraction confirmation, evidence follow-ups, template selection, framework consent, localization gaps, and minimum-gate acceptance. Do not end a task with a questionnaire or require "continue" after each answer. Preserve free-text input and pause/resume; if the tool is unavailable or denied, report the limitation without silently switching to final-message questions.
+9. **A diagnosis ends with a choice.** Ask whether to start fixing. If yes, ask one multi-select question for P0 / P1 / P2, then work through only the selected priorities one question at a time in the same task.
 
 ## 3. Route A — Create from scratch
 

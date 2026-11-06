@@ -33,7 +33,7 @@ GOLDEN = ROOT / "tests" / "golden"
 # only to the fictional preview applications.
 LOCALES = {
     "cn": ("zh", "cn_internet", {
-        "student": "vault-student-cn.yaml", "projects": "vault-student-projects.yaml",
+        "student": "vault-student-cn.yaml", "projects": "vault-student-cn.yaml",
         "experienced": "vault-experienced-cn.yaml",
     }),
     "en": ("en", "intl_en", {

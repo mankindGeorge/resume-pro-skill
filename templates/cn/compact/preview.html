@@ -203,23 +203,27 @@ body.editable{padding-top:34pt}
 <body>
 <header class="header">
 <div class="header-info">
-<h1 data-slot="identity.name">Zhao Lin</h1>
-<div class="contact" data-slot="identity.contact">zhaolin@example.com · +86 137 0000 0000 · Wuhan</div>
-<div class="links" data-slot="identity.links"><a href="https://github.com/example-zhaolin" rel="noopener">GitHub</a></div>
+<h1 data-slot="identity.name">李明</h1>
+<div class="contact" data-slot="identity.contact">liming@example.com · +86 138 0000 0000 · 杭州</div>
+<div class="links" data-slot="identity.links"><a href="https://github.com/example-liming" rel="noopener">GitHub</a></div>
 </div>
 <div class="photo-slot" data-slot="identity.photo"></div>
 </header>
 
 
 
+
 <section class="section" data-section="education">
 <h2>教育经历</h2>
-<div data-slot="section.education"><div class="entry"><div class="entry-head"><span class="entry-title">Example University</span><span class="entry-meta">2023.09 – 2027.06</span></div><div class="entry-sub">工学学士 · 软件工程 · 绩点 3.6/4.0</div></div></div>
+<div data-slot="section.education"><div class="entry"><div class="entry-head"><span class="entry-title">示例大学</span><span class="entry-meta">2023.09 – 2027.06</span></div><div class="entry-sub">工学学士 · 计算机科学与技术 · 绩点 3.7/4.0</div></div></div>
+</section><section class="section" data-section="experience">
+<h2>实习/工作经历</h2>
+<div data-slot="section.experience"><div class="entry"><div class="entry-head"><span class="entry-title">示例云科技 — 后端开发实习生</span><span class="entry-meta">2026.06 – 2026.09</span></div><ul><li>将订单查询接口的 P95 延迟从 480ms 降至 190ms，覆盖日均 30 万次请求。</li><li>为运营后台补上批量导出能力，减少每周约 6 小时的人工整理。</li></ul></div></div>
 </section><section class="section" data-section="projects">
 <h2>项目经历</h2>
-<div data-slot="section.projects"><div class="entry"><div class="entry-head"><span class="entry-title">Course QA with RAG</span><span class="entry-meta">2025.09 – 2026.03</span></div><div class="entry-sub">检索负责人</div><ul><li>在 120 条人工标注问题上把 Recall@5 从 62% 提升到 81%。</li><li>负责检索链路，设计标题感知分块并接入 BM25 混合检索。</li></ul></div><div class="entry"><div class="entry-head"><span class="entry-title">Campus Second-hand Marketplace</span><span class="entry-meta">2025.03 – 2025.08</span></div><div class="entry-sub">后端开发</div><ul><li>压测下把商品详情接口 P95 从 420ms 降到 160ms。</li><li>为高频商品详情加 cache-aside，并用互斥锁处理缓存击穿。</li></ul></div></div>
+<div data-slot="section.projects"><div class="entry"><div class="entry-head"><span class="entry-title">课程问答检索系统</span><span class="entry-meta">2025.09 – 2026.03</span></div><div class="entry-sub">检索与评估负责人</div><ul><li>在 120 条人工标注问题上把 Recall@5 从 62% 提升到 81%，主要来自标题感知分块和 BM25 混合检索。</li><li>把固定长度分块改成按标题层级分块，并用回归集调整混合检索权重。</li></ul></div></div>
 </section><section class="section" data-section="skills">
 <h2>专业技能</h2>
-<div data-slot="section.skills"><div class="skill-row"><span class="skill-label">后端</span><span class="skill-values">Java、Spring Boot、MySQL、Redis</span></div><div class="skill-row"><span class="skill-label">AI / 检索</span><span class="skill-values">Python、RAG、FAISS</span></div><div class="skill-row"><span class="skill-label">计算机基础</span><span class="skill-values">Operating Systems、Computer Networks、Data Structures、Algorithms、Databases</span></div></div>
+<div data-slot="section.skills"><div class="skill-row"><span class="skill-label">后端</span><span class="skill-values">Java、Spring Boot、MySQL、Redis</span></div><div class="skill-row"><span class="skill-label">AI / 检索</span><span class="skill-values">RAG、FAISS、BM25</span></div><div class="skill-row"><span class="skill-label">计算机基础</span><span class="skill-values">操作系统、计算机网络、数据结构、算法、数据库</span></div></div>
 </section></body>
 </html>

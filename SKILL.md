@@ -137,6 +137,16 @@ resume lint --app <slug>
 
 Diagnose only. Do not rewrite unless the user asks.
 
+### After a diagnosis
+
+Deliver the diagnosis in priority order, then:
+
+1. Ask through the interactive tool whether to start fixing. If the user declines, stop at the diagnosis.
+2. If the user accepts, ask exactly one **multi-select** question with three options: `P0` (must fix), `P1` (structure), `P2` (polish). Do not turn every finding into a separate option.
+3. Work through only the selected priorities, one question at a time. For each item, ask for the missing fact, correction, or confirmation; save the answer; continue the same conversation and task.
+4. Use `optimize` first when the diagnosis is on a file, or update the existing application when one exists. Keep unselected priorities unchanged.
+5. Re-run lint, build, and QA after the changes, and report the result.
+
 ### Restyle
 
 ```bash

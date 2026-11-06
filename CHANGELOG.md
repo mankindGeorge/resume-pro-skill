@@ -29,6 +29,8 @@ All notable changes to this project are documented here. The format follows Keep
 - Add template preview thumbnails to both READMEs and `scripts/build_readme_previews.py` to regenerate them; packaging includes the preview assets.
 - Add the `compact` layout: a one-page campus design with ruled headings, centered entry headers, and a two-column awards list.
 - Publish user-facing files to `workspace/<project-slug>/`: builds copy the resume, editable copy, and reports; reviews publish their report to a review subfolder. Each application or review gets its own folder; `.resume/` remains internal state.
+- Keep Chinese previews Chinese: the compact Chinese preview uses the Chinese student sample, with only proper nouns and technical terms left in English.
+- After a diagnosis, ask whether to start fixing; if yes, offer one multi-select P0/P1/P2 choice, then work through the selected priorities one question at a time and re-run build/QA.
 
 ## [0.1.0] — 2026-11-05
 

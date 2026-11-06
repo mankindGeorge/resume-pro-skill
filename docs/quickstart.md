@@ -113,6 +113,8 @@ resume restyle resume.docx --template user-abc123 --market intl_en --persona exp
 
 Inputs: DOCX, text-based PDF, HTML, MD, TXT. DOC/RTF need LibreOffice. Scanned PDFs are detected and refused in v1.
 
+After a diagnosis, the agent asks whether to start fixing. If yes, it offers one multi-select question for P0 / P1 / P2, then works through the selected priorities one question at a time.
+
 The audit has seven dimensions and four verdicts:
 
 | Verdict | Meaning |
