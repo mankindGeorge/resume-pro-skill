@@ -213,8 +213,9 @@ resume templates
 - Every kept role or project must answer four things: background or problem, the user's role, the user's action, and the result. Technical stack alone is not a result.
 - When a bullet only names tools or duties, ask for the outcome behind them: a number, scope, artifact, or user-visible change.
 - If the user gives technology without background or results, ask one question: can you supply it, or should I rephrase only what you already gave? Add nothing on my own.
-- Follow the selected framework while collecting: STAR asks situation, task, action, result; XYZ asks the accomplished X measured by Y by doing Z; CAR asks challenge, action, result. Ask only for the slots that are missing.
-- Render each kept project as 3–4 labeled STAR points: `项目背景：`, `核心框架：`, `解决方案：`（或 `难点：`）, `核心成果：`. Each point is a complete, substantial sentence with real detail; never a one-line fragment.
+- 框架和内容包装写在同一个文档：[Writing engine](references/writing-engine.md)。六个框架（STAR/XYZ/FAB/CAR/结果优先/个人语气）各有自己的包装配方、标签分点和示例，按所选框架的配方写，不要都按一种框架写。
+- Follow the selected framework's packaging recipe while collecting; it lists exactly which slots to ask for. Ask only for the slots that are missing.
+- Render each kept project as 3–4 labeled points using the chosen framework's recipe and label set. Each point is a complete, substantial sentence with real detail; never a one-line fragment.
 - A `核心成果：` point must say what problem was solved and what changed, not just list an award or repeat the technology. A `解决方案：` point must explain the pain point and why the approach fits it. Remove filler such as launch dates unless they prove impact.
 - All points render as labeled paragraphs or plain lines. Do not use `<ul>`, `<ol>`, or `<li>`, and do not put a bullet dot before the text.
 - 内容太少的项目做不出效果。多问约束、决策、取舍、产物和反馈，找出真实亮点；实在填不满一个分点，就去掉这个项目。
@@ -263,7 +264,7 @@ Exit codes: `0` ok; `2` gate blocked/minimum; `3` invalid input or missing targe
 - [Chinese resume rules](docs/cn-resume-rules.md)
 - [Market matrix](docs/market-matrix.md)
 - [Intake and sufficiency](docs/intake-and-sufficiency.md)
-- [Writing engine](references/writing-engine.md)
+- [Writing engine: frameworks and packaging](references/writing-engine.md)
 - [Install](docs/install.md)
 - [Evaluation and ATS honesty](docs/evaluation.md)
 

@@ -181,15 +181,26 @@ def test_skill_requires_content_sufficiency_and_packaging():
         "ask whether to package the existing work",
         "Never let a bare label render alone",
         "concrete end month",
-        "labeled STAR points",
+        "labeled points",
         "删掉，还是补齐框架、方案和结果做扎实",
         "提出合理的技术点请用户确认",
         "Ask the user for the real data first",
         "propose one or two plausible candidate values",
         "merge them into one integrated project",
         "open-sourced",
+        "references/writing-engine.md",
     ):
         assert requirement in section, f"Missing content-sufficiency rule: {requirement}"
+
+
+def test_frameworks_and_packaging_share_one_document():
+    """Every writing framework carries its own packaging recipe in one document."""
+    doc = (ROOT / "references" / "writing-engine.md").read_text(encoding="utf-8")
+    packaging = doc.split("## 2. Packaging under each framework", 1)[1].split("\n## ", 1)[0]
+    for framework_id in ("star", "xyz", "fab", "car", "result_first", "user_voice"):
+        assert f"`{framework_id}`" in packaging, f"Missing packaging recipe: {framework_id}"
+    assert packaging.count("Labeled points:") >= 6
+    assert "never tied to one framework" in doc
 
 
 def test_no_pdf_or_docx_resume_writer():

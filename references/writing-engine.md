@@ -1,6 +1,6 @@
-# Writing Engine Reference
+# Writing Engine: Frameworks and Content Packaging
 
-How the agent rewrites bullets, and what the linter will reject. The CLI stores the framework and runs the linter; the agent writes the sentence.
+How the agent collects, packages, and rewrites bullets, and what the linter will reject. The CLI stores the framework and runs the linter; the agent writes the sentence. Frameworks and packaging live together in this document: **every framework has its own packaging recipe** — packaging is never tied to one framework.
 
 ## 1. Framework consent
 
@@ -17,7 +17,54 @@ The user chooses one framework before any rewrite:
 
 The application stores `writing.framework` and `writing.consent: true`. A build without consent fails. Never apply a framework silently.
 
-## 2. Before / after
+## 2. Packaging under each framework
+
+Packaging is the same job in every shape: rewrite raw facts into 「问题—决策—影响」, answering background, the user's role, action, and result — never a paraphrase of what the user said. The framework decides the order, the labels, and which slots to collect. Apply the recipe of the chosen framework; do not default to one framework's shape.
+
+### STAR — `star`
+
+- Collect: situation, task, action, result.
+- Labeled points: `项目背景：`（S）, `核心框架：`（T）, `解决方案：`（A，或 `难点：`）, `核心成果：`（R）.
+- Package: background states the problem and constraint; the framework point states the technical route and why it was chosen; the solution explains the pain point and why the approach fits it; the result states what problem was solved and what changed.
+
+### XYZ — `xyz`
+
+- Collect: the accomplished X, the measure Y, the doing Z.
+- Labeled points: `核心成果：`（X）, `衡量口径：`（Y）, `实现做法：`（Z）.
+- Package: lead with the concrete outcome, attach the number or scope that proves it, then the personal action that caused it. When the measure is missing, follow the data fallback in the content-sufficiency rules: ask the user first.
+
+### FAB — `fab`
+
+- Collect: the feature built, its advantage over the obvious alternative, the benefit created.
+- Labeled points: `核心能力：`（F）, `技术优势：`（A）, `实际收益：`（B）.
+- Package: name what was built, explain why it beats the alternative, and end with what changed for the user or the business.
+
+### CAR — `car`
+
+- Collect: challenge, action, result.
+- Labeled points: `难点：`（C）, `解决方案：`（A）, `核心成果：`（R）.
+- Package: lead with the hardest constraint, describe the decision that answered it, and close with the measurable change.
+
+### Result first — `result_first`
+
+- Collect: the result first, then the action detail and context needed to believe it.
+- Labeled points: `核心成果：` first, then `解决方案：`（关键做法）, `项目背景：` last and brief.
+- Package: put the result in the first clause; keep only the action detail that makes it credible; cut background that the result already proves.
+
+### User voice — `user_voice`
+
+- Collect: the user's own wording and what it proves.
+- Labeled points: keep the user's own labels and order.
+- Package: tighten the wording without replacing the voice; data and evidence rules still apply.
+
+Shared rules for every recipe:
+
+- Each point is a complete, substantial sentence with real detail; never a one-line fragment.
+- A result point must say what problem was solved and what changed, not just list an award or repeat the technology. A solution point must explain the pain point and why the approach fits it. Remove filler such as launch dates unless they prove impact.
+- Data fallback order: ask for the real value → ask permission to estimate → propose candidate values → the user confirms → write.
+- All points render as labeled paragraphs or plain lines — never `<ul>`, `<ol>`, or `<li>`, and no dot before the text.
+
+## 3. Before / after
 
 Weak:
 > Responsible for improving the onboarding flow and working with the team.
@@ -31,12 +78,15 @@ XYZ:
 FAB:
 > Single-screen onboarding (feature) removes two decision points (advantage), so new users reach first value in under a minute (benefit).
 
+CAR:
+> A three-step onboarding lost 60% of users at step 3; I rebuilt it as a single screen after testing three variants, cutting drop-off to 22%.
+
 Result first:
 > Cut onboarding drop-off from 60% to 22% by rebuilding the flow as one screen and testing three variants.
 
 The facts are identical. Only the order and emphasis change. Never add a number that is not in the vault.
 
-## 3. Lint rules
+## 4. Lint rules
 
 ### Global
 
@@ -72,7 +122,7 @@ The facts are identical. Only the order and emphasis change. Never add a number 
 | `cn.dead_link` | warn | placeholder link | Real link or remove |
 | `cn.self_evaluation` | warn | 自我评价 filler in the summary | Replace with evidence |
 
-## 4. Evidence prompts
+## 5. Evidence prompts
 
 When a bullet has no support, ask one question, not a lecture:
 
@@ -83,7 +133,7 @@ When a bullet has no support, ask one question, not a lecture:
 
 If the answer is "just make something up", refuse and offer a smaller true detail. A gap is better than a fabrication.
 
-## 5. Output format
+## 6. Output format
 
 The resume output is **HTML only**.
 

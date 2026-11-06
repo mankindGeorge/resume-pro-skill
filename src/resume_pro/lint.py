@@ -235,7 +235,7 @@ def lint(
                 "warn",
                 f"projects[{index}]",
                 "This project reads thin for HR.",
-                "Use 3–4 labeled STAR points with substantial real detail, or exclude the project.",
+                "Use 3–4 labeled points in the chosen framework's shape with substantial real detail, or exclude the project.",
             )
         if is_student and context in {"personal", "course", "competition", "research", "volunteer"}:
             text = " ".join(bullets)

@@ -6,6 +6,7 @@ All notable changes to this project are documented here. The format follows Keep
 
 ### Changed
 
+- Write writing frameworks and content packaging in one document (`references/writing-engine.md`): each of the six frameworks — STAR, XYZ, FAB, CAR, result-first, user voice — carries its own packaging recipe with labeled points and examples. Packaging is no longer shaped like one framework only; lint and skill instructions refer to the chosen framework's recipe.
 - Require the agent to use a host interactive question tool across all resume routes, continuing the same conversation and task after each answer rather than ending with a questionnaire. Preserve free-text answers and pause/resume; report unavailable or denied tools without a silent fallback.
 - Require explicit fact confirmation independently of intake completion and sufficiency. Clarify collection-correction semantics and the boundary between host-tool instructions and CLI enforcement.
 - Complete Chinese and English coverage for all five designs (`ats-classic`, `campus`, `modern-sidebar`, `editorial`, `executive`): 10 public variants. The `cn`/`en` folders denote resume language only, with manifest `language: zh`/`en`.

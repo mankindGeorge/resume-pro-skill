@@ -291,7 +291,7 @@ The user confirms or edits. Only then does the optimizer run.
 
 After the gate:
 
-1. Apply the writing framework the user chose (`star | xyz | fab | result_first | car | user_voice`).
+1. Apply the writing framework the user chose together with its packaging recipe (`references/writing-engine.md`; `star | xyz | fab | result_first | car | user_voice`).
 2. Apply the market rules (`intl_en`, `cn_internet`, `cn_soe`, etc.).
 3. Apply the CN rules (four signals, CS fundamentals, project depth, page count, primacy).
 4. Ask the user which layout to use (interactive tool), recommending the market/persona default and showing where to preview each design (`templates/<cn|en>/<id>/preview.html`; `resume templates`). Pass the chosen ID with `--template`; do not accept the default silently.
