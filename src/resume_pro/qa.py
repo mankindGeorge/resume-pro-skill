@@ -377,20 +377,23 @@ def run_qa(
     )
 
     # Name/contact/education.
-    name = str((vault.get("identity") or {}).get("full_name") or "")
+    name_value = (vault.get("identity") or {}).get("full_name") or ""
+    names = [str(v) for v in name_value.values() if v] if isinstance(name_value, dict) else [str(name_value)]
+    name_ok = any(_norm(name) in pdf_norm for name in names)
     contact_ok = bool(EMAIL_RE.search(pdf_text) or PHONE_RE.search(pdf_text))
     checks.append(
         QACheck(
             "qa.content.name_contact",
-            "pass" if name and _norm(name) in pdf_norm and contact_ok else "fail",
-            "Name and contact are extractable." if name and _norm(name) in pdf_norm and contact_ok else "Name or contact is missing from the extracted text.",
-            "" if name and _norm(name) in pdf_norm and contact_ok else "Keep name and one contact method as real text in the header.",
+            "pass" if name_ok and contact_ok else "fail",
+            "Name and contact are extractable." if name_ok and contact_ok else "Name or contact is missing from the extracted text.",
+            "" if name_ok and contact_ok else "Keep name and one contact method as real text in the header.",
         )
     )
     education_ok = True
     if "education" in enabled and vault.get("education"):
-        school = str((vault["education"][0] or {}).get("school") or "")
-        education_ok = bool(school) and _norm(school) in pdf_norm
+        school_value = (vault["education"][0] or {}).get("school") or ""
+        names = [str(v) for v in school_value.values() if v] if isinstance(school_value, dict) else [str(school_value)]
+        education_ok = any(name and _norm(name) in pdf_norm for name in names)
     checks.append(
         QACheck(
             "qa.content.education",

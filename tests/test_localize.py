@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from resume_pro.application import LIBRARY_TEMPLATES, create_application, page_budget, save_application
-from resume_pro.localize import LocalizeError, _normalized_numbers, compare, localize_application
+from resume_pro.localize import LocalizeError, _normalized_numbers, collect_gaps, compare, localize_application
 from resume_pro.render import RenderError, render_application
 from resume_pro.select import select_facts
 from tests.test_render import _user_template
@@ -96,6 +96,38 @@ def test_number_unit_conversion_is_parity_clean(student_vault, tmp_path):
     )
     result = localize_application(tmp_path, student_vault, source, target_locale="en", target_role="Backend Intern")
     assert result.parity.number_mismatches == {}
+
+
+def test_school_and_project_name_gaps_block_localize(student_vault, tmp_path):
+    student_vault["education"][0]["school"] = {"zh": "示例大学"}
+    student_vault["projects"][0]["name"] = {"zh": "示例项目"}
+    source = _source_app(
+        student_vault,
+        tmp_path,
+        market="cn_internet",
+        persona="student_with_internship",
+        role="后端开发工程师（校招）",
+        template="campus",
+    )
+    with pytest.raises(LocalizeError) as error:
+        localize_application(tmp_path, student_vault, source, target_locale="en", target_role="Backend Intern")
+    assert error.value.code == "localize.locale_gaps"
+    paths = [gap["path"] for gap in error.value.details["gaps"]]
+    assert "education[0].school" in paths
+    assert "projects[0].name" in paths
+
+
+def test_identity_location_and_skill_item_gaps_are_collected(student_vault):
+    student_vault["identity"]["full_name"] = {"zh": "示例人"}
+    student_vault["identity"]["location"] = {"city": {"zh": "广州"}}
+    student_vault["education"][0]["school"] = {"zh": "示例大学"}
+    student_vault["skills"][0]["items"][0]["name"] = {"zh": "示例技能"}
+    selection = {"fact_ids": [student_vault["education"][0]["id"], student_vault["skills"][0]["id"]], "bullet_ids": []}
+    paths = [gap.path for gap in collect_gaps(student_vault, selection, locale="en", source_locale="zh")]
+    assert "identity.full_name" in paths
+    assert "identity.location.city" in paths
+    assert "education[0].school" in paths
+    assert "skills[0].items[0].name" in paths
 
 
 def test_number_units_need_word_boundaries():

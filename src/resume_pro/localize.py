@@ -163,7 +163,7 @@ def collect_gaps(vault: dict[str, Any], selection: dict[str, Any], *, locale: st
     for index, item in enumerate(vault.get("education") or []):
         if item.get("id") in fact_ids:
             gaps.extend(
-                _gaps_for_item(item, base_path=f"education[{index}]", locale=locale, source_locale=source_locale, fields=("degree", "major"), fact_id=item.get("id"))
+                _gaps_for_item(item, base_path=f"education[{index}]", locale=locale, source_locale=source_locale, fields=("school", "degree", "major"), fact_id=item.get("id"))
             )
     for index, item in enumerate(vault.get("experience") or []):
         if item.get("id") not in fact_ids:
@@ -190,7 +190,7 @@ def collect_gaps(vault: dict[str, Any], selection: dict[str, Any], *, locale: st
                 base_path=f"projects[{index}]",
                 locale=locale,
                 source_locale=source_locale,
-                fields=("role", "own_contribution", "optimizations", "outcome"),
+                fields=("name", "role", "own_contribution", "optimizations", "outcome"),
                 fact_id=item.get("id"),
             )
         )
@@ -209,6 +209,10 @@ def collect_gaps(vault: dict[str, Any], selection: dict[str, Any], *, locale: st
             gaps.extend(
                 _gaps_for_item(item, base_path=f"skills[{index}]", locale=locale, source_locale=source_locale, fields=("name",), fact_id=item.get("id"))
             )
+            for item_index, sub in enumerate(item.get("items") or []):
+                gaps.extend(
+                    _gaps_for_item(sub, base_path=f"skills[{index}].items[{item_index}]", locale=locale, source_locale=source_locale, fields=("name",), fact_id=item.get("id"))
+                )
     for collection in ("awards", "certificates", "languages"):
         for index, item in enumerate(vault.get(collection) or []):
             if item.get("id") in fact_ids:
@@ -216,6 +220,13 @@ def collect_gaps(vault: dict[str, Any], selection: dict[str, Any], *, locale: st
                 gaps.extend(
                     _gaps_for_item(item, base_path=f"{collection}[{index}]", locale=locale, source_locale=source_locale, fields=(field_name,), fact_id=item.get("id"))
                 )
+    identity = vault.get("identity") or {}
+    gaps.extend(
+        _gaps_for_item(identity, base_path="identity", locale=locale, source_locale=source_locale, fields=("full_name",), fact_id="identity.full_name")
+    )
+    gaps.extend(
+        _gaps_for_item(identity.get("location") or {}, base_path="identity.location", locale=locale, source_locale=source_locale, fields=("city", "region", "country"), fact_id="identity.location")
+    )
     unique: dict[str, LocaleGap] = {}
     for gap in gaps:
         unique.setdefault(gap.path, gap)
@@ -277,10 +288,10 @@ def _selected_entities(vault: dict[str, Any], application: dict[str, Any]) -> se
             values.add(str(item["company"]).strip().casefold())
     for item in vault.get("education") or []:
         if item.get("id") in selected and item.get("school"):
-            values.add(str(item["school"]).strip().casefold())
+            values.add(_text(item["school"]).strip().casefold())
     for item in vault.get("projects") or []:
         if item.get("id") in selected and item.get("name"):
-            values.add(str(item["name"]).strip().casefold())
+            values.add(_text(item["name"]).strip().casefold())
     return values
 
 

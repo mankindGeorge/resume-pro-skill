@@ -161,7 +161,7 @@ def build_render_model(vault: dict[str, Any], application: dict[str, Any], *, ro
     contact_parts = [identity.get("email"), identity.get("phone")]
     location = identity.get("location") or {}
     location_keys = ("city", "region") if str(application.get("market", "")).startswith("cn_") else ("city", "region", "country")
-    location_text = " · ".join(str(location.get(key)) for key in location_keys if location.get(key))
+    location_text = " · ".join(_localized(location.get(key), locale) for key in location_keys if location.get(key))
     if location_text:
         contact_parts.append(location_text)
     contact = " · ".join(str(part) for part in contact_parts if part)
@@ -203,7 +203,7 @@ def build_render_model(vault: dict[str, Any], application: dict[str, Any], *, ro
             note.append(value)
         education.append(
             {
-                "title": item.get("school") or "",
+                "title": _localized(item.get("school"), locale),
                 "dates": _dates(item, locale),
                 "sub": sub,
                 "note": " · ".join(note),
@@ -230,7 +230,7 @@ def build_render_model(vault: dict[str, Any], application: dict[str, Any], *, ro
         bullets = _selected_bullets(item, bullet_ids, bullet_order)
         projects.append(
             {
-                "title": item.get("name") or "",
+                "title": _localized(item.get("name"), locale),
                 "dates": _dates(item, locale),
                 "sub": _localized(item.get("role"), locale),
                 "bullets": [ _localized(b.get("text"), locale) for b in bullets ],
@@ -242,7 +242,7 @@ def build_render_model(vault: dict[str, Any], application: dict[str, Any], *, ro
     skills = []
     for group in _filtered(vault, "skills", fact_ids):
         name = _localized(group.get("name"), locale) or _SKILL_KIND_LABELS.get(group.get("kind"), {}).get(locale, "")
-        items = [str(item.get("name")) for item in group.get("items") or [] if item.get("name")]
+        items = [_localized(item.get("name"), locale) for item in group.get("items") or [] if item.get("name")]
         if items:
             skills.append({"label": name, "items": items, "kind": group.get("kind")})
 
@@ -276,7 +276,7 @@ def build_render_model(vault: dict[str, Any], application: dict[str, Any], *, ro
     return {
         "locale": locale,
         "identity": {
-            "name": identity.get("full_name") or "",
+            "name": _localized(identity.get("full_name"), locale),
             "contact": contact,
             "links": links,
             "photo": photo_uri,
@@ -304,10 +304,24 @@ def _entry_head(title: str, dates: str) -> str:
     )
 
 
+# A point's leading label (项目背景： / Background:) renders bold so the
+# structure is visible at a glance.
+_LEADING_LABEL_RE = re.compile(r"^([^：:。.!?!?,，;；/]{1,30}[：:])")
+
+
+def _entry_line(text: str) -> str:
+    value = str(text or "")
+    match = _LEADING_LABEL_RE.match(value)
+    if not match:
+        return f'<div class="entry-line">{_escape(value)}</div>'
+    label = match.group(0)
+    return f'<div class="entry-line"><strong>{_escape(label)}</strong>{_escape(value[len(label):])}</div>'
+
+
 def _bullets(bullets: list[str]) -> str:
     if not bullets:
         return ""
-    items = "".join(f'<div class="entry-line">{_escape(text)}</div>' for text in bullets if text)
+    items = "".join(_entry_line(text) for text in bullets if text)
     return f'<div class="entry-lines">{items}</div>'
 
 

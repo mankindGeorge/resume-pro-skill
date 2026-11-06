@@ -41,6 +41,55 @@ def _section_ids(html: str) -> list[str]:
     return [tag["data-section"] for tag in soup.find_all("section", attrs={"data-section": True})]
 
 
+def test_school_and_project_names_render_per_locale(student_vault, tmp_path):
+    student_vault["education"][0]["school"] = {"zh": "示例大学", "en": "Example University"}
+    project = student_vault["projects"][0]
+    project["name"] = {"zh": "示例项目", "en": "Example Project"}
+    application = _app(student_vault, tmp_path, "campus", market="cn_internet", persona="student_with_internship", role="Backend Engineer")
+    for fact_id in (student_vault["education"][0]["id"], project["id"]):
+        if fact_id not in application["selection"]["fact_ids"]:
+            application["selection"]["fact_ids"].append(fact_id)
+    zh_model = build_render_model(student_vault, application, root=tmp_path)
+    assert zh_model["education"][0]["title"] == "示例大学"
+    assert zh_model["projects"][0]["title"] == "示例项目"
+    en_application = copy.deepcopy(application)
+    en_application["writing"]["locale"] = "en"
+    en_model = build_render_model(student_vault, en_application, root=tmp_path)
+    assert en_model["education"][0]["title"] == "Example University"
+    assert en_model["projects"][0]["title"] == "Example Project"
+
+
+def test_identity_location_and_skill_items_render_per_locale(student_vault, tmp_path):
+    student_vault["identity"]["full_name"] = {"zh": "示例人", "en": "Example Person"}
+    student_vault["identity"]["location"] = {"city": {"zh": "广州", "en": "Guangzhou"}}
+    skill = student_vault["skills"][0]
+    skill["items"][0]["name"] = {"zh": "示例技能", "en": "Example Skill"}
+    application = _app(student_vault, tmp_path, "campus", market="cn_internet", persona="student_with_internship", role="Backend Engineer")
+    if skill["id"] not in application["selection"]["fact_ids"]:
+        application["selection"]["fact_ids"].append(skill["id"])
+    zh_model = build_render_model(student_vault, application, root=tmp_path)
+    assert zh_model["identity"]["name"] == "示例人"
+    assert "广州" in zh_model["identity"]["contact"]
+    assert "示例技能" in [item for group in zh_model["skills"] for item in group["items"]]
+    en_application = copy.deepcopy(application)
+    en_application["writing"]["locale"] = "en"
+    en_model = build_render_model(student_vault, en_application, root=tmp_path)
+    assert en_model["identity"]["name"] == "Example Person"
+    assert "Guangzhou" in en_model["identity"]["contact"]
+    assert "Example Skill" in [item for group in en_model["skills"] for item in group["items"]]
+
+
+def test_leading_label_renders_bold(student_vault, tmp_path):
+    bullets = student_vault["experience"][0]["bullets"]
+    bullets[0]["text"]["zh"] = "项目背景：示例描述。"
+    application = _app(student_vault, tmp_path, "campus", market="cn_internet", persona="student_with_internship", role="Backend Engineer")
+    result = render_application(tmp_path, student_vault, application)
+    html = Path(result.html_path).read_text(encoding="utf-8")
+    assert "<strong>项目背景：</strong>示例描述。" in html
+    plain = bullets[1]["text"]["zh"]
+    assert f'<div class="entry-line">{plain}</div>' in html
+
+
 def test_render_ats_classic(experienced_vault, tmp_path):
     application = _app(experienced_vault, tmp_path, "ats-classic")
     result = render_application(tmp_path, experienced_vault, application)

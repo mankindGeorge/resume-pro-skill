@@ -88,6 +88,14 @@ def test_font_floor_fails(student_vault, tmp_path):
     assert any(check.id == "qa.layout.font_size" and check.status == "fail" for check in qa.checks)
 
 
+def test_education_check_accepts_localized_school(student_vault, tmp_path):
+    student_vault["education"][0]["school"] = {"zh": "示例大学", "en": "Example University"}
+    app, _ = _rendered(student_vault, tmp_path)
+    qa = run_qa(tmp_path, student_vault, app)
+    check = next(item for item in qa.checks if item.id == "qa.content.education")
+    assert check.status == "pass"
+
+
 def test_sensitive_field_in_intl_fails(experienced_vault, tmp_path):
     app, render = _rendered(
         experienced_vault,

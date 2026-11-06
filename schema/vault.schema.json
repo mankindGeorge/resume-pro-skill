@@ -221,7 +221,14 @@
       "additionalProperties": false,
       "properties": {
         "full_name": {
-          "type": "string"
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/$defs/localizedText"
+            }
+          ]
         },
         "preferred_name": {
           "type": "string"
@@ -238,13 +245,34 @@
           "additionalProperties": false,
           "properties": {
             "city": {
-              "type": "string"
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/$defs/localizedText"
+                }
+              ]
             },
             "region": {
-              "type": "string"
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/$defs/localizedText"
+                }
+              ]
             },
             "country": {
-              "type": "string"
+              "oneOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "$ref": "#/$defs/localizedText"
+                }
+              ]
             },
             "postal_code": {
               "type": "string"
@@ -332,8 +360,15 @@
           "$ref": "#/$defs/factId"
         },
         "school": {
-          "type": "string",
-          "minLength": 1
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "#/$defs/localizedText"
+            }
+          ]
         },
         "degree": {
           "$ref": "#/$defs/localizedText"
@@ -469,8 +504,15 @@
           "$ref": "#/$defs/factId"
         },
         "name": {
-          "type": "string",
-          "minLength": 1
+          "oneOf": [
+            {
+              "type": "string",
+              "minLength": 1
+            },
+            {
+              "$ref": "#/$defs/localizedText"
+            }
+          ]
         },
         "role": {
           "$ref": "#/$defs/localizedText"
@@ -580,8 +622,15 @@
             "additionalProperties": false,
             "properties": {
               "name": {
-                "type": "string",
-                "minLength": 1
+                "oneOf": [
+                  {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  {
+                    "$ref": "#/$defs/localizedText"
+                  }
+                ]
               },
               "level": {
                 "enum": [
