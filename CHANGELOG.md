@@ -22,6 +22,7 @@ All notable changes to this project are documented here. The format follows Keep
 
 ### Added
 
+- Add a qualified-project content-sufficiency standard: a project presentation covers background/role/trade-offs/difficulties/evaluation/deployment/outcomes/feedback, and guided interaction proactively asks, one question at a time, for the dimensions the user may not have thought to mention instead of waiting for more input.
 - Five regression tests for the mandatory interaction instructions, multi-round CLI answers, invalid-input recovery, read-only summary/resume, unknown answers, multiline Chinese input, and confirmation recovery. These are not live host-UI tests.
 - `resume templates` now prints each variant's `preview.html` path in human output and a `preview` field in `--json`, so users can open a design in a browser before choosing. A contract test guards the create/optimize template-choice and preview-location instructions, and listing tests assert the preview paths.
 - Add `scripts/package_skill.py`, which builds a deterministic, private-safe skill ZIP with one top-level folder, excludes private review material, learned templates, local workspaces, caches, and secret-like files, and unzips/bootstrap-checks the archive before reporting success.

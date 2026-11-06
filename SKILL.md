@@ -211,6 +211,8 @@ resume templates
 
 - 项目包装是核心工作。HR 要看到实打实的内容：每个保留条目都要有背景、你的角色、动作和结果。把原始事实重写成「问题—决策—影响」，不要只复述用户原话。
 - Every kept role or project must answer four things: background or problem, the user's role, the user's action, and the result. Technical stack alone is not a result.
+- 合格项目的充分性标准：一个像样的项目展示要覆盖这些维度——背景/问题、角色分工、方案与取舍、难点与解决、评估/验证、部署/交付、成果与数据、使用与反馈。只写技术栈和功能清单不算合格。对照这个清单看已给内容覆盖了哪些维度。
+- When the user's first description is too thin to present a project well, do not wait for them to volunteer more: walk the uncovered dimensions and ask, one question at a time, for what they may not have thought to mention — what was hard and why, what was decided or traded off, how it was tested or evaluated, how it was deployed or delivered, what data or user feedback followed, what was reused or open-sourced. A real project can carry much more than a first summary.
 - When a bullet only names tools or duties, ask for the outcome behind them: a number, scope, artifact, or user-visible change.
 - If the user gives technology without background or results, ask one question: can you supply it, or should I rephrase only what you already gave? Add nothing on my own.
 - 框架和内容包装写在同一个文档：[Writing engine](references/writing-engine.md)。六个框架（STAR/XYZ/FAB/CAR/结果优先/个人语气）各有自己的包装配方、标签分点和示例，按所选框架的配方写，不要都按一种框架写。
