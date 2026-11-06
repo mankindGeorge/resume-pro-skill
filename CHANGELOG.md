@@ -26,6 +26,7 @@ All notable changes to this project are documented here. The format follows Keep
 - Add `scripts/package_skill.py`, which builds a deterministic, private-safe skill ZIP with one top-level folder, excludes private review material, learned templates, local workspaces, caches, and secret-like files, and unzips/bootstrap-checks the archive before reporting success.
 - Add the root `resume.py` launcher and `bootstrap.py` runtime check/install. They verify Python, dependencies, and all 10 template variants; `--install` performs an editable install for the `resume` command, while `--deps-only` supports environments where pip cannot install the package.
 - Add packaging documentation and regression tests for archive completeness, determinism, private-path exclusion, and bootstrap readiness.
+- Add template preview thumbnails to both READMEs and `scripts/build_readme_previews.py` to regenerate them; packaging includes the preview assets.
 
 ## [0.1.0] — 2026-11-05
 

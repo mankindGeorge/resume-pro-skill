@@ -119,15 +119,15 @@ resume localize <slug> --to en --role "Backend Engineer" --yes
 
 **输入：** DOCX、文本型 PDF、HTML、Markdown、TXT；DOC / RTF 需要 LibreOffice。
 
-**模板：** 提供 **5 种不同设计 × 中英双语，共 10 个变体**。`templates/cn/` 与 `templates/en/` 仅表示简历语言，manifest 分别为 `language: zh` / `en`。
+**模板：** 提供 **5 种不同设计 × 中英双语，共 10 个变体**。`templates/cn/` 与 `templates/en/` 仅表示简历语言，manifest 分别为 `language: zh` / `en`。下表为各模板的预览截图，点击图片可打开完整 HTML。
 
-| 设计 ID | 版式 | 中文 | English |
+| 设计 ID | 预览 | 中文 | English |
 |---|---|---|---|
-| `ats-classic` | 简洁单栏 | [cn](templates/cn/ats-classic/) | [en](templates/en/ats-classic/) |
-| `campus` | 教育优先单栏 | [cn](templates/cn/campus/) | [en](templates/en/campus/) |
-| `modern-sidebar` | 主栏 + 右侧栏 | [cn](templates/cn/modern-sidebar/) | [en](templates/en/modern-sidebar/) |
-| `editorial` | 单页杂志式 | [cn](templates/cn/editorial/) | [en](templates/en/editorial/) |
-| `executive` | 居中抬头、双页 | [cn](templates/cn/executive/) | [en](templates/en/executive/) |
+| `ats-classic` | <a href="templates/en/ats-classic/preview.html"><img src="docs/images/templates/en-ats-classic.png" alt="ATS Classic 预览" width="480"></a> | [cn](templates/cn/ats-classic/) | [en](templates/en/ats-classic/) |
+| `campus` | <a href="templates/en/campus/preview.html"><img src="docs/images/templates/en-campus.png" alt="Campus 预览" width="480"></a> | [cn](templates/cn/campus/) | [en](templates/en/campus/) |
+| `modern-sidebar` | <a href="templates/en/modern-sidebar/preview.html"><img src="docs/images/templates/en-modern-sidebar.png" alt="Modern Sidebar 预览" width="480"></a> | [cn](templates/cn/modern-sidebar/) | [en](templates/en/modern-sidebar/) |
+| `editorial` | <a href="templates/en/editorial/preview.html"><img src="docs/images/templates/en-editorial.png" alt="Editorial 预览" width="480"></a> | [cn](templates/cn/editorial/) | [en](templates/en/editorial/) |
+| `executive` | <a href="templates/en/executive/preview.html"><img src="docs/images/templates/en-executive.png" alt="Executive 预览" width="480"></a> | [cn](templates/cn/executive/) | [en](templates/en/executive/) |
 
 渲染与 QA 按申请的 `writing.locale` 选语言变体，未设置时使用市场 profile 的 `language`；缺失或语言不匹配会明确报错。默认推荐为中文市场校园 / 职场的 `campus` / `modern-sidebar`、国际市场常规 / 高阶的 `ats-classic` / `executive`。
 

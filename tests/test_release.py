@@ -112,6 +112,23 @@ def test_templates_avoid_italic_and_variant_typography():
         assert "font-style: italic" not in text.lower(), path
 
 
+def test_readme_embeds_template_previews():
+    readmes = {
+        name: (ROOT / name).read_text(encoding="utf-8")
+        for name in ("README.md", "README.en.md")
+    }
+    assert "| 版式 |" not in readmes["README.md"]
+    assert "| Layout |" not in readmes["README.en.md"]
+    for template_id in TEMPLATES:
+        image = ROOT / "docs" / "images" / "templates" / f"en-{template_id}.png"
+        assert image.is_file(), image
+        assert image.read_bytes()[:8] == b"\x89PNG\r\n\x1a\n"
+        assert image.stat().st_size > 10_000
+        for name, text in readmes.items():
+            assert f"docs/images/templates/en-{template_id}.png" in text, name
+            assert 'width="480"' in text, name
+
+
 def test_no_pdf_or_docx_resume_writer():
     for path in (ROOT / "src").rglob("*.py"):
         text = path.read_text(encoding="utf-8")

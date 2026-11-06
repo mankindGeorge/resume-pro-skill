@@ -54,7 +54,7 @@ TREES = {
     "profiles": ("*.yaml", "*.md"),
     "references": ("*.md",),
     "templates": ("*.html", "*.css", "*.json", "*.md"),
-    "docs": ("*.md",),
+    "docs": ("*.md", "*.png"),
     "scripts": ("*.py",),
 }
 
@@ -155,6 +155,8 @@ def required_paths() -> list[str]:
         for template_id in LIBRARY_IDS:
             for filename in TEMPLATE_FILES:
                 required.append(f"templates/{folder}/{template_id}/{filename}")
+    for template_id in LIBRARY_IDS:
+        required.append(f"docs/images/templates/en-{template_id}.png")
     return required
 
 

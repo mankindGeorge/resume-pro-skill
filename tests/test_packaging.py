@@ -86,6 +86,8 @@ def test_archive_is_complete_private_safe_and_deterministic(tmp_path):
         for template_id in TEMPLATES:
             for filename in ("manifest.json", "template.html", "styles.css", "preview.html"):
                 assert f"templates/{folder}/{template_id}/{filename}" in relative_names
+    for template_id in TEMPLATES:
+        assert f"docs/images/templates/en-{template_id}.png" in relative_names
     assert not any(name.startswith("tests/") for name in relative_names)
 
     second, second_report = build(tmp_path, "second.zip", "--skip-runtime-check")

@@ -25,4 +25,4 @@ Default recommendations are `campus` / `modern-sidebar` for Chinese-market campu
 
 `restyle` changes appearance, not market or selection. `localize` still reselects and rewrites from facts for the target market, retaining the source design ID unless `--template` explicitly overrides it. Private learned templates under `templates/user-<hash>/` are never part of the public library. Missing target-language variants fail explicitly without a silent design fallback.
 
-See [`docs/template-contracts.md`](../docs/template-contracts.md) for the full contract.
+See [`docs/template-contracts.md`](../docs/template-contracts.md) for the full contract. The repository READMEs show preview thumbnails; regenerate them with `python scripts/build_readme_previews.py`.
