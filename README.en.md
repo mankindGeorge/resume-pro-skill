@@ -121,13 +121,13 @@ For complete workflows, see the [walkthrough](docs/walkthrough.md) and [CLI cont
 
 **Templates:** **Five distinct designs × two resume languages = 10 variants.** `templates/cn/` and `templates/en/` indicate resume language, with manifest `language: zh` / `en`. Preview screenshots below; click one to open the full HTML.
 
-| Design ID | Preview | 中文 | English |
-|---|---|---|---|
-| `ats-classic` | <a href="templates/en/ats-classic/preview.html"><img src="docs/images/templates/en-ats-classic.png" alt="ATS Classic preview" width="480"></a> | [cn](templates/cn/ats-classic/) | [en](templates/en/ats-classic/) |
-| `campus` | <a href="templates/en/campus/preview.html"><img src="docs/images/templates/en-campus.png" alt="Campus preview" width="480"></a> | [cn](templates/cn/campus/) | [en](templates/en/campus/) |
-| `modern-sidebar` | <a href="templates/en/modern-sidebar/preview.html"><img src="docs/images/templates/en-modern-sidebar.png" alt="Modern Sidebar preview" width="480"></a> | [cn](templates/cn/modern-sidebar/) | [en](templates/en/modern-sidebar/) |
-| `editorial` | <a href="templates/en/editorial/preview.html"><img src="docs/images/templates/en-editorial.png" alt="Editorial preview" width="480"></a> | [cn](templates/cn/editorial/) | [en](templates/en/editorial/) |
-| `executive` | <a href="templates/en/executive/preview.html"><img src="docs/images/templates/en-executive.png" alt="Executive preview" width="480"></a> | [cn](templates/cn/executive/) | [en](templates/en/executive/) |
+| Design ID | Preview |
+|---|---|
+| `ats-classic` | <a href="templates/en/ats-classic/preview.html"><img src="docs/images/templates/en-ats-classic.png" alt="ATS Classic preview" width="480"></a> |
+| `campus` | <a href="templates/en/campus/preview.html"><img src="docs/images/templates/en-campus.png" alt="Campus preview" width="480"></a> |
+| `modern-sidebar` | <a href="templates/en/modern-sidebar/preview.html"><img src="docs/images/templates/en-modern-sidebar.png" alt="Modern Sidebar preview" width="480"></a> |
+| `editorial` | <a href="templates/en/editorial/preview.html"><img src="docs/images/templates/en-editorial.png" alt="Editorial preview" width="480"></a> |
+| `executive` | <a href="templates/en/executive/preview.html"><img src="docs/images/templates/en-executive.png" alt="Executive preview" width="480"></a> |
 
 Rendering and QA resolve the variant using the application's `writing.locale`, falling back to the market profile's `language`; missing or mismatched variants fail explicitly. Default recommendations are `campus` / `modern-sidebar` for Chinese-market campus / professional profiles and `ats-classic` / `executive` for international default / senior profiles.
 
