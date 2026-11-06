@@ -32,7 +32,8 @@ All notable changes to this project are documented here. The format follows Keep
 - Keep Chinese previews Chinese: the compact Chinese preview uses the Chinese student sample, with only proper nouns and technical terms left in English.
 - Render education as major on the entry line and degree/GPA as a smaller note below, instead of one combined line.
 - Place workspace outputs under the skill root's `workspace/`; one subfolder per application or review.
-- After a diagnosis, ask whether to start fixing; if yes, offer one multi-select P0/P1/P2 choice, then work through the selected priorities one question at a time and re-run build/QA.
+- After a diagnosis, ask whether to start fixing; if yes, offer one multi-select P0/P1/P2 choice, ask the writing framework, then work through the selected priorities one question at a time and re-run build/QA. The rest of the flow mirrors Create from zero.
+- Enforce content sufficiency: every kept role/project answers background, role, action, and result; ask for outcomes when only tools are given; use the selected framework's question ladder; and run silent depth mining for thin student/intern profiles, packaging only real contributions without inventing facts.
 
 ## [0.1.0] — 2026-11-05
 

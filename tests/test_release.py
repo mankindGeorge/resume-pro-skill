@@ -145,11 +145,30 @@ def test_skill_requires_prioritized_diagnosis_followup():
         "`P0`",
         "`P1`",
         "`P2`",
+        "writing framework",
+        "exactly like Create from zero",
         "one question at a time",
         "same conversation and task",
         "optimize",
     ):
         assert requirement in section, f"Missing diagnosis follow-up rule: {requirement}"
+
+
+def test_skill_requires_content_sufficiency_and_depth_mining():
+    text = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+    section = text.split("## Content sufficiency", 1)[1].split("\n## ", 1)[0]
+    for requirement in (
+        "background or problem",
+        "the user's role",
+        "the user's action",
+        "and the result",
+        "Technical stack alone is not a result",
+        "can you supply it",
+        "Ask only for the slots that are missing",
+        "depth mining",
+        "never invents",
+    ):
+        assert requirement in section, f"Missing content-sufficiency rule: {requirement}"
 
 
 def test_no_pdf_or_docx_resume_writer():

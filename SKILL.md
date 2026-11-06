@@ -142,9 +142,11 @@ Deliver the diagnosis in priority order, then:
 
 1. Ask through the interactive tool whether to start fixing. If the user declines, stop at the diagnosis.
 2. If the user accepts, ask exactly one **multi-select** question with three options: `P0` (must fix), `P1` (structure), `P2` (polish). Do not turn every finding into a separate option.
-3. Work through only the selected priorities, one question at a time. For each item, ask for the missing fact, correction, or confirmation; save the answer; continue the same conversation and task.
-4. Use `optimize` first when the diagnosis is on a file, or update the existing application when one exists. Keep unselected priorities unchanged.
-5. Re-run lint, build, and QA after the changes, and report the result.
+3. Ask which writing framework to use: STAR, XYZ, FAB, CAR, result-first, or user voice. Keep an existing consented framework; otherwise record the choice and consent.
+4. Treat the rest exactly like Create from zero: collect and confirm missing facts, reselect the template if needed, rebuild, and re-run lint and QA.
+5. Work through only the selected priorities, one question at a time. For each item, ask for the missing fact, correction, or confirmation; save the answer; continue the same conversation and task.
+6. Use `optimize` first when the diagnosis is on a file, or update the existing application when one exists. Keep unselected priorities unchanged.
+7. Re-run lint, build, and QA after the changes, and report the result.
 
 ### Restyle
 
@@ -204,6 +206,16 @@ resume templates
 ```
 
 `audit` checks the rendered HTML with a headless browser: pages, extracted text, selected bullets, headings, section order, font floor, sensitive fields, and privacy. Hard failures exit `4`. Every rebuild snapshots a version.
+
+## Content sufficiency
+
+- Every kept role or project must answer four things: background or problem, the user's role, the user's action, and the result. Technical stack alone is not a result.
+- When a bullet only names tools or duties, ask for the outcome behind them: a number, scope, artifact, or user-visible change.
+- If the user gives technology without background or results, ask one question: can you supply it, or should I rephrase only what you already gave? Add nothing on my own.
+- Follow the selected framework while collecting: STAR asks situation, task, action, result; XYZ asks the accomplished X measured by Y by doing Z; CAR asks challenge, action, result. Ask only for the slots that are missing.
+- If no outcome exists, ask for a smaller true detail instead of padding the resume.
+- For a student or intern profile with at most one real project, run **depth mining** silently: ask targeted questions about real tasks, decisions, scope, artifacts, and feedback, then present those real contributions more strongly. This packages real experience; it never invents a project, employer, metric, or date, and it is not announced as a feature — it reads as normal fact questions.
+- A thin profile stays in build mode when depth mining cannot surface a second proof point.
 
 ## Writing rules
 
