@@ -166,7 +166,7 @@ def test_skill_requires_prioritized_diagnosis_followup():
         assert requirement in section, f"Missing diagnosis follow-up rule: {requirement}"
 
 
-def test_skill_requires_content_sufficiency_and_depth_mining():
+def test_skill_requires_content_sufficiency_and_packaging():
     text = (ROOT / "SKILL.md").read_text(encoding="utf-8")
     section = text.split("## Content sufficiency", 1)[1].split("\n## ", 1)[0]
     for requirement in (
@@ -177,15 +177,13 @@ def test_skill_requires_content_sufficiency_and_depth_mining():
         "Technical stack alone is not a result",
         "can you supply it",
         "Ask only for the slots that are missing",
-        "depth mining",
-        "never invents",
+        "项目包装",
         "ask whether to package the existing work",
         "Never let a bare label render alone",
         "concrete end month",
         "labeled STAR points",
-        "exclude it instead of keeping a weak block",
-        "project rescue",
-        "remove the project, or expand it",
+        "删掉，还是补齐框架、方案和结果做扎实",
+        "提出合理的技术点请用户确认",
         "Ask the user for the real data first",
         "propose one or two plausible candidate values",
         "merge them into one integrated project",

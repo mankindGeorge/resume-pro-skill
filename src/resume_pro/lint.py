@@ -245,8 +245,8 @@ def lint(
                     "lint.project_rescue",
                     "warn",
                     f"projects[{index}]",
-                    "This project needs more framework and technical depth.",
-                    "Offer the user two choices: remove the project, or expand it with plausible candidate details that the user confirms.",
+                    "This project could use more depth.",
+                    "Ask the user to keep it and add real detail, or remove it.",
                 )
         if context in {"course", "personal", "open_source"}:
             if not project.get("own_contribution") and not project.get("optimizations"):

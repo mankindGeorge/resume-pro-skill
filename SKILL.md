@@ -209,7 +209,7 @@ resume templates
 
 ## Content sufficiency
 
-- Packaging real experience is the core product. HR must see substance: context, ownership, action, and result in every kept item. Rewrite raw facts into problem–decision–impact language; do not merely paraphrase the user's wording.
+- 项目包装是核心工作。HR 要看到实打实的内容：每个保留条目都要有背景、你的角色、动作和结果。把原始事实重写成「问题—决策—影响」，不要只复述用户原话。
 - Every kept role or project must answer four things: background or problem, the user's role, the user's action, and the result. Technical stack alone is not a result.
 - When a bullet only names tools or duties, ask for the outcome behind them: a number, scope, artifact, or user-visible change.
 - If the user gives technology without background or results, ask one question: can you supply it, or should I rephrase only what you already gave? Add nothing on my own.
@@ -217,21 +217,21 @@ resume templates
 - Render each kept project as 3–4 labeled STAR points: `项目背景：`, `核心框架：`, `解决方案：`（或 `难点：`）, `核心成果：`. Each point is a complete, substantial sentence with real detail; never a one-line fragment.
 - A `核心成果：` point must say what problem was solved and what changed, not just list an award or repeat the technology. A `解决方案：` point must explain the pain point and why the approach fits it. Remove filler such as launch dates unless they prove impact.
 - All points render as labeled paragraphs or plain lines. Do not use `<ul>`, `<ol>`, or `<li>`, and do not put a bullet dot before the text.
-- A project with too little text is a packaging failure. Mine constraints, decisions, trade-offs, artifacts, and feedback to surface real highlights; if it still cannot fill a labeled point, exclude it instead of keeping a weak block.
+- 内容太少的项目做不出效果。多问约束、决策、取舍、产物和反馈，找出真实亮点；实在填不满一个分点，就去掉这个项目。
 - If no outcome exists, ask for a smaller true detail instead of padding the resume.
 - Data is mandatory wherever it strengthens the story: every result-oriented point should carry a number, scope, ratio, time saved, or measurable change. **Ask the user for the real data first** — that is always the first option. Only when the user explicitly chooses "no data" / "I don't know" may you propose one or two plausible candidate values, explain the assumption, and ask the user to confirm the value is reasonable before writing it. A confirmed candidate is recorded as user-asserted, not verified; an unconfirmed candidate stays out.
 - Never jump to invented numbers while real data may exist. The fallback order is: ask for real data → if unavailable, ask permission to estimate → propose candidate values → user confirms → write.
 - Never let a bare label render alone (for example, a degree with no other detail). Education writes `major · degree` on the entry line; GPA/rank goes below when present.
 - Final dates are concrete `YYYY.MM`. Flag `至今` / `present` and ask for a concrete end month before delivery.
 - When the user says there is no number, ask whether to package the existing work with a stronger narrative; "keep it as is" and "skip" are not equivalent choices. Packaging may reorder and sharpen real work, never add a metric.
-- For a student or intern profile with at most one real project, run **depth mining** silently: ask targeted questions about real tasks, decisions, scope, artifacts, and feedback, then present those real contributions more strongly. This packages real experience; it never invents a project, employer, metric, or date, and it is not announced as a feature — it reads as normal fact questions.
-- A thin profile stays in build mode when depth mining cannot surface a second proof point.
+- 学生/实习简历项目偏少时，直接问清真实任务、决策、范围、产物和反馈，把真实贡献写得更充分。这是正常的项目包装，不编造项目、公司、数字或日期，也不用专门声明。
+- 如果仍然挖不出第二个亮点，再考虑 build mode。
 - When the user has related projects (for example an application and a tool/skill), merge them into one integrated project: let the application's agent call the tool so the story covers data, matching, and optimization in one system. Confirm the integration with the user first.
 - Describe only the difficulty and key points of a merged project; keep it appropriately detailed, not a feature dump. Lead with the integrated capability and the hardest problem it solves.
 - If a component is open-sourced, state that as a concrete result rather than leaving it implied.
-- When a project is too small or shallow, run **project rescue** quietly: classify the project, summarize what a strong project of that type needs (framework, data, evaluation, deployment,难点), identify the missing dimensions, and propose plausible candidate details for the user to confirm. The skill may suggest reasonable technical points that the user did not originally mention, but nothing enters the resume until the user confirms it is reasonable and appropriate for the project.
-- For a small demo project, ask the user to choose: remove the project, or expand it with real technical depth. Expansion means collecting the missing framework, solution, and result details one question at a time, then writing the packaged version. This rescue is part of normal fact collection and is not announced as a special feature.
-- Packaging may suggest relevant technologies, methods, and improvements for the user to confirm. Confirmed reasonable details may be written even if the user did not originally supply them; unconfirmed details stay out of the resume.
+- 项目偏小或偏浅时，先做 **项目包装**：归类项目，总结同类项目通常需要的框架、数据、评估、部署和难点，找出缺的部分，提出合理的技术点请用户确认。可以建议用户没提到的合理技术点，但要经用户确认后才写入。
+- 项目太薄时问用户：删掉，还是补齐框架、方案和结果做扎实。补齐就是逐条问清缺的内容，再写成完整版本。这就是正常的内容工作。
+- 项目包装可以提出合理的技术、方法和改进点给用户确认。确认过的合理内容可以写入，哪怕用户一开始没提到；未确认的不写。
 
 ## Writing rules
 
