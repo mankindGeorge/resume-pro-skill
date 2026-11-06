@@ -239,7 +239,7 @@ def lint(
             )
         if is_student and context in {"personal", "course", "competition"}:
             text = " ".join(bullets)
-            if not _has_digit(text) or sum(len(item) for item in bullets) < (120 if is_cn else 220):
+            if sum(len(item) for item in bullets) < (120 if is_cn else 220):
                 add(
                     "lint.project_rescue",
                     "warn",
