@@ -521,16 +521,18 @@ def run_qa(
         usable = _usable_width(page_chars)
         short: list[tuple[int, str, float]] = []
         checked = 0
+        heading_norms = {_norm(value) for value in info["headings"].values() if value}
         for page, chars in _rendered_lines(page_chars):
             line_text = "".join(c.get("text", "") for c in chars).strip()
             line_norm = _norm(line_text)
-            if len(line_norm) < 2 or not any(line_norm in item for item in scope):
+            if len(line_norm) < 2 or line_norm in heading_norms or not any(line_norm in item for item in scope):
                 continue
             checked += 1
             width = max(c["x1"] for c in chars) - min(c["x0"] for c in chars)
             if width < SHORT_LINE_RATIO * usable:
                 short.append((page + 1, line_text, width / usable))
         metrics["short_line_count"] = len(short)
+        metrics["short_line_checked"] = checked
         if short:
             worst = min(ratio for _, _, ratio in short)
             samples = "; ".join(f"p{page} {text[:12]!r} ({round(ratio * 100)}%)" for page, text, ratio in short[:3])

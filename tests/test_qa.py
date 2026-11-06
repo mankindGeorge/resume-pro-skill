@@ -128,6 +128,20 @@ def test_short_tail_line_in_intro_fails(student_vault, tmp_path):
 
 
 @pytest.mark.skipif(find_browser() is None, reason="No headless browser available")
+def test_section_heading_is_not_counted_as_intro_line(student_vault, tmp_path):
+    """A section heading that happens to appear inside a bullet is not an intro line."""
+    app, render = _rendered(student_vault, tmp_path)
+    html = Path(render.html_path).read_text(encoding="utf-8")
+    bullet = student_vault["experience"][0]["bullets"][0]
+    old = bullet["text"]["zh"]
+    bullet["text"]["zh"] = "系统梳理项目经历与交付记录，形成完整的迭代与上线文档。"
+    Path(render.html_path).write_text(html.replace(old, bullet["text"]["zh"], 1), encoding="utf-8")
+    qa = run_qa(tmp_path, student_vault, app)
+    check = next(item for item in qa.checks if item.id == "qa.layout.short_line")
+    assert check.status == "pass", check.detail
+
+
+@pytest.mark.skipif(find_browser() is None, reason="No headless browser available")
 def test_page_count_uses_browser_and_can_fail(student_vault, tmp_path):
     app, render = _rendered(student_vault, tmp_path)
     html = Path(render.html_path).read_text(encoding="utf-8")
