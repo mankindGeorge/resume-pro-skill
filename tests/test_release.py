@@ -186,6 +186,7 @@ def test_skill_requires_content_sufficiency_and_depth_mining():
         "exclude it instead of keeping a weak block",
         "project rescue",
         "remove the project, or expand it",
+        "Ask the user for the real data first",
         "propose one or two plausible candidate values",
         "merge them into one integrated project",
         "open-sourced",

@@ -40,7 +40,7 @@ All notable changes to this project are documented here. The format follows Keep
 - Strengthen packaging rules: solutions must explain the pain point and why the approach fits; results must state the problem solved and the change created, not repeat technology or filler dates. QA now checks horizontal text balance so sparse left-biased layouts do not pass silently.
 
 - Add quiet project rescue for small demo projects: classify the project, summarize the framework/难点/成果 expected for that project type, and ask the user to remove it or expand it with confirmed technical depth before writing.
-- Require measurable data wherever it strengthens the story: missing numbers now warn, and the skill proposes plausible candidate values for user confirmation before writing them.
+- Require measurable data wherever it strengthens the story: missing numbers now warn, and the skill proposes plausible candidate values for user confirmation before writing them. Real data is always requested first; candidate values are only offered after the user chooses no data.
 
 ## [0.1.0] — 2026-11-05
 
