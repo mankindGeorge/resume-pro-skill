@@ -175,7 +175,7 @@ def lint(
         if WEAK_START.search(text):
             add("lint.weak_verb", "warn", path, "The bullet starts with a weak verb.", "Lead with what you drove, built, cut, or shipped.")
         if not _has_digit(text):
-            add("lint.no_metric", "info", path, "The bullet has no number.", "Add a real number if one exists; otherwise keep the verifiable outcome.")
+            add("lint.no_metric", "warn", path, "The bullet has no number.", "Add a number, scope, ratio, or measurable change; if none exists, propose a plausible value for user confirmation.")
         if len(text) > (140 if is_cn else 240):
             add("lint.bullet_too_long", "warn", path, "The bullet is too long for a skim.", "Cut it to one action and one result.")
         if len(text) < (12 if is_cn else 20):
