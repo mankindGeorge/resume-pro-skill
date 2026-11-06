@@ -9,7 +9,7 @@
 
 **Get the facts right. Then make the resume work.**
 
-A resume skill for Chinese and international job applications, combining an agent's guided intake and writing with a Python CLI's validation and rendering. Create, improve, tailor, and localize resumes from a shared record of career facts.
+A **China-first resume skill with international support**, combining an agent's guided intake and writing with a Python CLI's validation and rendering. Create, improve, tailor, and localize resumes from a shared record of career facts.
 
 No invented experience, no one-shot generic prose, and no treating Chinese and English resumes as sentence-by-sentence translations. Resume deliverables are **HTML only**, with an **A4** print layout.
 
@@ -25,7 +25,7 @@ No invented experience, no one-shot generic prose, and no treating Chinese and E
 | Switch between Chinese and English | Reorganize facts and wording for the target market |
 | Change the layout or add a photo | Preserve facts; optional photo slots disappear when unused |
 
-Supports students, interns, new graduates, career switchers, experienced professionals, and other personas. Primary market profiles include `cn_internet` and `intl_en`; see the [market matrix](docs/market-matrix.md) for the scope of other profiles.
+Supports students, interns, new graduates, career switchers, experienced professionals, and other personas. China-first by default: `cn_internet` and other Chinese-market profiles lead, while `intl_en` remains available for international applications; see the [market matrix](docs/market-matrix.md) for each profile's scope.
 
 Cover letters, interview coaching, salary negotiation, job scraping, and auto-apply are out of scope.
 

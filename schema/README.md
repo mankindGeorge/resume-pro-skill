@@ -98,7 +98,7 @@ IDs survive edits. A new role gets a new id; an edited title keeps its id.
 
 ### 1.6 Template language
 
-Every template manifest declares `language: zh | en`. The renderer rejects a template whose language does not match the target market (`render.language_mismatch`). Chinese templates use CJK-first font stacks; English templates use Latin-only stacks. This keeps font metrics and line spacing coherent.
+Every template manifest declares `language: zh | en`. Rendering and QA resolve the variant from the application's `writing.locale`, falling back to the target market profile's `language` only when it is absent; a missing or mismatched variant fails explicitly (`render.template_missing` / `render.language_mismatch`). The `templates/cn/` and `templates/en/` folders denote resume language, not market eligibility. Chinese templates use CJK-first font stacks; English templates use Latin-only stacks. This keeps font metrics and line spacing coherent.
 
 ## 2. Application invariants
 

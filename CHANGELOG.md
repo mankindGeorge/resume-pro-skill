@@ -13,6 +13,8 @@ All notable changes to this project are documented here. The format follows Keep
 - Preserve the source design ID during target-market localization unless `--template` explicitly overrides it. Missing target-language learned templates fail clearly without a silent design fallback; legacy flat learned templates remain supported with language validation. Restyling changes appearance, not market or fact selection.
 - Keep existing default recommendations, market/persona selection and writing rules, page/photo policies, fact confirmation, layout capacity budgets, and fixed two-column regions. Recommendations are not exclusive design restrictions. Template review status is unchanged; bilingual coverage is not approval or release.
 - Require the agent to ask the user which layout to use before rendering during creation and optimization, recommending the default but never accepting it silently, and to show where to preview each design (`templates/<cn|en>/<id>/preview.html`).
+- Reframe the project as China-first with international support: Chinese-market profiles lead, while `intl_en` and English resume variants remain fully available. Market and persona rules are unchanged.
+- Correct `schema/README.md` to describe locale-based template resolution instead of the removed market-locked match.
 
 ### Added
 

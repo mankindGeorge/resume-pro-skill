@@ -1,11 +1,13 @@
 ---
 name: resume-pro-skill
-description: "Evidence-backed, market-aware resume builder. Trigger when the user wants to create, optimize, review, restyle, tailor, or translate a resume, compare a resume to a JD, or get job-fit recommendations. Supports students, interns, new grads, career switchers, experienced professionals, and Chinese/international markets. Output is HTML only."
+description: "Evidence-backed, China-first market-aware resume builder with international support. Trigger when the user wants to create, optimize, review, restyle, tailor, or translate a resume, compare a resume to a JD, or get job-fit recommendations. Supports students, interns, new grads, career switchers, experienced professionals, and primarily China's job market while also covering international applications. Output is HTML only."
 ---
 
 # Resume Pro Skill
 
 A resume is a **per-job selection over a verified career vault**, rendered through a **strict HTML template contract**. This skill handles the conversation and judgment; the CLI handles extraction, validation, linting, rendering, and QA.
+
+The primary audience is **China's job market**; international applications are supported through `intl_en` and the English template variants. China-first positioning does not relax market or persona rules: always apply the target market's selection, writing, page, photo, and fact-confirmation rules.
 
 ## Non-negotiable rules
 
