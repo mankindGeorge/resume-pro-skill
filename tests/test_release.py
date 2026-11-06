@@ -86,6 +86,32 @@ def test_skill_asks_template_choice_and_preview_location():
     assert "preview.html" in optimize
 
 
+def test_templates_avoid_italic_and_variant_typography():
+    """Resume designs use standard sans glyphs: no italic/serif or alternate forms."""
+    css_files = sorted((ROOT / "templates").glob("*/*/styles.css"))
+    assert len(css_files) == 12
+    for path in css_files:
+        text = path.read_text(encoding="utf-8")
+        lowered = text.lower()
+        assert "font-style: italic" not in lowered, path
+        assert "font-style: oblique" not in lowered, path
+        assert "--font-heading" not in text, path
+        assert re.search(r"(?<!sans-)serif\b", text) is None, path
+        for banned in ("Georgia", "Times New Roman", "Songti", "SimSun"):
+            assert banned not in text, f"{path}: {banned}"
+        for required in (
+            "font-synthesis: none;",
+            "font-variant-ligatures: none;",
+            "font-variant-numeric: lining-nums",
+            "font-variant-east-asian: normal;",
+        ):
+            assert required in text, f"{path}: missing {required}"
+    for path in sorted((ROOT / "templates").rglob("*.html")):
+        text = path.read_text(encoding="utf-8")
+        assert not re.search(r"<(?:em|i)(?:\s|>)", text, re.IGNORECASE), path
+        assert "font-style: italic" not in text.lower(), path
+
+
 def test_no_pdf_or_docx_resume_writer():
     for path in (ROOT / "src").rglob("*.py"):
         text = path.read_text(encoding="utf-8")

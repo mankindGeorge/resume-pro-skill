@@ -93,7 +93,9 @@ def test_render_editorial(student_projects_vault, tmp_path):
     html = Path(result.html_path).read_text(encoding="utf-8")
     assert "Selected Projects" in html
     assert "Course QA with RAG" in html
-    assert "--font-heading" in html
+    assert "--font-heading" not in html
+    assert "font-style: italic" not in html
+    assert "font-synthesis: none" in html
 
 
 def test_render_executive(experienced_vault, tmp_path):

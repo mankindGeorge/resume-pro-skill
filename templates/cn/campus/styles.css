@@ -22,6 +22,11 @@ body {
   color: var(--ink);
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
+  font-synthesis: none;
+  font-variant-ligatures: none;
+  font-variant-numeric: lining-nums proportional-nums;
+  font-feature-settings: "liga" 0, "clig" 0, "calt" 0, "dlig" 0, "onum" 0;
+  font-variant-east-asian: normal;
 }
 
 .header { text-align: center; margin: 0 0 8pt; }

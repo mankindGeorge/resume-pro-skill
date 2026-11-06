@@ -19,6 +19,7 @@ Every variant:
 - reserves an optional `identity.photo` slot that collapses when empty; photo visibility follows market policy, not the design or language folder;
 - renders no 求职意向 section and no CN/EN badge;
 - uses strict `data-slot` markers and a signed manifest;
+- uses one standard system sans-serif family with no italic, oblique, serif/display, or variant glyph styling; ligatures/contextual alternates are disabled and numerals use lining figures;
 - preserves its design's fixed main/sidebar regions. Language variants do not move sections between columns.
 
 Default recommendations remain `campus` / `zh-professional` for Chinese-market campus / professional profiles and `ats-classic` / `executive` for international default / senior profiles. Recommendations do not exclude other designs. Market/persona selection, writing, page, photo, and fact-confirmation rules remain unchanged, as does template review status; a signature is not design approval.

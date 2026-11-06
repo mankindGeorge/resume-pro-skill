@@ -19,6 +19,7 @@ Every template must:
 11. Be tested for extracted text order, not only visual appearance.
 12. Produce byte-stable HTML for the same input.
 13. Reserve an optional `identity.photo` slot in the header. When no photo is set, the slot must collapse completely: no border, no background, no blank box. `intl_en` suppresses photos by policy; CN markets may show one.
+14. Avoid italic/oblique text, alternative serif or display faces, and variant glyph styling. Use one standard system sans-serif stack per resume language, standard lining numerals, and disabled ligatures/contextual alternates so the resume does not substitute alternate character forms.
 
 ## 2. Typography floor
 
@@ -32,7 +33,7 @@ Every template must:
 | Absolute minimum | 9pt | — |
 
 - Line height: 1.3–1.45 for body, 1.15–1.25 for headings.
-- At most two font families.
+- One standard system sans-serif family per resume language. No italic, oblique, serif, display, or variant typefaces; text uses standard lining numerals and no glyph-substituting ligatures.
 - Margins: 15–20mm; never below 12mm.
 - Accent color: at most one, plus black/gray. Must remain legible in grayscale.
 - No light gray body text below `#555` on white.

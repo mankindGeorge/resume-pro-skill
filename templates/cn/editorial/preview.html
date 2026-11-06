@@ -8,7 +8,6 @@
 <style>
 :root {
   --font-body: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Source Han Sans SC", "Noto Sans CJK SC", Arial, sans-serif;
-  --font-heading: "Source Han Serif SC", "Noto Serif CJK SC", "Songti SC", SimSun, Georgia, "Times New Roman", serif;
   --size-body: 10.5pt;
   --line-height: 1.5;
   --ink: #1c1c1c;
@@ -28,11 +27,16 @@ body {
   color: var(--ink);
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
+  font-synthesis: none;
+  font-variant-ligatures: none;
+  font-variant-numeric: lining-nums proportional-nums;
+  font-feature-settings: "liga" 0, "clig" 0, "calt" 0, "dlig" 0, "onum" 0;
+  font-variant-east-asian: normal;
 }
 
 .header { margin: 0 0 9pt; text-align: left; }
 .header h1 {
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-size: 22pt;
   line-height: 1.12;
   font-weight: 700;
@@ -44,9 +48,8 @@ a { color: var(--accent); text-decoration: none; }
 
 .section { margin-top: 11pt; }
 .section h2 {
-  font-family: var(--font-heading);
+  font-family: var(--font-body);
   font-size: 11.5pt;
-  font-style: italic;
   font-weight: 700;
   letter-spacing: 0.03em;
   color: var(--accent);
