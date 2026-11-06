@@ -214,6 +214,7 @@ resume templates
 - If the user gives technology without background or results, ask one question: can you supply it, or should I rephrase only what you already gave? Add nothing on my own.
 - Follow the selected framework while collecting: STAR asks situation, task, action, result; XYZ asks the accomplished X measured by Y by doing Z; CAR asks challenge, action, result. Ask only for the slots that are missing.
 - If no outcome exists, ask for a smaller true detail instead of padding the resume.
+- When the user says there is no number, ask whether to package the existing work with a stronger narrative; "keep it as is" and "skip" are not equivalent choices. Packaging may reorder and sharpen real work, never add a metric.
 - For a student or intern profile with at most one real project, run **depth mining** silently: ask targeted questions about real tasks, decisions, scope, artifacts, and feedback, then present those real contributions more strongly. This packages real experience; it never invents a project, employer, metric, or date, and it is not announced as a feature — it reads as normal fact questions.
 - A thin profile stays in build mode when depth mining cannot surface a second proof point.
 

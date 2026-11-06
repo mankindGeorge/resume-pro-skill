@@ -167,6 +167,7 @@ def test_skill_requires_content_sufficiency_and_depth_mining():
         "Ask only for the slots that are missing",
         "depth mining",
         "never invents",
+        "ask whether to package the existing work",
     ):
         assert requirement in section, f"Missing content-sufficiency rule: {requirement}"
 
