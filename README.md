@@ -166,6 +166,7 @@ CLI 在本地处理资料，不提供遥测或自动上传功能。Agent 所使�
 | [中文简历规则](docs/cn-resume-rules.md) | 中文场景的内容与结构要求 |
 | [信息收集与充分度](docs/intake-and-sufficiency.md) | 追问逻辑与生成门槛 |
 | [写作引擎](references/writing-engine.md) | 框架、措辞与证据约束 |
+| [充分性手册](references/sufficiency-playbook.md) | 内容包装的完整规则与追问方法 |
 | [触发与路由](docs/triggers-and-routes.md) | 不同用户意图的处理方式 |
 | [CLI 契约](docs/cli-contract.md) | 命令、输入输出与退出码 |
 | [模板契约](docs/template-contracts.md) | 插槽、预算与模板规则 |

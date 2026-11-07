@@ -164,6 +164,7 @@ Detailed technical documentation is currently primarily in English. The language
 | [Chinese resume rules](docs/cn-resume-rules.md) | Content and structure for Chinese-market resumes |
 | [Intake and sufficiency](docs/intake-and-sufficiency.md) | Follow-up questions and generation gates |
 | [Writing engine](references/writing-engine.md) | Frameworks, wording, and evidence constraints |
+| [Sufficiency playbook](references/sufficiency-playbook.md) | Full content-packaging rules and follow-up method |
 | [Triggers and routes](docs/triggers-and-routes.md) | Handling different user intents |
 | [CLI contract](docs/cli-contract.md) | Commands, inputs, outputs, and exit codes |
 | [Template contracts](docs/template-contracts.md) | Slots, budgets, and template rules |

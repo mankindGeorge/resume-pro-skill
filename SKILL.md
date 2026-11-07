@@ -218,33 +218,23 @@ resume templates
 
 ## Content sufficiency
 
-- 项目包装是核心工作。HR 要看到实打实的内容：每个保留条目都要有背景、你的角色、动作和结果。把原始事实重写成「问题—决策—影响」，不要只复述用户原话。
-- Every kept role or project must answer four things: background or problem, the user's role, the user's action, and the result. Technical stack alone is not a result.
-- 合格项目的充分性标准：一个像样的项目展示要覆盖这些维度——背景/问题、角色分工、方案与取舍、难点与解决、评估/验证、部署/交付、成果与数据、使用与反馈。只写技术栈和功能清单不算合格。对照这个清单看已给内容覆盖了哪些维度。
-- When the user's first description is too thin to present a project well, do not wait for them to volunteer more: walk the uncovered dimensions and ask, one question at a time, for what they may not have thought to mention — what was hard and why, what was decided or traded off, how it was tested or evaluated, how it was deployed or delivered, what data or user feedback followed, what was reused or open-sourced. A real project can carry much more than a first summary.
-- When a bullet only names tools or duties, ask for the outcome behind them: a number, scope, artifact, or user-visible change.
-- If the user gives technology without background or results, ask one question: can you supply it, or should I rephrase only what you already gave? Add nothing on my own.
-- 框架和内容包装写在同一个文档：[Writing engine](references/writing-engine.md)。六个框架（STAR/XYZ/FAB/CAR/结果优先/个人语气）各有自己的包装配方、标签分点和示例，按所选框架的配方写，不要都按一种框架写。
-- Follow the selected framework's packaging recipe while collecting; it lists exactly which slots to ask for. Ask only for the slots that are missing.
-- Render each kept project as 3–4 labeled points using the chosen framework's recipe and label set. Each point is a complete, substantial sentence with real detail; never a one-line fragment.
-- 项目/实习介绍每行文字至少占可打印宽度的 2/5。换行后一行只剩几个字时，优先扩句（只展开已有事实），其次精简句子重新排布，不要留孤字行。
-- A `核心成果：` point must say what problem was solved and what changed, not just list an award or repeat the technology. A `解决方案：` point must explain the pain point and why the approach fits it. Remove filler such as launch dates unless they prove impact.
-- All points render as labeled paragraphs or plain lines. Do not use `<ul>`, `<ol>`, or `<li>`, and do not put a bullet dot before the text. The leading label (for example `项目背景：` or `Background:`) renders bold so the point structure is visible at a glance.
-- 内容太少的项目做不出效果。多问约束、决策、取舍、产物和反馈，找出真实亮点；实在填不满一个分点，就去掉这个项目。
-- If no outcome exists, ask for a smaller true detail instead of padding the resume.
-- Data is mandatory wherever it strengthens the story: every result-oriented point should carry a number, scope, ratio, time saved, or measurable change. **Ask the user for the real data first** — that is always the first option. Only when the user explicitly chooses "no data" / "I don't know" may you propose one or two plausible candidate values, explain the assumption, and ask the user to confirm the value is reasonable before writing it. A confirmed candidate is recorded as user-asserted, not verified; an unconfirmed candidate stays out.
-- Never jump to invented numbers while real data may exist. The fallback order is: ask for real data → if unavailable, ask permission to estimate → propose candidate values → user confirms → write.
-- Never let a bare label render alone (for example, a degree with no other detail). Education writes `major · degree` on the entry line; GPA/rank goes below when present.
-- Final dates are concrete `YYYY.MM`. Flag `至今` / `present` and ask for a concrete end month before delivery.
-- When the user says there is no number, ask whether to package the existing work with a stronger narrative; "keep it as is" and "skip" are not equivalent choices. Packaging may reorder and sharpen real work, never add a metric.
-- 学生/实习简历项目偏少时，直接问清真实任务、决策、范围、产物和反馈，把真实贡献写得更充分。这是正常的项目包装，不编造项目、公司、数字或日期，也不用专门声明。
-- 如果仍然挖不出第二个亮点，再考虑 build mode。
-- When the user has related projects (for example an application and a tool/skill), merge them into one integrated project: let the application's agent call the tool so the story covers data, matching, and optimization in one system. Confirm the integration with the user first.
-- Describe only the difficulty and key points of a merged project; keep it appropriately detailed, not a feature dump. Lead with the integrated capability and the hardest problem it solves.
-- If a component is open-sourced, state that as a concrete result rather than leaving it implied.
-- 项目偏小或偏浅时，先做 **项目包装**：归类项目，总结同类项目通常需要的框架、数据、评估、部署和难点，找出缺的部分，提出合理的技术点请用户确认。可以建议用户没提到的合理技术点，但要经用户确认后才写入。
-- 项目太薄时问用户：删掉，还是补齐框架、方案和结果做扎实。补齐就是逐条问清缺的内容，再写成完整版本。这就是正常的内容工作。
-- 项目包装可以提出合理的技术、方法和改进点给用户确认。确认过的合理内容可以写入，哪怕用户一开始没提到；未确认的不写。
+Packaging is the core work. The full method lives in the [Sufficiency playbook](references/sufficiency-playbook.md); these one-line rules are the index, and the playbook keeps every detail:
+
+- Every kept role/project answers background or problem, the user's role, the user's action, and the result; technical stack alone is not a result. Rewrite facts as 「问题—决策—影响」, never a paraphrase.
+- 合格项目的充分性标准：背景/问题、角色分工、方案与取舍、难点与解决、评估/验证、部署/交付、成果与数据、使用与反馈；对照清单逐个问缺的维度，一次一个问题。
+- First description too thin? Walk the uncovered dimensions and ask what the user may not have thought to mention; do not wait for volunteers. Tools/duties-only bullets: ask for the outcome behind them.
+- Follow the chosen framework's recipe in [Writing engine](references/writing-engine.md); ask only for the slots that are missing; render 3–4 labeled points, each a complete, substantial sentence.
+- 项目/实习介绍每行至少占可打印宽度的 2/5；换行只剩几个字时优先扩句（只展开已有事实），其次精简重排，不留孤字行。
+- 核心成果：说清解决了什么问题、改变了什么；解决方案：说清痛点与为什么适配；去掉不证明影响的填充（如上线日期）。
+- Points render as labeled paragraphs or plain lines, never `<ul>`/`<ol>`/`<li>` or leading dots; the leading label renders bold.
+- Data fallback: Ask the user for the real data first → ask permission to estimate → propose one or two plausible candidate values → user confirms → write; confirmed candidates are user-asserted, unconfirmed stay out.
+- No outcome: ask for a smaller true detail. No number: ask whether to package the existing work with a stronger narrative ("keep it as is" ≠ "skip"); packaging never adds a metric.
+- Never let a bare label render alone; education writes `major · degree` on the entry line, GPA/rank below when present.
+- Final dates are concrete `YYYY.MM`; flag `至今`/`present` and ask for a concrete end month before delivery.
+- 项目太薄：问用户删掉，还是补齐框架、方案和结果做扎实；实在填不满一个分点，就去掉这个项目。
+- 项目包装：归类项目、找出缺的维度，提出合理的技术点请用户确认；确认过的合理内容才写入，未确认的不写。
+- Related projects: merge them into one integrated project after user confirmation; lead with the integrated capability and the hardest problem; an open-sourced component is a concrete result.
+- 学生/实习项目偏少：问清真实任务、决策、范围、产物和反馈，写足真实贡献，不编造项目、公司、数字或日期；仍挖不出第二个亮点，再考虑 build mode。
 
 ## Writing rules
 
@@ -278,6 +268,7 @@ Exit codes: `0` ok; `2` gate blocked/minimum; `3` invalid input or missing targe
 - [Market matrix](docs/market-matrix.md)
 - [Intake and sufficiency](docs/intake-and-sufficiency.md)
 - [Writing engine: frameworks and packaging](references/writing-engine.md)
+- [Sufficiency playbook](references/sufficiency-playbook.md)
 - [Install](docs/install.md)
 - [Evaluation and ATS honesty](docs/evaluation.md)
 

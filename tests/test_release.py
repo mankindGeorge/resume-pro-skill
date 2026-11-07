@@ -187,6 +187,23 @@ def test_skill_requires_prioritized_diagnosis_followup():
 def test_skill_requires_content_sufficiency_and_packaging():
     text = (ROOT / "SKILL.md").read_text(encoding="utf-8")
     section = text.split("## Content sufficiency", 1)[1].split("\n## ", 1)[0]
+    # The entry keeps a one-line-per-rule checklist and links the full playbook.
+    assert "references/sufficiency-playbook.md" in section
+    assert len(section.strip().splitlines()) <= 20
+    for requirement in (
+        "background or problem",
+        "the user's role",
+        "the user's action",
+        "and the result",
+        "labeled points",
+        "Ask the user for the real data first",
+        "concrete end month",
+        "merge them into one integrated project",
+        "build mode",
+        "references/writing-engine.md",
+    ):
+        assert requirement in section, f"Missing entry rule: {requirement}"
+    playbook = (ROOT / "references" / "sufficiency-playbook.md").read_text(encoding="utf-8")
     for requirement in (
         "background or problem",
         "the user's role",
@@ -208,11 +225,13 @@ def test_skill_requires_content_sufficiency_and_packaging():
         "提出合理的技术点请用户确认",
         "Ask the user for the real data first",
         "propose one or two plausible candidate values",
+        "user-asserted, not verified",
         "merge them into one integrated project",
         "open-sourced",
-        "references/writing-engine.md",
+        "再考虑 build mode",
+        "writing-engine.md",
     ):
-        assert requirement in section, f"Missing content-sufficiency rule: {requirement}"
+        assert requirement in playbook, f"Missing playbook rule: {requirement}"
 
 
 def test_frameworks_and_packaging_share_one_document():
