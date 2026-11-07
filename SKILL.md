@@ -42,6 +42,10 @@ Put every user-facing artifact under the skill root's `workspace/`. Use one subf
 
 Default recommendations are `campus` / `modern-sidebar` for Chinese-market campus / professional profiles and `ats-classic` / `executive` for international default / senior profiles. Market/persona still govern selection, writing, page policy, photos, and fact confirmation. Respect each design's capacity budgets; bilingual availability does not change template review status.
 
+## Step 0: readiness check
+
+On any resume task, first confirm the CLI is ready: run `resume --version`. If the command is missing or fails, follow Runtime setup — `python bootstrap.py --install`, or `python bootstrap.py --deps-only` and call `python resume.py <command>` instead. If it still fails, report the concrete error and the documented fix; do not enter intake or route the task until the check passes.
+
 ## Routing
 
 | User intent | Route |

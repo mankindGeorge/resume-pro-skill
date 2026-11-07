@@ -42,6 +42,24 @@ def test_skill_entrypoint_exists():
     assert "framework" in text.lower()
 
 
+def test_skill_requires_readiness_check_before_routing():
+    """Step 0: confirm the CLI works before routing; never enter intake on a broken runtime."""
+    text = (ROOT / "SKILL.md").read_text(encoding="utf-8")
+    assert "## Step 0: readiness check" in text
+    assert text.index("## Step 0: readiness check") < text.index("## Routing")
+    step0 = text.split("## Step 0: readiness check", 1)[1].split("\n## ", 1)[0]
+    for token in (
+        "resume --version",
+        "bootstrap.py --install",
+        "--deps-only",
+        "python resume.py",
+        "concrete error",
+        "do not enter intake",
+    ):
+        assert token in step0, f"Missing readiness rule: {token}"
+    assert len(step0.strip().splitlines()) <= 5
+
+
 def test_skill_requires_continuous_interactive_questions():
     """Guard the host-agent contract; this does not execute a host question UI."""
     text = (ROOT / "SKILL.md").read_text(encoding="utf-8")
