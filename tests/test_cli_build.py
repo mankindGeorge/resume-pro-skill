@@ -10,7 +10,7 @@ from pathlib import Path
 import yaml
 from click.testing import CliRunner
 
-from resume_pro.application import load_application
+from resume_pro.application import load_application, save_application
 from resume_pro.cli import cli
 from resume_pro.vault import load_vault, save_vault
 from tests.conftest import load_example
@@ -74,6 +74,40 @@ def test_build_minimum_requires_yes(tmp_path, monkeypatch):
     payload = json.loads(result.output)
     assert payload["ok"] is False
     assert payload["gate"]["status"] == "minimum"
+
+
+def test_build_snapshots_the_delivered_state(tmp_path, monkeypatch):
+    runner, slug = _cn_app(tmp_path, monkeypatch)
+    assert runner.invoke(cli, ["build", slug, "--yes", "--json"]).exit_code == 0
+    # Change a fact so the rebuilt HTML differs, keeping the same passing template.
+    vault = load_vault(root=tmp_path)
+    vault["identity"]["full_name"] = {"zh": "示例新名", "en": "Example Newname"}
+    save_vault(vault, root=tmp_path, validate=False)
+    rebuilt = runner.invoke(cli, ["build", slug, "--yes", "--json"])
+    assert rebuilt.exit_code == 0, rebuilt.output
+    app_dir = tmp_path / ".resume" / "applications" / slug
+    application = load_application(tmp_path, slug)
+    html_name = application["output"]["html"]
+    root_html = (app_dir / html_name).read_bytes()
+    versions = sorted((app_dir / "versions").iterdir())
+    assert versions, "a successful build must snapshot its delivered output"
+    latest_html = (versions[-1] / html_name).read_bytes()
+    assert latest_html == root_html  # the newest snapshot is the delivered state, not the prior one
+
+
+def test_prune_versions_keeps_only_recent(tmp_path):
+    from resume_pro.cli import _prune_versions
+
+    app_dir = tmp_path / "app"
+    versions = app_dir / "versions"
+    versions.mkdir(parents=True)
+    names = [f"2026110{i}-000000-000000" for i in range(1, 6)]  # 5 ascending timestamps
+    for name in names:
+        (versions / name).mkdir()
+    removed = _prune_versions(app_dir, keep=3)
+    remaining = sorted(p.name for p in versions.iterdir())
+    assert remaining == names[-3:]
+    assert sorted(removed) == names[:2]
 
 
 def test_build_requires_confirmed_facts(tmp_path, monkeypatch):
@@ -222,6 +256,33 @@ def test_localize_cn_to_en(tmp_path, monkeypatch):
     assert "Education" in html
     assert "教育经历" not in html
     assert source_path.read_text(encoding="utf-8") == before
+
+
+def test_build_refreshes_stale_parity(tmp_path, monkeypatch):
+    runner, slug = _cn_app(tmp_path, monkeypatch)
+    assert runner.invoke(cli, ["build", slug, "--yes", "--json"]).exit_code == 0
+    localized = runner.invoke(
+        cli,
+        ["localize", slug, "--to", "en", "--role", "Backend Engineering Intern", "--yes", "--json"],
+    )
+    assert localized.exit_code == 0, localized.output
+    target_slug = f"{slug}-en"
+    parity_path = tmp_path / ".resume" / "applications" / target_slug / "parity.json"
+    assert json.loads(parity_path.read_text(encoding="utf-8"))["status"] == "pass"
+
+    # Drift the target selection after localization; the old parity report is now stale.
+    application = load_application(tmp_path, target_slug)
+    core = [fid for fid in application["selection"]["fact_ids"] if fid.startswith(("edu_", "proj_", "exp_"))]
+    application["selection"]["fact_ids"].remove(core[0])
+    save_application(tmp_path, application)
+
+    rebuilt = runner.invoke(cli, ["build", target_slug, "--yes", "--json"])
+    assert rebuilt.exit_code == 4
+    payload = json.loads(rebuilt.output)
+    assert payload["parity"]["status"] == "fail"
+    refreshed = json.loads(parity_path.read_text(encoding="utf-8"))
+    assert refreshed["status"] == "fail"
+    assert refreshed["facts_missing"]
 
 
 def test_localize_gap_blocks_or_marks_draft(tmp_path, monkeypatch):

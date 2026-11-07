@@ -29,7 +29,7 @@ from .application import (
 from .errors import ResumeProError
 from .ingest import IngestError, detect_lang, ingest_file, to_vault
 from .lint import lint as run_lint
-from .localize import collect_gaps, localize_application
+from .localize import collect_gaps, localize_application, refresh_parity
 from .match import match_vault
 from .qa import run_qa
 from .recommend import recommend as recommend_roles
@@ -71,6 +71,9 @@ DIM_STATUS = {
 
 # Set per-invocation by the group callback; stdout JSON redacts PII unless True.
 _INCLUDE_PII = False
+
+# Upper bound on retained version snapshots per application (oldest pruned first).
+MAX_VERSIONS = 20
 
 
 def _lang(ctx: click.Context) -> str:
@@ -426,6 +429,19 @@ def _version_timestamp() -> str:
     return datetime.now().strftime("%Y%m%d-%H%M%S-%f")
 
 
+def _prune_versions(directory: Path, keep: int) -> list[str]:
+    """Remove the oldest version snapshots beyond ``keep``; return removed names."""
+    versions_dir = directory / "versions"
+    if not versions_dir.is_dir():
+        return []
+    versions = sorted((p for p in versions_dir.iterdir() if p.is_dir()), key=lambda p: p.name)
+    removed: list[str] = []
+    for old in versions[:-keep] if keep > 0 else versions:
+        shutil.rmtree(old, ignore_errors=True)
+        removed.append(old.name)
+    return removed
+
+
 def _snapshot_version(root: Path, application: dict[str, Any]) -> str | None:
     directory = application_dir(root, application["slug"])
     html_path = directory / (application.get("output") or {}).get("html", "resume.html")
@@ -446,6 +462,7 @@ def _snapshot_version(root: Path, application: dict[str, Any]) -> str | None:
         source = directory / name
         if source.is_file():
             shutil.copy2(source, version_dir / name)
+    _prune_versions(directory, keep=MAX_VERSIONS)
     return version_dir.name
 
 
@@ -501,7 +518,6 @@ def _run_build(
     if not lint_report.ok:
         payload["next"] = "Fix the lint errors, then rebuild."
         return 4, payload
-    version = _snapshot_version(root, application) if snapshot else None
     result = render_application(root, vault, application, template_id=template_id, draft=draft)
     qa = run_qa(root, vault, application, template_id=result.template_id, draft=draft)
     qa_path = application_dir(root, slug) / "qa.json"
@@ -511,15 +527,21 @@ def _run_build(
         "report": str(qa_path),
         "checked_at": datetime.now().astimezone().isoformat(timespec="seconds"),
     }
+    parity = refresh_parity(root, vault, application)
     save_application(root, application)
     workspace = publish_workspace(
         root,
         slug,
         [result.html_path, result.editable_path],
     )
+    parity_failed = parity is not None and parity.status == "fail" and not draft
+    ok = qa.status != "fail" and not parity_failed
+    # Snapshot the delivered state after a successful build so the newest version
+    # always matches the published resume (and history stays bounded).
+    version = _snapshot_version(root, application) if (snapshot and ok) else None
     payload.update(
         {
-            "ok": qa.status != "fail",
+            "ok": ok,
             "render": result.to_dict(),
             "qa": qa.to_dict(),
             "qa_report": str(qa_path),
@@ -527,7 +549,12 @@ def _run_build(
             "version": version,
         }
     )
-    return (0 if qa.status != "fail" else 4), payload
+    if parity is not None:
+        payload["parity"] = parity.to_dict()
+        payload["parity_report"] = str(application_dir(root, slug) / "parity.json")
+    if parity_failed:
+        payload["next"] = "Parity failed; resolve the cross-language differences before delivering. See parity.json."
+    return (0 if ok else 4), payload
 
 
 @cli.command()

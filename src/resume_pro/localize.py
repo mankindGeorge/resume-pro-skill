@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from . import profile
-from .application import application_dir, create_application, page_budget, save_application
+from .application import application_dir, create_application, load_application, page_budget, save_application
 from .errors import ResumeProError
 from .paths import get_path, set_path
 from .render import load_template
@@ -531,3 +531,30 @@ def localize_application(
         render_vault=render_vault,
         warnings=warnings,
     )
+
+
+def refresh_parity(
+    root: Path,
+    vault: dict[str, Any],
+    application: dict[str, Any],
+) -> ParityReport | None:
+    """Recompute parity for a localized application so a rebuild never leaves a
+    stale report. Returns None for applications that are not localization targets.
+    Updates ``application['localization']`` in place and rewrites parity.json.
+    """
+    localization = application.get("localization")
+    if not localization:
+        return None
+    source_slug = localization.get("source_application")
+    if not source_slug:
+        return None
+    source_app = load_application(root, source_slug)
+    target_locale = application["writing"]["locale"]
+    source_locale = localization.get("source_locale") or ("en" if target_locale == "zh" else "zh")
+    gaps = collect_gaps(vault, application["selection"], locale=target_locale, source_locale=source_locale)
+    parity = compare(vault, source_app, application, gaps=gaps)
+    parity_path = application_dir(root, application["slug"]) / "parity.json"
+    parity_path.write_text(json.dumps(parity.to_dict(), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    localization["parity_status"] = parity.status
+    localization["parity_report"] = str(parity_path)
+    return parity
