@@ -6,6 +6,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
 from click.testing import CliRunner
 
 from resume_pro.cli import cli
@@ -247,3 +248,18 @@ def test_agent_full_intake_preserves_free_text_and_reopens_confirmation():
         assert summary["summary"]["confirmed"] is False
         assert summary["summary"]["vault_status"] == "collecting"
         assert _agent_step(runner, "intake", "--id", "confirm.summary", "--answer", "yes")["complete"] is True
+
+
+def test_internal_error_exits_7_with_report(tmp_path, monkeypatch):
+    import resume_pro.cli as cli_module
+
+    monkeypatch.chdir(tmp_path)
+
+    def boom():
+        raise RuntimeError("unexpected internal failure")
+
+    monkeypatch.setattr(cli_module, "cli", boom)
+    with pytest.raises(SystemExit) as exc:
+        cli_module.main()
+    assert exc.value.code == 7
+    assert list(tmp_path.rglob("internal-error-*.json")), "an internal-error report path must be written"

@@ -7,6 +7,7 @@ import difflib
 import json
 import re
 import shutil
+import traceback
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -1748,7 +1749,30 @@ def photo(ctx: click.Context, image: Path | None, app_slug: str | None, clear_fl
 
 
 def main() -> None:
-    cli()
+    try:
+        cli()
+    except SystemExit:
+        raise
+    except KeyboardInterrupt:
+        click.echo("Aborted.", err=True)
+        raise SystemExit(130)
+    except Exception as exc:
+        root = find_project_root() or Path.cwd()
+        report_path = None
+        try:
+            reports = resume_dir(root) / "reports"
+            reports.mkdir(parents=True, exist_ok=True)
+            report_path = reports / f"internal-error-{datetime.now().strftime('%Y%m%d-%H%M%S-%f')}.json"
+            report_path.write_text(
+                json.dumps({"error": repr(exc), "traceback": traceback.format_exc()}, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+        except OSError:
+            report_path = None
+        click.echo(f"7: internal error: {exc}", err=True)
+        if report_path is not None:
+            click.echo(f"  report: {report_path}", err=True)
+        raise SystemExit(7)
 
 
 if __name__ == "__main__":
