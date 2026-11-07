@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import json
 import re
+import shutil
 import tempfile
+import warnings
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from pathlib import Path
@@ -86,16 +88,33 @@ def new_session(*, lang: str = "en") -> dict[str, Any]:
     }
 
 
+def _recover_session(path: Path, reason: str, *, lang: str) -> dict[str, Any]:
+    """Preserve the unreadable session as a .corrupt backup and warn instead of
+    silently discarding the user's progress."""
+    backup = path.with_name(path.name + ".corrupt")
+    try:
+        shutil.copy2(path, backup)
+    except OSError:
+        backup = None
+    detail = f" Saved a backup to {backup}." if backup else ""
+    warnings.warn(
+        f"The intake session at {path} could not be read ({reason}); starting a fresh session.{detail}",
+        UserWarning,
+        stacklevel=3,
+    )
+    return new_session(lang=lang)
+
+
 def load_session(path: Path | str, *, lang: str = "en") -> dict[str, Any]:
     path = Path(path)
     if not path.is_file():
         return new_session(lang=lang)
     try:
         data = json.loads(path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
-        return new_session(lang=lang)
+    except (OSError, json.JSONDecodeError) as error:
+        return _recover_session(path, str(error), lang=lang)
     if not isinstance(data, dict) or data.get("schema_version") != SESSION_VERSION:
-        return new_session(lang=lang)
+        return _recover_session(path, "unexpected format or schema version", lang=lang)
     base = new_session(lang=lang)
     base.update(data)
     base.setdefault("answered", [])

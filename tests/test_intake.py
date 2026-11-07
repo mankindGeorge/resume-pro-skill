@@ -153,6 +153,17 @@ def test_session_roundtrip(tmp_path):
     assert "target.market" in loaded["answered"]
 
 
+def test_corrupt_session_is_backed_up_and_warns(tmp_path):
+    path = tmp_path / "session.json"
+    path.write_text("{ this is not valid json", encoding="utf-8")
+    with pytest.warns(UserWarning, match="session"):
+        session = load_session(path)
+    assert session["confirmed"] is False
+    backup = tmp_path / "session.json.corrupt"
+    assert backup.exists()
+    assert backup.read_text(encoding="utf-8") == "{ this is not valid json"
+
+
 def test_parse_date_normalizes():
     question = type("Q", (), {"kind": "date", "optional": False, "choices": (), "aliases": {}})()
     assert parse_answer(question, "2025.09") == "2025-09"
