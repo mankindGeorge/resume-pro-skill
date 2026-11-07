@@ -194,3 +194,44 @@ def test_summary_reports_counts():
     assert data["counts"]["projects"] == 1
     assert data["counts"]["bullets"] == 5
     assert data["target"]["market"] == "cn_internet"
+
+
+def _drive_to_confirm():
+    vault = empty_vault()
+    session = new_session()
+    engine = IntakeEngine(vault, session)
+    for _ in range(200):
+        question = engine.current()
+        if question is None:
+            break
+        if question.id == "confirm.summary":
+            break
+        if question.id in FULL_ANSWERS:
+            engine.answer(question, FULL_ANSWERS[question.id])
+        elif question.optional:
+            engine.skip(question)
+        else:
+            raise AssertionError(f"missing answer for required question {question.id}")
+    assert engine.current().id == "confirm.summary"
+    return vault, session, engine
+
+
+def test_second_decline_keeps_confirmation_reachable():
+    vault, session, engine = _drive_to_confirm()
+    engine.answer(engine.current(), "no")
+    assert engine.current().id == "confirm.note"
+    engine.answer(engine.current(), "The name is wrong.")
+    assert engine.current().id == "confirm.summary"
+
+    engine.answer(engine.current(), "no")  # second decline must not deadlock
+    nxt = engine.current()
+    assert nxt is not None, "second decline left no question while unconfirmed"
+    assert session["confirmed"] is False
+    assert session["completed"] is False
+    assert nxt.id == "confirm.note"
+
+    engine.answer(nxt, "Actually keep the name.")
+    assert engine.current().id == "confirm.summary"
+    engine.answer(engine.current(), "yes")
+    assert session["confirmed"] is True
+    assert vault["status"] == "ready"

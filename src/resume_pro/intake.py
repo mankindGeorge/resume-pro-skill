@@ -987,6 +987,11 @@ class IntakeEngine:
             self.session["confirmed"] = False
             self.session.setdefault("flags", {})["declined_confirm"] = True
             self.vault["status"] = "collecting"
+            # Re-open the correction note so a repeated decline never strands
+            # the session with no applicable question while still unconfirmed.
+            for key in ("answered", "skipped"):
+                if "confirm.note" in self.session.get(key, []):
+                    self.session[key].remove("confirm.note")
 
 
 def _question_index(question_id: str) -> int:
