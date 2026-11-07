@@ -100,7 +100,7 @@ resume recommend [--app <slug>] [--market <id>] [--persona <id>] [--json]
 | Command | Behavior |
 |---|---|
 | `new` | Selects facts and creates `.resume/applications/<slug>/application.yaml`. `--role` falls back to the vault's preferred role. `--framework` is required and stored as `writing.consent: true`; no render. Targeted applications name the HTML after the role (for example `resume-backend-engineer.html`); mass applications use `resume.html`; `--no-role-in-filename` forces the plain name. |
-| `lint` | Runs global + CN rules and the 10-second skim. Writes `lint.json`; exit `4` on lint errors. |
+| `lint` | Runs global + CN rules and the 10-second skim. Writes `lint.json`; exit `4` on lint errors. Hard rules include the declared framework's recipe labels and order (`lint.framework_label`, `lint.framework_order`, checked only on labeled points), per-locale bullet length (`lint.bullet_too_long`, EN > 240 / ZH > 140), and a number in every result-labeled point (`lint.result_no_data`). |
 | `match` | Fit report only: must-have, nice-to-have, gate requirements, hidden signals, range, tier, gaps, risks. Writes `match.json`. |
 | `tailor` | Ingests a file (or loads `--app`), scores the JD, selects facts, and creates/updates the application. Missing must-haves are reported, never invented; no render. |
 | `recommend` | Role families, matched/missing terms, and a proof-building plan. No job-board access. |
@@ -120,7 +120,7 @@ resume templates [--json]
 
 | Command | Behavior |
 |---|---|
-| `build` | Runs the gate and lint, then writes `resume.html`, `resume-editable.html`, `render.json`, and `lint.json`. `blocked` exits `2`; `minimum` requires `--yes`; lint errors exit `4`. Copies the user-facing files to the skill-root `workspace/<slug>/`. |
+| `build` | Runs the gate and lint, then writes `resume.html`, `resume-editable.html`, `render.json`, and `lint.json`. `blocked` exits `2`; unconfirmed facts (`vault.status` not `ready`) exit `2` with `build.unconfirmed_facts` (`--yes` accepts a `minimum` gate, not fact consent; `--draft` may still render for inspection); `minimum` requires `--yes`; lint errors exit `4`. A localized application recomputes parity on every build and a non-draft parity failure exits `4`. A successful build snapshots the delivered output to `versions/`. Copies the user-facing files to the skill-root `workspace/<slug>/`. |
 | `templates` | Lists the 12 public variants (six signed layouts × `templates/cn` and `templates/en`), plus learned `user-*` templates: id, language, markets, personas, pages, columns, fingerprint, directory `path`, and `preview` (the `preview.html` path, also printed in human output). The CLI groups by language folder. |
 | `localize` | Re-derives from the vault for the target market; writes a parity report and the target HTML. Retains the source layout ID and resolves its target-language variant unless `--template` overrides it. Missing target-locale facts exit `3`; `--draft` marks them. Parity failures exit `4`. Literal translation is not a mode. |
 
@@ -159,7 +159,7 @@ resume doctor [--json]
         └── qa.json
 ```
 
-`versions/` is append-only. `build` snapshots the previous output before writing.
+`versions/` keeps a bounded history (the most recent 20 snapshots; older ones are pruned). A successful `build` snapshots the delivered output after writing, so the newest version matches the published resume; `restyle --app` snapshots the prior output before changing the template.
 
 ## 5. Error format
 
