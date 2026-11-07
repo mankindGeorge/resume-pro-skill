@@ -24,6 +24,8 @@ For a normal install:
 python -m pip install .
 ```
 
+The wheel bundles `templates/`, `schema/`, and `profiles/` inside the installed `resume_pro` package, so `resume templates`, schema validation, and profile loading work from any directory, not only from a checkout. `RESUME_PRO_TEMPLATES_DIR`, `RESUME_PRO_SCHEMA_DIR`, and `RESUME_PRO_PROFILES_DIR` still override the bundled resources; an editable install keeps reading them from the repository.
+
 ## 3. Agent skill
 
 The repository root is the skill: `SKILL.md` is the entry point. Point your agent's skill directory at this folder.
