@@ -263,3 +263,19 @@ def test_internal_error_exits_7_with_report(tmp_path, monkeypatch):
         cli_module.main()
     assert exc.value.code == 7
     assert list(tmp_path.rglob("internal-error-*.json")), "an internal-error report path must be written"
+
+
+def test_cwd_overrides_project_root(tmp_path, monkeypatch):
+    project = tmp_path / "project"
+    project.mkdir()
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    monkeypatch.chdir(elsewhere)
+    runner = CliRunner()
+    created = runner.invoke(
+        cli,
+        ["--cwd", str(project), "init", "--market", "cn_internet", "--persona", "student_with_internship", "--json"],
+    )
+    assert created.exit_code == 0, created.output
+    assert (project / ".resume" / "vault.yaml").exists()
+    assert not (elsewhere / ".resume").exists()

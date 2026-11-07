@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import difflib
 import json
+import os
 import re
 import shutil
 import traceback
@@ -182,11 +183,14 @@ def _load_context(root: Path, lang: str = "en") -> tuple[dict[str, Any], dict[st
 @click.version_option(__version__, prog_name="resume")
 @click.option("--lang", type=click.Choice(["en", "zh"]), default="en", show_default=True, help="Message language; content is never translated.")
 @click.option("--json", "json_flag", is_flag=True, help="Emit one JSON object to stdout.")
+@click.option("--cwd", type=click.Path(exists=True, file_okay=False, path_type=Path), default=None, help="Override the working directory used to locate .resume/.")
 @click.pass_context
-def cli(ctx: click.Context, lang: str, json_flag: bool) -> None:
+def cli(ctx: click.Context, lang: str, json_flag: bool, cwd: Path | None) -> None:
     ctx.ensure_object(dict)
     ctx.obj["lang"] = lang
     ctx.obj["json"] = json_flag
+    if cwd is not None:
+        os.chdir(cwd)
 
 
 @cli.command()
