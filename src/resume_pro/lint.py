@@ -281,7 +281,7 @@ def _framework_recipe_issues(
                 issues.append(LintIssue(
                     "lint.framework_order", "error", item_path,
                     f"Labeled points are out of {framework} order: {' → '.join(seen_labels)}",
-                    f"Reorder the points to the recipe: {allowed}. For result-first writing the result leads and the background closes.",
+                    f"Reorder the points to the {framework} recipe: {allowed} (references/writing-engine.md §2).",
                 ))
     return issues
 
