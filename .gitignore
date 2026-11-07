@@ -32,3 +32,6 @@ desktop.ini
 # Local reports
 *.local.json
 *.local.html
+
+# Git worktrees
+.worktrees/
