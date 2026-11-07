@@ -43,6 +43,26 @@ def test_clean_render_has_no_hard_failures(student_vault, tmp_path):
     assert qa.metrics["font_size_pt"] >= 10
 
 
+def test_no_browser_marks_pages_estimated(student_vault, tmp_path, monkeypatch):
+    app, _ = _rendered(student_vault, tmp_path)
+    monkeypatch.setattr("resume_pro.qa.find_browser", lambda: None)
+    qa = run_qa(tmp_path, student_vault, app)
+    assert qa.metrics["pages_estimated"] is True
+    browser_check = next(c for c in qa.checks if c.id == "qa.browser")
+    assert "No headless browser" in browser_check.detail
+
+
+def test_browser_conversion_failure_is_not_no_browser(student_vault, tmp_path, monkeypatch):
+    app, _ = _rendered(student_vault, tmp_path)
+    monkeypatch.setattr("resume_pro.qa.find_browser", lambda: "/fake/chrome")
+    monkeypatch.setattr("resume_pro.qa._browser_pdf", lambda *a, **k: None)
+    qa = run_qa(tmp_path, student_vault, app)
+    assert qa.metrics["pages_estimated"] is True
+    browser_check = next(c for c in qa.checks if c.id == "qa.browser")
+    assert "No headless browser" not in browser_check.detail
+    assert "convert" in browser_check.detail.lower()
+
+
 def test_report_contains_no_contact_pii(student_vault, tmp_path):
     app, _ = _rendered(student_vault, tmp_path)
     qa = run_qa(tmp_path, student_vault, app)

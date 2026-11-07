@@ -47,6 +47,14 @@ def _summary_lines(model: dict[str, Any]) -> float:
     return max(1.0, math.ceil(len(summary) / per_line))
 
 
+def estimate_bullet_lines(bullet_texts: list[str], locale: str) -> float:
+    """Shared bullet-line estimate used by both layout and lint, so the two
+    estimators agree. Accounts for text length via the locale's chars-per-line
+    instead of a fixed per-bullet coefficient."""
+    per_line = ZH_CHARS_PER_LINE if locale == "zh" else EN_CHARS_PER_LINE
+    return sum(max(1.0, math.ceil(len(str(text)) / per_line)) for text in bullet_texts)
+
+
 def _content_lines(model: dict[str, Any]) -> float:
     lines = 4.0  # header and contact block
     lines += _summary_lines(model)
@@ -55,7 +63,7 @@ def _content_lines(model: dict[str, Any]) -> float:
     for section in ("experience", "projects"):
         for entry in model.get(section) or []:
             lines += 2.0 if section == "experience" else 1.5
-            lines += len(entry.get("bullets") or []) * 1.3
+            lines += estimate_bullet_lines(entry.get("bullets") or [], model.get("locale", "en"))
     skill_count = sum(len(group.get("items") or []) for group in model.get("skills") or [])
     if skill_count:
         lines += 1.0 + math.ceil(skill_count / SKILLS_PER_LINE) * 0.6

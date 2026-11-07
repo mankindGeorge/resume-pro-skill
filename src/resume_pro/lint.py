@@ -11,6 +11,7 @@ from typing import Any
 
 from . import profile
 from .application import page_budget
+from .layout import EN_CHARS_PER_LINE, LINES_PER_PAGE, SKILLS_PER_LINE, ZH_CHARS_PER_LINE, estimate_bullet_lines
 from .skim import SkimResult, skim_test
 
 AI_TERMS = re.compile(
@@ -117,17 +118,33 @@ def _summary_text(vault: dict[str, Any]) -> str:
 
 
 def _estimate_pages(vault: dict[str, Any], application: dict[str, Any] | None) -> int:
+    app = application or {}
+    locale = (app.get("writing") or {}).get("locale")
+    if not locale:
+        locale = "zh" if str(app.get("market", "")).startswith("cn_") else "en"
+    per_line = ZH_CHARS_PER_LINE if locale == "zh" else EN_CHARS_PER_LINE
+
+    def bullet_texts(item: dict[str, Any]) -> list[str]:
+        texts = []
+        for bullet in item.get("bullets") or []:
+            value = bullet.get("text")
+            if isinstance(value, dict):
+                texts.append(str(value.get(locale) or " ".join(str(v) for v in value.values() if v)))
+            else:
+                texts.append(str(value or ""))
+        return texts
+
     lines = 4.0
-    lines += len(_summary_text(vault)) / 70
+    lines += len(_summary_text(vault)) / per_line
     lines += len(vault.get("education") or []) * 3
     for role in vault.get("experience") or []:
-        lines += 3 + len(role.get("bullets") or []) * 1.7
+        lines += 3 + estimate_bullet_lines(bullet_texts(role), locale)
     for project in vault.get("projects") or []:
-        lines += 2 + len(project.get("bullets") or []) * 1.7
+        lines += 2 + estimate_bullet_lines(bullet_texts(project), locale)
     skill_count = sum(len(group.get("items") or []) for group in vault.get("skills") or [])
-    lines += max(1, skill_count / 6)
+    lines += max(1, skill_count / SKILLS_PER_LINE)
     lines += len(vault.get("awards") or []) * 0.5
-    return max(1, math.ceil(lines / 45))
+    return max(1, math.ceil(lines / LINES_PER_PAGE))
 
 
 def lint(

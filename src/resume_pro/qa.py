@@ -306,18 +306,20 @@ def run_qa(
     pdf_text = "\n".join(pdf[1]) if pdf else info["text"]
     pdf_norm = _norm(pdf_text)
     pages = pdf[0] if pdf else int((render_data.get("layout") or {}).get("pages") or 0)
+    pages_estimated = pdf is None
     page_chars = pdf[2] if pdf else []
     last_height = pdf[3] if pdf else 0
 
-    browser_status = "pass" if pdf else "warn"
-    checks.append(
-        QACheck(
-            "qa.browser",
-            browser_status,
-            f"Checked with {Path(browser).name}." if pdf else "No headless browser found; page checks use estimates.",
-            "" if pdf else "Install Edge/Chrome or set RESUME_PRO_BROWSER for true pagination QA.",
-        )
-    )
+    if pdf:
+        browser_detail = f"Checked with {Path(browser).name}."
+        browser_fix = ""
+    elif not browser:
+        browser_detail = "No headless browser found; page checks use estimates."
+        browser_fix = "Install Edge/Chrome or set RESUME_PRO_BROWSER for true pagination QA."
+    else:
+        browser_detail = f"{Path(browser).name} could not convert the HTML to PDF; page checks use estimates."
+        browser_fix = "Check the browser installation or set RESUME_PRO_BROWSER; the page count is estimated."
+    checks.append(QACheck("qa.browser", "pass" if pdf else "warn", browser_detail, browser_fix))
 
     # Parseability: text, headings, bullets, sections.
     text_ratio = len(pdf_text) / max(1, len(info["text"]))
@@ -367,6 +369,7 @@ def run_qa(
     metrics.update(
         {
             "pages": pages,
+            "pages_estimated": pages_estimated,
             "text_chars": len(pdf_text),
             "html_chars": len(info["text"]),
             "selected_bullets": len(bullets),
@@ -414,7 +417,7 @@ def run_qa(
             QACheck(
                 "qa.layout.pages",
                 "fail",
-                f"Rendered {pages} page(s); the application allows {maximum}.",
+                f"{'Estimated' if pages_estimated else 'Rendered'} {pages} page(s); the application allows {maximum}.",
                 "Cut weaker bullets or roles; do not shrink below 9pt.",
             )
         )
@@ -423,7 +426,7 @@ def run_qa(
             QACheck(
                 "qa.layout.pages",
                 "warn" if pages < target else "pass",
-                f"Rendered {pages} page(s); target {target}, max {maximum}.",
+                f"{'Estimated' if pages_estimated else 'Rendered'} {pages} page(s); target {target}, max {maximum}.",
                 "" if pages >= target else "The output is shorter than the target; consider adding proof.",
             )
         )

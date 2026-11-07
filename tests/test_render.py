@@ -95,6 +95,15 @@ def test_skill_budget_is_enforced_in_render(student_vault, tmp_path):
     assert rendered == [f"Skill {i}" for i in range(12)]
 
 
+def test_estimate_bullet_lines_accounts_for_text_length():
+    from resume_pro.layout import estimate_bullet_lines
+
+    assert estimate_bullet_lines(["short"], "en") == 1.0
+    assert estimate_bullet_lines(["x" * 200], "en") == 3.0  # ceil(200 / 90)
+    assert estimate_bullet_lines(["字" * 90], "zh") == 2.0  # ceil(90 / 45)
+    assert estimate_bullet_lines([], "en") == 0.0
+
+
 def test_leading_label_renders_bold(student_vault, tmp_path):
     bullets = student_vault["experience"][0]["bullets"]
     bullets[0]["text"]["zh"] = "项目背景：示例描述。"
