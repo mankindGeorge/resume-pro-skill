@@ -10,7 +10,7 @@ import pytest
 from click.testing import CliRunner
 
 from resume_pro.cli import cli
-from resume_pro.vault import load_vault
+from resume_pro.vault import load_vault, save_vault
 from tests.test_intake import FULL_ANSWERS
 
 
@@ -279,3 +279,27 @@ def test_cwd_overrides_project_root(tmp_path, monkeypatch):
     assert created.exit_code == 0, created.output
     assert (project / ".resume" / "vault.yaml").exists()
     assert not (elsewhere / ".resume").exists()
+
+
+def test_json_redacts_pii_by_default(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    runner = CliRunner()
+    assert runner.invoke(cli, ["init", "--market", "cn_internet", "--persona", "student_with_internship"]).exit_code == 0
+    vault = load_vault(root=tmp_path)
+    vault["identity"]["full_name"] = "Li Ming"
+    vault["identity"]["email"] = "liming@example.com"
+    vault["identity"]["phone"] = "+86 137 0000 0000"
+    save_vault(vault, root=tmp_path, validate=False)
+
+    redacted = runner.invoke(cli, ["--json", "intake", "--summary"])
+    assert redacted.exit_code == 0, redacted.output
+    ident = json.loads(redacted.output)["summary"]["identity"]
+    assert ident["email"] == "[REDACTED]"
+    assert ident["phone"] == "[REDACTED]"
+    assert ident["name"] == "Li Ming"  # names are not in the contract's PII list
+
+    full = runner.invoke(cli, ["--json", "--include-pii", "intake", "--summary"])
+    assert full.exit_code == 0, full.output
+    ident_full = json.loads(full.output)["summary"]["identity"]
+    assert ident_full["email"] == "liming@example.com"
+    assert ident_full["phone"] == "+86 137 0000 0000"

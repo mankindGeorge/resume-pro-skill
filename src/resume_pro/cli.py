@@ -33,6 +33,7 @@ from .localize import collect_gaps, localize_application
 from .match import match_vault
 from .qa import run_qa
 from .recommend import recommend as recommend_roles
+from .redact import redact_pii
 from .render import application_locale, load_template, render_application
 from .select import select_facts
 from .workspace import publish_workspace
@@ -68,6 +69,9 @@ DIM_STATUS = {
     "fail": {"en": "fail", "zh": "未通过"},
 }
 
+# Set per-invocation by the group callback; stdout JSON redacts PII unless True.
+_INCLUDE_PII = False
+
 
 def _lang(ctx: click.Context) -> str:
     return (ctx.obj or {}).get("lang", "en")
@@ -87,7 +91,7 @@ def _exit_code(error: ResumeProError) -> int:
 
 def _handle(ctx: click.Context, error: ResumeProError) -> None:
     if (ctx.obj or {}).get("json"):
-        click.echo(json.dumps({"ok": False, "error": error.to_dict()}, ensure_ascii=False, indent=2))
+        _json_out({"ok": False, "error": error.to_dict()})
     else:
         click.echo(error.render(), err=True)
     ctx.exit(_exit_code(error))
@@ -184,11 +188,14 @@ def _load_context(root: Path, lang: str = "en") -> tuple[dict[str, Any], dict[st
 @click.option("--lang", type=click.Choice(["en", "zh"]), default="en", show_default=True, help="Message language; content is never translated.")
 @click.option("--json", "json_flag", is_flag=True, help="Emit one JSON object to stdout.")
 @click.option("--cwd", type=click.Path(exists=True, file_okay=False, path_type=Path), default=None, help="Override the working directory used to locate .resume/.")
+@click.option("--include-pii", "include_pii", is_flag=True, help="Show phone/email/ID/address in stdout JSON instead of redacting them.")
 @click.pass_context
-def cli(ctx: click.Context, lang: str, json_flag: bool, cwd: Path | None) -> None:
+def cli(ctx: click.Context, lang: str, json_flag: bool, cwd: Path | None, include_pii: bool) -> None:
+    global _INCLUDE_PII
     ctx.ensure_object(dict)
     ctx.obj["lang"] = lang
     ctx.obj["json"] = json_flag
+    _INCLUDE_PII = include_pii
     if cwd is not None:
         os.chdir(cwd)
 
@@ -228,7 +235,7 @@ def init(ctx: click.Context, market: str | None, persona: str | None, json_flag:
         save_vault(vault, root=root, validate=False)
         save_session(session, spath)
         if as_json:
-            click.echo(json.dumps({"ok": True, "root": str(root), "vault": str(vpath), "created": created, "session": str(spath)}, ensure_ascii=False, indent=2))
+            _json_out({"ok": True, "root": str(root), "vault": str(vpath), "created": created, "session": str(spath)})
         else:
             click.echo(f"{'Created' if created else 'Found'} vault: {vpath}")
             click.echo(f"Session: {spath}")
@@ -259,7 +266,7 @@ def intake(ctx: click.Context, answer_text: str | None, question_id: str | None,
             session = new_session(lang=lang)
             save_session(session, spath)
             if as_json:
-                click.echo(json.dumps({"ok": True, "reset": True}, ensure_ascii=False, indent=2))
+                _json_out({"ok": True, "reset": True})
             else:
                 click.echo("Intake session reset.")
             return
@@ -271,11 +278,11 @@ def intake(ctx: click.Context, answer_text: str | None, question_id: str | None,
             if session.get("market") and session.get("persona"):
                 report = evaluate(vault, market=session["market"], persona=session["persona"], target_role=session.get("role"))
                 if as_json:
-                    click.echo(json.dumps({"ok": True, "summary": intake_summary(vault, session), "gate": report.to_dict()}, ensure_ascii=False, indent=2))
+                    _json_out({"ok": True, "summary": intake_summary(vault, session), "gate": report.to_dict()})
                 else:
                     _print_report(report, lang)
             elif as_json:
-                click.echo(json.dumps({"ok": True, "summary": intake_summary(vault, session)}, ensure_ascii=False, indent=2))
+                _json_out({"ok": True, "summary": intake_summary(vault, session)})
             return
 
         if question_id:
@@ -291,7 +298,7 @@ def intake(ctx: click.Context, answer_text: str | None, question_id: str | None,
 
         if question is None:
             if as_json:
-                click.echo(json.dumps({"ok": True, "complete": True, "summary": intake_summary(vault, session)}, ensure_ascii=False, indent=2))
+                _json_out({"ok": True, "complete": True, "summary": intake_summary(vault, session)})
             else:
                 click.echo("Intake is complete.")
                 _print_summary(vault, session, lang)
@@ -303,7 +310,7 @@ def intake(ctx: click.Context, answer_text: str | None, question_id: str | None,
             save_session(session, spath)
             next_question = engine.current()
             if as_json:
-                click.echo(json.dumps({"ok": True, "skipped": question.id, "question": _question_payload(engine, next_question) if next_question else None, "complete": next_question is None}, ensure_ascii=False, indent=2))
+                _json_out({"ok": True, "skipped": question.id, "question": _question_payload(engine, next_question) if next_question else None, "complete": next_question is None})
             else:
                 click.echo(f"Skipped {question.id}.")
                 if next_question:
@@ -318,7 +325,7 @@ def intake(ctx: click.Context, answer_text: str | None, question_id: str | None,
             save_session(session, spath)
             next_question = engine.current()
             if as_json:
-                click.echo(json.dumps({"ok": True, "answered": question.id, "question": _question_payload(engine, next_question) if next_question else None, "complete": next_question is None, "progress": engine.progress()}, ensure_ascii=False, indent=2))
+                _json_out({"ok": True, "answered": question.id, "question": _question_payload(engine, next_question) if next_question else None, "complete": next_question is None, "progress": engine.progress()})
             else:
                 if next_question:
                     _print_question(engine, next_question, lang)
@@ -328,7 +335,7 @@ def intake(ctx: click.Context, answer_text: str | None, question_id: str | None,
             return
 
         if as_json:
-            click.echo(json.dumps({"ok": True, "question": _question_payload(engine, question), "complete": False, "progress": engine.progress()}, ensure_ascii=False, indent=2))
+            _json_out({"ok": True, "question": _question_payload(engine, question), "complete": False, "progress": engine.progress()})
             return
 
         # Interactive mode.
@@ -380,7 +387,7 @@ def check(ctx: click.Context, draft_flag: bool, json_flag: bool) -> None:
         report_path = resume_dir(root) / "sufficiency.json"
         report_path.write_text(json.dumps(report.to_dict(), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         if as_json:
-            click.echo(json.dumps({"ok": report.can_build, "report": str(report_path), "gate": report.to_dict()}, ensure_ascii=False, indent=2))
+            _json_out({"ok": report.can_build, "report": str(report_path), "gate": report.to_dict()})
         else:
             _print_report(report, lang)
             click.echo(f"Report: {report_path}")
@@ -404,7 +411,7 @@ def profile_cmd(ctx: click.Context, json_flag: bool) -> None:
         if session.get("market") and session.get("persona"):
             report = evaluate(vault, market=session["market"], persona=session["persona"], target_role=session.get("role"))
         if as_json:
-            click.echo(json.dumps({"ok": True, "summary": intake_summary(vault, session), "gate": report.to_dict() if report else None}, ensure_ascii=False, indent=2))
+            _json_out({"ok": True, "summary": intake_summary(vault, session), "gate": report.to_dict() if report else None})
             return
         _print_summary(vault, session, lang)
         if report:
@@ -744,7 +751,8 @@ def _print_audit(audit: TemplateAudit) -> None:
 
 
 def _json_out(data: dict[str, Any]) -> None:
-    click.echo(json.dumps(data, ensure_ascii=False, indent=2))
+    payload = data if _INCLUDE_PII else redact_pii(data)
+    click.echo(json.dumps(payload, ensure_ascii=False, indent=2))
 
 
 @cli.command()
