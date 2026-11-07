@@ -11,7 +11,7 @@ from click.testing import CliRunner
 from resume_pro.cli import cli
 from resume_pro.paths import vault_path
 from resume_pro.vault import load_vault
-from tests.ingest_fixtures import BAD_HTML, write_docx, write_html
+from tests.ingest_fixtures import BAD_HTML, write_docx, write_html, write_scanned_pdf
 
 
 def _run(runner: CliRunner, args: list[str]):
@@ -52,6 +52,15 @@ def test_review_requires_target(tmp_path, monkeypatch):
     result = _run(runner, ["review", "resume.html", "--json"])
     assert result.exit_code == 3
     assert json.loads(result.output)["error"]["code"] == "ingest.target_missing"
+
+
+def test_review_scanned_pdf_is_refused(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    write_scanned_pdf(tmp_path / "scan.pdf")
+    runner = CliRunner()
+    result = _run(runner, ["review", "scan.pdf", "--market", "intl_en", "--persona", "experienced", "--json"])
+    assert result.exit_code == 5
+    assert json.loads(result.output)["error"]["code"] == "ingest.scanned"
 
 
 def test_unsupported_format_exits_5(tmp_path, monkeypatch):

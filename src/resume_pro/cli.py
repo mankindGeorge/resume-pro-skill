@@ -25,7 +25,7 @@ from .application import (
     save_application,
 )
 from .errors import ResumeProError
-from .ingest import detect_lang, ingest_file, to_vault
+from .ingest import IngestError, detect_lang, ingest_file, to_vault
 from .lint import lint as run_lint
 from .localize import collect_gaps, localize_application
 from .match import match_vault
@@ -74,7 +74,7 @@ def _lang(ctx: click.Context) -> str:
 def _exit_code(error: ResumeProError) -> int:
     if error.code == "gate.blocked":
         return 2
-    if error.code in {"ingest.unsupported_format", "ingest.conversion_failed"}:
+    if error.code in {"ingest.unsupported_format", "ingest.conversion_failed", "ingest.scanned"}:
         return 5
     if error.code == "ingest.dependency_missing":
         return 6
@@ -698,6 +698,18 @@ def _resolve_target(
     return session
 
 
+def _ingest_readable(file: Path):
+    """Ingest a resume file, refusing scanned/image-only input the CLI cannot read."""
+    result = ingest_file(file)
+    if result.scanned:
+        raise IngestError(
+            "ingest.scanned",
+            f"{file.name} is scanned or image-only, so its text cannot be read.",
+            fix="Export a text-based PDF or DOCX, or paste the content as Markdown/TXT.",
+        )
+    return result
+
+
 def _print_ingest(result) -> None:
     fields = result.fields or {}
     click.echo(
@@ -743,7 +755,7 @@ def review(ctx: click.Context, file: Path, market: str | None, persona: str | No
         root = find_project_root() or Path.cwd()
         resume_dir(root).mkdir(parents=True, exist_ok=True)
         session = _resolve_target(root, market, persona)
-        result = ingest_file(file)
+        result = _ingest_readable(file)
         audit = audit_template(result, market=session["market"], persona=session["persona"])
         directory = _report_dir(root, "reviews", file)
         report = {"extraction": result.to_dict(), "audit": audit.to_dict()}
@@ -777,7 +789,7 @@ def template_import(ctx: click.Context, file: Path, market: str | None, persona:
         root = find_project_root() or Path.cwd()
         resume_dir(root).mkdir(parents=True, exist_ok=True)
         session = _resolve_target(root, market, persona)
-        result = ingest_file(file)
+        result = _ingest_readable(file)
         audit = audit_template(result, market=session["market"], persona=session["persona"])
         directory = _report_dir(root, "template-imports", file)
         (directory / "audit.json").write_text(json.dumps(audit.to_dict(), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -853,7 +865,7 @@ def optimize(
         session = _resolve_target(root, market, persona, save=True)
         vpath = vault_path(root)
         vault = load_vault(root=root) if vpath.is_file() else empty_vault()
-        result = ingest_file(file)
+        result = _ingest_readable(file)
         audit = audit_template(result, market=session["market"], persona=session["persona"])
         directory = _report_dir(root, "imports", file)
         (directory / "extraction.json").write_text(json.dumps(result.to_dict(), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -1024,7 +1036,7 @@ def restyle(
                 f"No learned template at {template_dir}.",
                 fix="Use --app for a library template after `resume tailor`, or learn a template with `resume template-import`.",
             )
-        result = ingest_file(file)
+        result = _ingest_readable(file)
         audit = audit_template(result, market=session["market"], persona=session["persona"])
         loaded = load_learned_template(template_dir)
         preview = build_preview(result, loaded["css"], detect_lang(result.text), result.path.name)
@@ -1330,7 +1342,7 @@ def tailor(
         application = load_application(root, app_slug) if app_slug else None
 
         if file:
-            result = ingest_file(file)
+            result = _ingest_readable(file)
             fragment, _ = to_vault(result)
             existing_name = (vault.get("identity") or {}).get("full_name")
             incoming_name = (fragment.get("identity") or {}).get("full_name")
