@@ -499,8 +499,8 @@ def evaluate(
                 "sufficiency.leadership_missing",
                 "experience",
                 "No leadership scope is recorded.",
-                "Add team size, budget, revenue, or system scale.",
-                severity="error",
+                "Add team size, budget, revenue, or system scale to the vault; intake does not yet collect it, so this advises rather than blocks.",
+                severity="warning",
                 blockers=blockers,
                 warnings=warnings,
                 questions=questions,
@@ -510,8 +510,8 @@ def evaluate(
             "sufficiency.publications_missing",
             "publications",
             "No publication is recorded.",
-            "Add a publication or switch to a non-academic persona.",
-            severity="error",
+            "Add a publication to the vault, or switch to a non-academic persona; intake does not yet collect publications, so this advises rather than blocks.",
+            severity="warning",
             blockers=blockers,
             warnings=warnings,
             questions=questions,
@@ -520,7 +520,7 @@ def evaluate(
         research = [p for p in projects if p.get("context") == "research"]
         if not research:
             _add_issue(
-                "sufficiency.publications_missing",
+                "sufficiency.research_missing",
                 "projects",
                 "No research project is recorded.",
                 "Add a research project or switch persona.",

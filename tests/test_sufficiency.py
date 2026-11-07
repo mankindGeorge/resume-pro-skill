@@ -100,3 +100,30 @@ def test_ensure_buildable_raises_on_blocked(incomplete_vault):
     with pytest.raises(GateError) as error:
         ensure_buildable(report)
     assert error.value.code == "gate.blocked"
+
+
+def test_leadership_scope_gap_advises_not_dead_ends(experienced_vault):
+    # senior_manager wants leadership scope, but intake cannot collect team_size/scope;
+    # the gap must advise (warning) rather than permanently block the persona.
+    for role in experienced_vault.get("experience") or []:
+        role.pop("team_size", None)
+        role.pop("scope", None)
+    report = evaluate(experienced_vault, market="intl_en", persona="senior_manager", target_role="Engineering Manager")
+    blocker_codes = {b["code"] for b in report.blockers}
+    warning_codes = {w["code"] for w in report.warnings}
+    assert "sufficiency.leadership_missing" not in blocker_codes
+    assert "sufficiency.leadership_missing" in warning_codes
+
+
+def test_publications_gap_advises_not_dead_ends(experienced_vault):
+    # academic is out of MVP scope and intake collects no publications; the gap
+    # must advise rather than permanently block. Research experience stays required.
+    experienced_vault["publications"] = []
+    experienced_vault.setdefault("projects", []).append(
+        {"id": "proj_research", "context": "research", "name": {"en": "Research project"}}
+    )
+    report = evaluate(experienced_vault, market="intl_en", persona="academic", target_role="Researcher")
+    blocker_codes = {b["code"] for b in report.blockers}
+    warning_codes = {w["code"] for w in report.warnings}
+    assert "sufficiency.publications_missing" not in blocker_codes
+    assert "sufficiency.publications_missing" in warning_codes
