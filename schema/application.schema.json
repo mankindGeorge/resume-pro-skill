@@ -215,6 +215,20 @@
             "pattern": "^bul_[a-z0-9_]{1,64}$"
           }
         },
+        "skill_item_indices": {
+          "type": "object",
+          "description": "Per skill group id, the item indices kept within the template skill budget. Rendering filters each group's items by these indices so the recorded trim actually applies.",
+          "propertyNames": {
+            "pattern": "^skl_[a-z0-9_]{1,64}$"
+          },
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
         "summary": {
           "$ref": "#/$defs/localizedText"
         },

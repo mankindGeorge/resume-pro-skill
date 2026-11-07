@@ -240,9 +240,16 @@ def build_render_model(vault: dict[str, Any], application: dict[str, Any], *, ro
         )
 
     skills = []
+    skill_item_indices = selection.get("skill_item_indices") or {}
     for group in _filtered(vault, "skills", fact_ids):
         name = _localized(group.get("name"), locale) or _SKILL_KIND_LABELS.get(group.get("kind"), {}).get(locale, "")
-        items = [_localized(item.get("name"), locale) for item in group.get("items") or [] if item.get("name")]
+        all_items = group.get("items") or []
+        kept_indices = skill_item_indices.get(group.get("id"))
+        if kept_indices is not None:
+            chosen = [all_items[i] for i in kept_indices if 0 <= i < len(all_items)]
+        else:
+            chosen = all_items
+        items = [_localized(item.get("name"), locale) for item in chosen if item.get("name")]
         if items:
             skills.append({"label": name, "items": items, "kind": group.get("kind")})
 

@@ -254,10 +254,13 @@ def select_facts(
     priority = {"fundamentals": 0, "ai_ml": 1, "language": 2, "framework": 3, "database": 4, "platform": 5, "tool": 6, "other": 7}
     ordered_groups = sorted(skill_groups, key=lambda g: priority.get(g.get("kind"), 9))
     kept_skill_items = 0
+    skill_item_indices: dict[str, list[int]] = {}
     for group in ordered_groups:
-        if group.get("id"):
-            fact_ids.append(group["id"])
-        for item in group.get("items") or []:
+        group_id = group.get("id")
+        if group_id:
+            fact_ids.append(group_id)
+        kept_indices: list[int] = []
+        for index, item in enumerate(group.get("items") or []):
             kept_skill_items += 1
             if kept_skill_items > max_skills:
                 dropped.append(
@@ -266,6 +269,10 @@ def select_facts(
                         "reason": "Skill list trimmed to the template budget.",
                     }
                 )
+            else:
+                kept_indices.append(index)
+        if group_id:
+            skill_item_indices[group_id] = kept_indices
 
     summary = _localized((vault.get("identity") or {}).get("summary")).strip() or None
     summary_evidence = (vault.get("identity") or {}).get("summary_evidence") or []
@@ -310,6 +317,7 @@ def select_facts(
         "sections": sections,
         "fact_ids": list(dict.fromkeys(fact_ids)),
         "bullet_ids": list(dict.fromkeys(bullet_ids)),
+        "skill_item_indices": skill_item_indices,
         "dropped": dropped,
     }
     if summary and enabled_map["summary"]:

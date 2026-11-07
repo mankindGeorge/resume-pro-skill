@@ -79,6 +79,22 @@ def test_identity_location_and_skill_items_render_per_locale(student_vault, tmp_
     assert "Example Skill" in [item for group in en_model["skills"] for item in group["items"]]
 
 
+def test_skill_budget_is_enforced_in_render(student_vault, tmp_path):
+    student_vault["skills"] = [
+        {
+            "id": "skl_test",
+            "name": {"zh": "技能", "en": "Skills"},
+            "kind": "language",
+            "items": [{"name": f"Skill {i}", "level": "intermediate"} for i in range(15)],
+        }
+    ]
+    application = _app(student_vault, tmp_path, "campus", market="cn_internet", persona="student_with_internship", role="Backend Engineer")
+    model = build_render_model(student_vault, application, root=tmp_path)
+    rendered = [item for group in model["skills"] for item in group["items"]]
+    assert len(rendered) == 12  # cn skill budget; the recorded trim must actually apply
+    assert rendered == [f"Skill {i}" for i in range(12)]
+
+
 def test_leading_label_renders_bold(student_vault, tmp_path):
     bullets = student_vault["experience"][0]["bullets"]
     bullets[0]["text"]["zh"] = "项目背景：示例描述。"
