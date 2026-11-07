@@ -25,8 +25,37 @@ dev = ["pytest>=8.0", "pytest-cov>=5.0", "reportlab>=4.0"]
 [project.scripts]
 resume = "resume_pro.cli:main"
 
-[tool.setuptools.packages.find]
-where = ["src"]
+[tool.setuptools]
+# Ship templates/, schema/, and profiles/ inside the installed package so a
+# normal `pip install .` wheel works outside the repository. The resource
+# locators (paths.templates_dir/schema_dir, profile.profiles_dir) check the
+# package directory first, then the source-checkout repository root, and honor
+# RESUME_PRO_*_DIR overrides in both layouts.
+packages = [
+  "resume_pro",
+  "resume_pro.templates",
+  "resume_pro.schema",
+  "resume_pro.profiles",
+]
+
+[tool.setuptools.package-dir]
+"resume_pro" = "src/resume_pro"
+"resume_pro.templates" = "templates"
+"resume_pro.schema" = "schema"
+"resume_pro.profiles" = "profiles"
+
+[tool.setuptools.package-data]
+# Only the public cn/en library variants; learned templates/user-* stay private.
+"resume_pro.templates" = [
+  "cn/*/*.html",
+  "cn/*/*.css",
+  "cn/*/*.json",
+  "en/*/*.html",
+  "en/*/*.css",
+  "en/*/*.json",
+]
+"resume_pro.schema" = ["*.json", "*.md", "examples/*.yaml"]
+"resume_pro.profiles" = ["*.md", "markets/*.yaml", "personas/*.yaml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
