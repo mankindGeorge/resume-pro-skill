@@ -76,6 +76,30 @@ def test_build_minimum_requires_yes(tmp_path, monkeypatch):
     assert payload["gate"]["status"] == "minimum"
 
 
+def test_build_requires_confirmed_facts(tmp_path, monkeypatch):
+    runner, slug = _cn_app(tmp_path, monkeypatch)
+    vault = load_vault(root=tmp_path)
+    vault["status"] = "collecting"  # facts present but never confirmed
+    save_vault(vault, root=tmp_path, validate=False)
+    result = runner.invoke(cli, ["build", slug, "--yes", "--json"])
+    assert result.exit_code == 2
+    payload = json.loads(result.output)
+    assert payload["ok"] is False
+    assert payload["error"]["code"] == "build.unconfirmed_facts"
+    assert not (tmp_path / ".resume" / "applications" / slug / "qa.json").exists()
+
+
+def test_build_draft_allowed_without_confirmation(tmp_path, monkeypatch):
+    runner, slug = _cn_app(tmp_path, monkeypatch)
+    vault = load_vault(root=tmp_path)
+    vault["status"] = "collecting"
+    save_vault(vault, root=tmp_path, validate=False)
+    result = runner.invoke(cli, ["build", slug, "--draft", "--json"])
+    assert result.exit_code == 0, result.output
+    html = Path(json.loads(result.output)["render"]["html"]).read_text(encoding="utf-8")
+    assert "DRAFT — NOT FOR SUBMISSION" in html
+
+
 def test_build_draft_has_banner(tmp_path, monkeypatch):
     runner, slug = _cn_app(tmp_path, monkeypatch)
     result = runner.invoke(cli, ["build", slug, "--yes", "--draft", "--json"])

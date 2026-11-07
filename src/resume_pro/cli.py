@@ -468,6 +468,14 @@ def _run_build(
     if gate.requires_confirmation and not confirm:
         payload["next"] = "The gate is MINIMUM; rerun with --yes to confirm a truthful but modest version."
         return 2, payload
+    if not draft and vault.get("status") != "ready":
+        payload["error"] = {
+            "code": "build.unconfirmed_facts",
+            "message": "The facts have not been confirmed, so no deliverable resume can be built.",
+            "fix": "Run `resume intake`, review the summary, and answer confirm.summary with yes; --yes only accepts a minimum gate, it is not fact consent.",
+        }
+        payload["next"] = "Confirm the collected facts before building. A draft (--draft) may still be rendered for inspection."
+        return 2, payload
     locale = application_locale(application)
     source_locale = "en" if locale == "zh" else "zh"
     locale_gaps = collect_gaps(vault, application["selection"], locale=locale, source_locale=source_locale)
