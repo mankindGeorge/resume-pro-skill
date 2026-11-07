@@ -44,6 +44,48 @@ CLICHES = (
 PLACEHOLDER_RE = re.compile(r"example\.com|your-domain|yourdomain|xxx|todo|placeholder", re.IGNORECASE)
 FIRST_PERSON = re.compile(r"^(i|my)\b|我的|本人", re.IGNORECASE)
 
+# Per-locale bullet length limits from SKILL.md Writing rules (hard errors).
+BULLET_CHAR_LIMITS = {"en": 240, "zh": 140}
+
+# A leading point label is exactly what render.py renders bold: a short prefix
+# ending in a full-width or ASCII colon. Keep this pattern in sync with
+# render._LEADING_LABEL_RE.
+_POINT_LABEL_RE = re.compile(r"^([^：:。.!?!?,，;；/]{1,30}[：:])")
+
+# Packaging recipes from references/writing-engine.md §2. Each framework maps
+# to an ordered tuple of slots; a slot is (zh labels, en labels, is_result).
+# The first listed label is canonical; extras are accepted aliases. The result
+# slot must carry a number. `user_voice` has no fixed recipe: the user's own
+# labels and order are kept, and only non-empty point content is checked.
+FRAMEWORK_RECIPES: dict[str, tuple[tuple[tuple[str, ...], tuple[str, ...], bool], ...]] = {
+    "star": (
+        (("项目背景：",), ("Background:",), False),
+        (("核心框架：",), ("Framework:",), False),
+        (("解决方案：", "难点："), ("Solution:", "Challenge:"), False),
+        (("核心成果：",), ("Outcome:",), True),
+    ),
+    "xyz": (
+        (("核心成果：",), ("Outcome:",), True),
+        (("衡量口径：",), ("Measure:",), False),
+        (("实现做法：",), ("Approach:",), False),
+    ),
+    "fab": (
+        (("核心能力：",), ("Capability:",), False),
+        (("技术优势：",), ("Advantage:",), False),
+        (("实际收益：",), ("Benefit:",), True),
+    ),
+    "car": (
+        (("难点：",), ("Challenge:",), False),
+        (("解决方案：",), ("Solution:",), False),
+        (("核心成果：",), ("Outcome:",), True),
+    ),
+    "result_first": (
+        (("核心成果：",), ("Outcome:",), True),
+        (("解决方案：",), ("Solution:",), False),
+        (("项目背景：",), ("Background:",), False),
+    ),
+}
+
 
 @dataclass
 class LintIssue:
@@ -130,6 +172,120 @@ def _estimate_pages(vault: dict[str, Any], application: dict[str, Any] | None) -
     return max(1, math.ceil(lines / 45))
 
 
+def _label_key(label: str) -> str:
+    return label.rstrip("：:").lower()
+
+
+def _recipe_label_maps(recipe) -> dict[str, dict[str, tuple[int, str]]]:
+    """Map normalized label -> (slot index, canonical label) per locale."""
+    maps: dict[str, dict[str, tuple[int, str]]] = {}
+    for locale in ("zh", "en"):
+        mapping: dict[str, tuple[int, str]] = {}
+        for slot_index, (zh_labels, en_labels, _is_result) in enumerate(recipe):
+            for label in zh_labels if locale == "zh" else en_labels:
+                mapping[_label_key(label)] = (slot_index, label)
+        maps[locale] = mapping
+    return maps
+
+
+def _recipe_order_text(recipe, locale: str) -> str:
+    labels = [(slot[0] if locale == "zh" else slot[1])[0] for slot in recipe]
+    return " → ".join(labels)
+
+
+def _framework_recipe_issues(
+    vault: dict[str, Any],
+    application: dict[str, Any] | None,
+    market: str,
+) -> list[LintIssue]:
+    """Hard-check labeled points against the declared framework's recipe.
+
+    Only retained bullets (the application's selection order, which is the
+    render order) are checked, and only when a framework is declared. A point
+    counts as labeled when it starts with a leading label — the same prefix
+    the renderer shows bold. Unlabeled raw facts keep the existing behavior.
+    """
+    if not application:
+        return []
+    writing = application.get("writing") or {}
+    framework = writing.get("framework")
+    if not framework:
+        return []
+    recipe = FRAMEWORK_RECIPES.get(framework)
+    if framework != "user_voice" and recipe is None:
+        return []
+    locale = writing.get("locale") or profile.load_market(market)["language"]
+    label_maps = _recipe_label_maps(recipe) if recipe else {}
+    allowed = _recipe_order_text(recipe, locale) if recipe else ""
+    result_slots = {index for index, slot in enumerate(recipe) if slot[2]} if recipe else set()
+
+    selection = application.get("selection") or {}
+    order_ids = selection.get("bullet_ids") or []
+    order = {bullet_id: index for index, bullet_id in enumerate(order_ids)}
+
+    issues: list[LintIssue] = []
+    for collection in ("experience", "projects"):
+        for item_index, item in enumerate(vault.get(collection) or []):
+            bullets = item.get("bullets") or []
+            indexed = list(enumerate(bullets))
+            if order_ids:
+                indexed = [(index, bullet) for index, bullet in indexed if bullet.get("id") in order]
+                indexed.sort(key=lambda pair: order[pair[1]["id"]])
+            item_path = f"{collection}[{item_index}]"
+            seen_slots: list[int] = []
+            seen_labels: list[str] = []
+            for bullet_index, bullet in indexed:
+                texts = bullet.get("text") or {}
+                if isinstance(texts, dict):
+                    text = str(texts.get(locale) or next((value for value in texts.values() if value), "") or "")
+                else:
+                    text = str(texts or "")
+                match = _POINT_LABEL_RE.match(text)
+                if not text or match is None:
+                    continue
+                label = match.group(1)
+                content = text[len(label):].strip()
+                path = f"{item_path}.bullets[{bullet_index}]"
+                if recipe is None:  # user_voice: keep custom labels, require content.
+                    if not content:
+                        issues.append(LintIssue(
+                            "lint.framework_label", "error", path,
+                            f"The point {label!r} is a bare label with no content.",
+                            "Write the complete point after the label; a bare label is not a point.",
+                        ))
+                    continue
+                entry = label_maps.get(locale, {}).get(_label_key(label))
+                if entry is None:
+                    issues.append(LintIssue(
+                        "lint.framework_label", "error", path,
+                        f"The label {label!r} is not part of the {framework} recipe for locale {locale!r}.",
+                        f"Rewrite the point with the recipe labels, in order: {allowed} (references/writing-engine.md §2).",
+                    ))
+                    continue
+                slot_index, canonical = entry
+                if not content:
+                    issues.append(LintIssue(
+                        "lint.framework_label", "error", path,
+                        f"The point {label!r} is a bare label with no content.",
+                        "Write the complete point after the label; a bare label is not a point.",
+                    ))
+                if slot_index in result_slots and not _has_digit(text):
+                    issues.append(LintIssue(
+                        "lint.result_no_data", "error", path,
+                        f"The result point {canonical} carries no number.",
+                        "Ask the user for the real data first; only after an explicit no-data answer propose candidate values for confirmation, then write.",
+                    ))
+                seen_slots.append(slot_index)
+                seen_labels.append(label)
+            if recipe and any(earlier > later for earlier, later in zip(seen_slots, seen_slots[1:])):
+                issues.append(LintIssue(
+                    "lint.framework_order", "error", item_path,
+                    f"Labeled points are out of {framework} order: {' → '.join(seen_labels)}",
+                    f"Reorder the points to the recipe: {allowed}. For result-first writing the result leads and the background closes.",
+                ))
+    return issues
+
+
 def lint(
     vault: dict[str, Any],
     *,
@@ -176,8 +332,26 @@ def lint(
             add("lint.weak_verb", "warn", path, "The bullet starts with a weak verb.", "Lead with what you drove, built, cut, or shipped.")
         if not _has_digit(text):
             add("lint.no_metric", "warn", path, "The bullet has no number.", "Ask the user for real data first; if unavailable, propose a plausible value for confirmation.")
-        if len(text) > (140 if is_cn else 240):
-            add("lint.bullet_too_long", "warn", path, "The bullet is too long for a skim.", "Cut it to one action and one result.")
+        texts = bullet.get("text")
+        if isinstance(texts, dict):
+            for bullet_locale, value in texts.items():
+                limit = BULLET_CHAR_LIMITS.get(bullet_locale)
+                if limit and value and len(str(value)) > limit:
+                    add(
+                        "lint.bullet_too_long",
+                        "error",
+                        path,
+                        f"The {bullet_locale} text is {len(str(value))} characters, over the {limit}-character limit.",
+                        "Cut it to one action and one result; keep EN bullets within 240 characters and ZH within 140.",
+                    )
+        elif len(text) > (140 if is_cn else 240):
+            add(
+                "lint.bullet_too_long",
+                "error",
+                path,
+                "The bullet is too long for a skim.",
+                "Cut it to one action and one result; keep EN bullets within 240 characters and ZH within 140.",
+            )
         if len(text) < (12 if is_cn else 20):
             add("lint.bullet_thin", "warn", path, "This bullet is too thin to show ability.", "Expand it with a complete action and outcome, or merge it.")
         if SUPERLATIVES.search(text):
@@ -195,6 +369,9 @@ def lint(
                 if phrase in text:
                     add("cn.cliche", "warn", path, f"Cliché phrase: {phrase}", "Delete it and show the behavior with a fact.")
                     break
+
+    # Framework packaging recipes: labels, order, and result data are hard checks.
+    issues.extend(_framework_recipe_issues(vault, application, market))
 
     # Summary rules.
     if summary:

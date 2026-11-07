@@ -25,6 +25,7 @@ Packaging is the same job in every shape: rewrite raw facts into 「问题—决
 
 - Collect: situation, task, action, result.
 - Labeled points: `项目背景：`（S）, `核心框架：`（T）, `解决方案：`（A，或 `难点：`）, `核心成果：`（R）.
+- EN labels: `Background:` (S), `Framework:` (T), `Solution:` (A, or `Challenge:`), `Outcome:` (R).
 - Package: background states the problem and constraint; the framework point states the technical route and why it was chosen; the solution explains the pain point and why the approach fits it; the result states what problem was solved and what changed.
 - Extra content — an integrated tool, an open-source artifact, a merged sub-project — stays inside these four points; do not add bullets outside the recipe.
 
@@ -32,34 +33,39 @@ Packaging is the same job in every shape: rewrite raw facts into 「问题—决
 
 - Collect: the accomplished X, the measure Y, the doing Z.
 - Labeled points: `核心成果：`（X）, `衡量口径：`（Y）, `实现做法：`（Z）.
+- EN labels: `Outcome:` (X), `Measure:` (Y), `Approach:` (Z).
 - Package: lead with the concrete outcome, attach the number or scope that proves it, then the personal action that caused it. When the measure is missing, follow the data fallback in the content-sufficiency rules: ask the user first.
 
 ### FAB — `fab`
 
 - Collect: the feature built, its advantage over the obvious alternative, the benefit created.
 - Labeled points: `核心能力：`（F）, `技术优势：`（A）, `实际收益：`（B）.
+- EN labels: `Capability:` (F), `Advantage:` (A), `Benefit:` (B).
 - Package: name what was built, explain why it beats the alternative, and end with what changed for the user or the business.
 
 ### CAR — `car`
 
 - Collect: challenge, action, result.
 - Labeled points: `难点：`（C）, `解决方案：`（A）, `核心成果：`（R）.
+- EN labels: `Challenge:` (C), `Solution:` (A), `Outcome:` (R).
 - Package: lead with the hardest constraint, describe the decision that answered it, and close with the measurable change.
 
 ### Result first — `result_first`
 
 - Collect: the result first, then the action detail and context needed to believe it.
 - Labeled points: `核心成果：` first, then `解决方案：`（关键做法）, `项目背景：` last and brief.
+- EN labels: `Outcome:` first, then `Solution:` (key action), `Background:` last and brief.
 - Package: put the result in the first clause; keep only the action detail that makes it credible; cut background that the result already proves.
 
 ### User voice — `user_voice`
 
 - Collect: the user's own wording and what it proves.
 - Labeled points: keep the user's own labels and order.
-- Package: tighten the wording without replacing the voice; data and evidence rules still apply.
+- Package: tighten the wording without replacing the voice; data and evidence rules still apply. The linter only requires that a labeled point has real content after the label.
 
 Shared rules for every recipe:
 
+- The recipe is a hard contract, not a suggestion: when the application declares `writing.framework`, the linter rejects any leading label outside the recipe's label set for `writing.locale` (`lint.framework_label`), labeled points out of recipe order (`lint.framework_order`), and result points without a number (`lint.result_no_data`). A leading label is the prefix the renderer shows bold (`项目背景：` / `Background:`); never mix labels from different recipes (for example `核心框架与解决方案：` under `result_first`).
 - Each point is a complete, substantial sentence with real detail; never a one-line fragment.
 - Every rendered line of a project or experience intro must fill at least 2/5 of the printable width. When a wrap would leave only a few characters alone on a line, expand the sentence with real detail (preferred) or tighten the wording so the line fills or merges; never deliver a one- or two-character line.
 - A result point must say what problem was solved and what changed, not just list an award or repeat the technology. A solution point must explain the pain point and why the approach fits it. Remove filler such as launch dates unless they prove impact.
@@ -95,8 +101,11 @@ The facts are identical. Only the order and emphasis change. Never add a number 
 | Code | Severity | Catches | Fix |
 |---|---|---|---|
 | `lint.weak_verb` | warn | worked on, responsible for, helped, 负责, 参与 | Lead with drove, cut, shipped, built |
-| `lint.no_metric` | info | no number | Add a real number or keep a verifiable outcome |
-| `lint.bullet_too_long` | warn | over 240 EN / 140 ZH chars | One action, one result |
+| `lint.no_metric` | warn | no number | Add a real number or keep a verifiable outcome |
+| `lint.bullet_too_long` | error | over 240 EN / 140 ZH characters, measured per locale | One action, one result |
+| `lint.framework_label` | error | a leading label outside the declared framework's recipe, or a bare label with no content | Use the recipe's label set for `writing.locale`; write the full point |
+| `lint.framework_order` | error | labeled points out of the declared recipe's order | Reorder to the recipe; result-first leads with the result and closes with background |
+| `lint.result_no_data` | error | a result point (核心成果：/实际收益：/Outcome:/Benefit:) without a number | Ask for real data first; confirmed estimates only after explicit no-data |
 | `lint.first_person` | warn | "I", "my", 我的, 本人 | Drop the pronoun |
 | `lint.unsupported_superlative` | warn | best, world-class, 第一, 顶尖 | Replace with a result |
 | `lint.placeholder_link` | warn | example.com, xxx, todo | Real link or remove |

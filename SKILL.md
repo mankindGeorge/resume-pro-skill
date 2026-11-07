@@ -245,7 +245,8 @@ resume templates
 ## Writing rules
 
 - Lead with the result: `Cut P95 latency from 480ms to 190ms across 300K daily requests`, not `Responsible for performance`.
-- One action + one result per bullet. Keep bullets under 240 EN / 140 ZH characters.
+- One action + one result per bullet. Keep bullets under 240 EN / 140 ZH characters — a hard lint error (`lint.bullet_too_long`), measured per locale.
+- When a framework is declared, labeled points must use that recipe's label set and order for `writing.locale`; off-recipe labels (`lint.framework_label`), wrong order (`lint.framework_order`), and result points without a number (`lint.result_no_data`) are hard lint errors that fail `resume lint` and `resume build` with exit `4`. See [Writing engine](references/writing-engine.md) §2.
 - Use the JD's vocabulary when the fact matches; do not keyword-stuff.
 - No "passionate about", "team player", "responsible for", "负责/参与" duty lists.
 - For CN campus: make core skills, AI-related work, internships, and projects visible; include OS/networks/data structures/algorithms/databases; reject demo-only projects.

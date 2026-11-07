@@ -109,6 +109,15 @@ project_depth_required: true
 | `cn.dead_link` | Blog/open-source link is unreachable or empty | warning |
 | `cn.cliche_opening` | "本人…", "作为一名…", "我是一名…" openings | warning |
 
+Global hard checks also apply to CN resumes (error; `resume lint` / `resume build` exit `4`):
+
+| Rule id | Check | Severity |
+|---|---|---|
+| `lint.framework_label` | 分点标签不在所选框架配方的标签集内（按 `writing.locale`），或只有标签没有内容 | error |
+| `lint.framework_order` | 标签分点顺序不符合配方（如 result_first 声明下按 STAR 顺序写、背景点在前） | error |
+| `lint.result_no_data` | 成果类分点（核心成果：/实际收益：）没有数字 | error |
+| `lint.bullet_too_long` | 分点超过 140 中文字符 / 240 英文字符（按语言分别计） | error |
+
 ### 7.3 Interview additions
 
 Ask these during intake, one at a time:
@@ -142,4 +151,4 @@ Before any optimization, ask which framework the user wants:
 | **Result-first** | Chinese tech, experienced hires | Can omit context |
 | **Keep the user's voice** | Users who dislike formulaic writing | Less consistent |
 
-Default suggestions: `intl_en` tech → XYZ; `cn_internet` campus → result-first + FAB; `cn_internet` experienced → result-first; consulting/PM → STAR or CAR. The choice is stored as `writing.framework` with `writing.consent: true`. The linter must not apply a framework the user did not approve.
+Default suggestions: `intl_en` tech → XYZ; `cn_internet` campus → result-first + FAB; `cn_internet` experienced → result-first; consulting/PM → STAR or CAR. The choice is stored as `writing.framework` with `writing.consent: true`. The linter must not apply a framework the user did not approve. Once a framework is declared, its label set and point order are hard-checked (`lint.framework_label`, `lint.framework_order`), and result points must carry a number (`lint.result_no_data`); see `references/writing-engine.md` §2 for each recipe.
