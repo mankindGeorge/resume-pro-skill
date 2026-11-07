@@ -44,10 +44,17 @@ CS_TERMS = (
     "algorithms", "algorithm", "databases", "database",
     "操作系统", "计算机网络", "网络", "数据结构", "算法", "数据库",
 )
-# Every rendered line of a project/experience intro must fill at least 2/5 of
-# the printable width; a wrap that leaves a few characters alone on a line is a
-# defect the writer fixes by expanding the sentence (preferred) or tightening it.
-SHORT_LINE_RATIO = 2 / 5
+# A project/experience intro line is a short-tail defect only when it is a tiny
+# orphan of fewer than 10 characters. A narrow-but-complete line (a whole word
+# or clause) is fine. The writer fixes a short tail by re-expressing the same
+# facts in place — preserving the evidence chain, not padding with new facts and
+# not creating another short line.
+SHORT_LINE_CHARS = 10
+
+
+def is_short_tail(line_text: str) -> bool:
+    """True when a rendered intro line is a tiny orphan (< SHORT_LINE_CHARS chars)."""
+    return len(line_text.strip()) < SHORT_LINE_CHARS
 
 
 class QAError(ResumeProError):
@@ -513,19 +520,18 @@ def run_qa(
                 )
             )
 
-    # Short lines in project/internship intros: a wrap that leaves only a few
-    # characters alone on a line is a defect. Every rendered line of a selected
-    # experience or project bullet must fill at least 2/5 of the printable width.
+    # Short lines in project/internship intros: a wrap that leaves a tiny orphan
+    # of fewer than 10 characters alone on a line is a defect. Wider-but-complete
+    # lines pass; the writer re-expresses the point in place to absorb the orphan.
     scope = [_norm(row["text"]) for row in bullets]
     if not page_chars:
         checks.append(QACheck("qa.layout.short_line", "warn", "Short-line check needs a browser render.", "Install a headless browser."))
     elif template["manifest"].get("page", {}).get("columns") != "single":
-        checks.append(QACheck("qa.layout.short_line", "pass", "Two-column template; the 2/5 line rule is not applied."))
+        checks.append(QACheck("qa.layout.short_line", "pass", "Two-column template; the short-tail rule is not applied."))
     elif not scope:
         checks.append(QACheck("qa.layout.short_line", "pass", "No project or experience bullets to check."))
     else:
-        usable = _usable_width(page_chars)
-        short: list[tuple[int, str, float]] = []
+        short: list[tuple[int, str, int]] = []
         checked = 0
         heading_norms = {_norm(value) for value in info["headings"].values() if value}
         for page, chars in _rendered_lines(page_chars):
@@ -534,20 +540,19 @@ def run_qa(
             if len(line_norm) < 2 or line_norm in heading_norms or not any(line_norm in item for item in scope):
                 continue
             checked += 1
-            width = max(c["x1"] for c in chars) - min(c["x0"] for c in chars)
-            if width < SHORT_LINE_RATIO * usable:
-                short.append((page + 1, line_text, width / usable))
+            if is_short_tail(line_text):
+                short.append((page + 1, line_text, len(line_text)))
         metrics["short_line_count"] = len(short)
         metrics["short_line_checked"] = checked
         if short:
-            worst = min(ratio for _, _, ratio in short)
-            samples = "; ".join(f"p{page} {text[:12]!r} ({round(ratio * 100)}%)" for page, text, ratio in short[:3])
+            shortest = min(count for _, _, count in short)
+            samples = "; ".join(f"p{page} {text[:12]!r} ({count} chars)" for page, text, count in short[:3])
             checks.append(
                 QACheck(
                     "qa.layout.short_line",
                     "fail",
-                    f"{len(short)} of {checked} project/experience line(s) fill less than 2/5 of the printable width (worst {round(worst * 100)}%): {samples}.",
-                    "Expand the sentence with real detail (preferred) or tighten the wording so every project/experience line fills at least 2/5 of the printable width.",
+                    f"{len(short)} of {checked} project/experience line(s) are short tails under {SHORT_LINE_CHARS} characters (shortest {shortest}): {samples}.",
+                    "Re-express the point in place to absorb the orphan line: preserve the evidence and roughly the same length, optimize the wording rather than adding new facts, and do not create another short line.",
                 )
             )
         else:
@@ -555,7 +560,7 @@ def run_qa(
                 QACheck(
                     "qa.layout.short_line",
                     "pass",
-                    f"All {checked} project/experience line(s) fill at least 2/5 of the printable width.",
+                    f"No project/experience line is a short tail under {SHORT_LINE_CHARS} characters ({checked} checked).",
                 )
             )
 

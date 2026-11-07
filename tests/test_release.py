@@ -246,15 +246,15 @@ def test_frameworks_and_packaging_share_one_document():
 
 
 def test_short_line_rule_is_documented():
-    """Project/experience intros must fill every line to at least 2/5 width."""
+    """Project/experience intros flag only tiny orphan lines under 10 characters."""
     skill = (ROOT / "SKILL.md").read_text(encoding="utf-8")
     section = skill.split("## Content sufficiency", 1)[1].split("\n## ", 1)[0]
-    assert "至少占可打印宽度的 2/5" in section
-    assert "优先扩句" in section
+    assert "不足 10 字的孤儿行" in section
+    assert "重新表达语言" in section
     engine = (ROOT / "references" / "writing-engine.md").read_text(encoding="utf-8")
     shared = engine.split("Shared rules for every recipe:", 1)[1].split("\n## ", 1)[0]
-    assert "at least 2/5 of the printable width" in shared
-    assert "expand the sentence with real detail (preferred)" in shared
+    assert "fewer than 10 characters" in shared
+    assert "re-expressing the point in place" in shared
     install = (ROOT / "docs" / "install.md").read_text(encoding="utf-8")
     assert "qa.layout.short_line" in install
 

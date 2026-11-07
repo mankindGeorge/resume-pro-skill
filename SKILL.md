@@ -38,7 +38,7 @@ Put every user-facing artifact under the skill root's `workspace/`. Use one subf
 9. **Respect the application mode.** Ask whether the resume is mainly for mass applications. If not, classify each experience/project by job family and ask for the preferred role. Use that role for ranking and the file name.
 10. **Photo slot.** Every template reserves an optional portrait slot. When no photo is set, the slot is completely invisible.
 11. **Language-matched variants.** Offer all six designs (`ats-classic`, `campus`, `compact`, `modern-sidebar`, `editorial`, `executive`) in both resume languages: 12 variants. `templates/cn/` means Chinese (`language: zh`), `templates/en/` English (`language: en`). Render and QA using `writing.locale`, falling back to the market profile's `language`; a mismatched or missing variant fails. When calling `load_template(id, language=zh|en)`, specify the language for IDs that exist in both variants.
-12. **Change requests follow the same standards.** Before applying any user-requested change, re-read the user's input and the governing rules — the chosen framework's recipe and label set, market rules, the 2/5 line-fill rule, naming and monolingual rules — then write strictly to those standards. A change request is not a license to improvise.
+12. **Change requests follow the same standards.** Before applying any user-requested change, re-read the user's input and the governing rules — the chosen framework's recipe and label set, market rules, the short-tail line rule, naming and monolingual rules — then write strictly to those standards. A change request is not a license to improvise.
 
 Default recommendations are `campus` / `modern-sidebar` for Chinese-market campus / professional profiles and `ats-classic` / `executive` for international default / senior profiles. Market/persona still govern selection, writing, page policy, photos, and fact confirmation. Respect each design's capacity budgets; bilingual availability does not change template review status.
 
@@ -224,7 +224,7 @@ Packaging is the core work. The full method lives in the [Sufficiency playbook](
 - 合格项目的充分性标准：背景/问题、角色分工、方案与取舍、难点与解决、评估/验证、部署/交付、成果与数据、使用与反馈；对照清单逐个问缺的维度，一次一个问题。
 - First description too thin? Walk the uncovered dimensions and ask what the user may not have thought to mention; do not wait for volunteers. Tools/duties-only bullets: ask for the outcome behind them.
 - Follow the chosen framework's recipe in [Writing engine](references/writing-engine.md); ask only for the slots that are missing; render 3–4 labeled points, each a complete, substantial sentence.
-- 项目/实习介绍每行至少占可打印宽度的 2/5；换行只剩几个字时优先扩句（只展开已有事实），其次精简重排，不留孤字行。
+- 项目/实习介绍换行后不足 10 字的孤儿行才算短尾缺陷（窄但完整的行不算）。修复时保持证据链、在原意与相近字数内重新表达语言来吸收孤行，不堆砌新事实，也不制造新的短尾行。
 - 核心成果：说清解决了什么问题、改变了什么；解决方案：说清痛点与为什么适配；去掉不证明影响的填充（如上线日期）。
 - Points render as labeled paragraphs or plain lines, never `<ul>`/`<ol>`/`<li>` or leading dots; the leading label renders bold.
 - Data fallback: Ask the user for the real data first → ask permission to estimate → propose one or two plausible candidate values → user confirms → write; confirmed candidates are user-asserted, unconfirmed stay out.

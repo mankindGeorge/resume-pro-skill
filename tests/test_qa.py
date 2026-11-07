@@ -140,6 +140,19 @@ def test_short_line_check_passes_on_clean_render(student_vault, tmp_path):
     assert qa.metrics["short_line_count"] == 0
 
 
+def test_short_tail_criterion_is_character_count():
+    from resume_pro.qa import is_short_tail
+
+    # The defect is a tiny orphan line (< 10 characters), not a narrow-but-full
+    # line. A 12-char word or a 25-char clause is a legitimate line.
+    assert is_short_tail("完成上线。") is True  # 5 characters
+    assert is_short_tail("全生命周期。") is True  # 6 characters
+    assert is_short_tail("123456789") is True  # 9 characters
+    assert is_short_tail("1234567890") is False  # 10 characters
+    assert is_short_tail("conventions.") is False  # 12 characters
+    assert is_short_tail("and statistical analysis.") is False  # 25 characters
+
+
 @pytest.mark.skipif(find_browser() is None, reason="No headless browser available")
 def test_short_tail_line_in_intro_fails(student_vault, tmp_path):
     app, render = _rendered(student_vault, tmp_path)
@@ -152,7 +165,7 @@ def test_short_tail_line_in_intro_fails(student_vault, tmp_path):
     check = next(item for item in qa.checks if item.id == "qa.layout.short_line")
     assert check.status == "fail"
     assert qa.metrics["short_line_count"] >= 1
-    assert "2/5" in check.detail or "2/5" in check.fix
+    assert "10 characters" in check.detail or "10 characters" in check.fix
 
 
 @pytest.mark.skipif(find_browser() is None, reason="No headless browser available")
