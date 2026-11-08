@@ -218,3 +218,35 @@ def test_page_count_uses_browser_and_can_fail(student_vault, tmp_path):
     assert qa.browser
     assert qa.metrics["pages"] > 1
     assert any(check.id == "qa.layout.pages" and check.status == "fail" for check in qa.checks)
+
+
+def test_text_balance_is_advisory_and_never_hard_fails(student_vault, tmp_path, monkeypatch):
+    """Narrow-but-complete lines are acceptable: text_balance may warn, never fail."""
+    app, _ = _rendered(student_vault, tmp_path)
+    # Synthetic render: three 30-char body lines only ~90pt wide on a 500pt
+    # printable width -> line_width_ratio ~0.18, well under the old 0.45 fail floor.
+    chars = []
+    for line_index in range(3):
+        top = 100 + line_index * 20
+        for i in range(30):
+            x0 = 50 + i * 3
+            chars.append(
+                {
+                    "x0": x0,
+                    "x1": x0 + 3,
+                    "top": top,
+                    "bottom": top + 10,
+                    "page": 0,
+                    "page_height": 800,
+                    "page_width": 600,
+                    "text": "a",
+                }
+            )
+    monkeypatch.setattr("resume_pro.qa.find_browser", lambda: "/fake/chrome")
+    monkeypatch.setattr("resume_pro.qa._browser_pdf", lambda *a, **k: (1, ["body text"], chars, 800))
+    qa = run_qa(tmp_path, student_vault, app)
+    assert qa.metrics["line_width_ratio"] < 0.45
+    check = next(item for item in qa.checks if item.id == "qa.layout.text_balance")
+    assert check.status != "fail"
+    assert check.status == "warn"
+    assert not any(item.id == "qa.layout.text_balance" for item in qa.hard_failures)

@@ -497,7 +497,9 @@ def run_qa(
         )
         metrics["bottom_whitespace_pct"] = whitespace
 
-    # Horizontal balance: body points should use the printable width.
+    # Horizontal balance: body points should use the printable width. This is
+    # advisory only — narrow-but-complete lines are acceptable under the orphan-line
+    # philosophy, so it never hard-fails (worst case a warning) and never blocks a build.
     if template["manifest"].get("page", {}).get("columns") == "single" and page_chars:
         usable = _usable_width(page_chars)
         widths = []
@@ -514,7 +516,7 @@ def run_qa(
             checks.append(
                 QACheck(
                     "qa.layout.text_balance",
-                    "fail" if ratio < 0.45 else "warn" if ratio < 0.65 else "pass",
+                    "warn" if ratio < 0.65 else "pass",
                     f"Body lines use about {round(ratio * 100)}% of the printable width.",
                     "" if ratio >= 0.8 else "Expand points to use the printable width; do not leave the right side empty.",
                 )
