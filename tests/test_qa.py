@@ -169,6 +169,28 @@ def test_short_tail_line_in_intro_fails(student_vault, tmp_path):
 
 
 @pytest.mark.skipif(find_browser() is None, reason="No headless browser available")
+def test_english_resume_is_exempt_from_short_tail(experienced_vault, tmp_path):
+    """English resumes skip the short-tail rule: a complete 9-char word tail passes."""
+    app, render = _rendered(
+        experienced_vault,
+        tmp_path,
+        market="intl_en",
+        persona="experienced",
+        role="Senior Backend Engineer",
+        template="ats-classic",
+    )
+    html = Path(render.html_path).read_text(encoding="utf-8")
+    bullet = experienced_vault["experience"][0]["bullets"][0]
+    old = bullet["text"]["en"]
+    bullet["text"]["en"] = "pipeline."
+    Path(render.html_path).write_text(html.replace(old, "pipeline.", 1), encoding="utf-8")
+    qa = run_qa(tmp_path, experienced_vault, app)
+    check = next(item for item in qa.checks if item.id == "qa.layout.short_line")
+    assert check.status == "pass", check.detail
+    assert "exempt" in check.detail.lower()
+
+
+@pytest.mark.skipif(find_browser() is None, reason="No headless browser available")
 def test_section_heading_is_not_counted_as_intro_line(student_vault, tmp_path):
     """A section heading that happens to appear inside a bullet is not an intro line."""
     app, render = _rendered(student_vault, tmp_path)
