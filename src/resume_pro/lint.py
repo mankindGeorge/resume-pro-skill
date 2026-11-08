@@ -3,7 +3,6 @@
 
 from __future__ import annotations
 
-import math
 import re
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -11,7 +10,7 @@ from typing import Any
 
 from . import profile
 from .application import page_budget
-from .layout import EN_CHARS_PER_LINE, LINES_PER_PAGE, SKILLS_PER_LINE, ZH_CHARS_PER_LINE, estimate_bullet_lines
+from .layout import content_lines, pages_from_lines
 from .skim import SkimResult, skim_test
 
 AI_TERMS = re.compile(
@@ -160,33 +159,66 @@ def _summary_text(vault: dict[str, Any]) -> str:
 
 
 def _estimate_pages(vault: dict[str, Any], application: dict[str, Any] | None) -> int:
+    """Estimate pages with layout's single estimator on the rendered content.
+
+    When the application declares a selection (fact_ids), estimate exactly what
+    the renderer will render; otherwise fall back to the whole vault. Sharing
+    layout.content_lines keeps lint and render page decisions consistent.
+    """
     app = application or {}
     locale = (app.get("writing") or {}).get("locale")
     if not locale:
         locale = "zh" if str(app.get("market", "")).startswith("cn_") else "en"
-    per_line = ZH_CHARS_PER_LINE if locale == "zh" else EN_CHARS_PER_LINE
+    selection = app.get("selection") or {}
+    fact_ids = set(selection.get("fact_ids") or [])
+    bullet_ids = set(selection.get("bullet_ids") or [])
+    skill_item_indices = selection.get("skill_item_indices") or {}
+
+    def localized(value: Any) -> str:
+        if isinstance(value, dict):
+            if value.get(locale):
+                return str(value[locale])
+            return next((str(v) for v in value.values() if v), "")
+        return str(value or "")
+
+    def kept(item: dict[str, Any]) -> bool:
+        return not fact_ids or item.get("id") in fact_ids
 
     def bullet_texts(item: dict[str, Any]) -> list[str]:
-        texts = []
-        for bullet in item.get("bullets") or []:
-            value = bullet.get("text")
-            if isinstance(value, dict):
-                texts.append(str(value.get(locale) or " ".join(str(v) for v in value.values() if v)))
-            else:
-                texts.append(str(value or ""))
-        return texts
+        return [
+            localized(bullet.get("text"))
+            for bullet in item.get("bullets") or []
+            if not bullet_ids or bullet.get("id") in bullet_ids
+        ]
 
-    lines = 4.0
-    lines += len(_summary_text(vault)) / per_line
-    lines += len(vault.get("education") or []) * 3
-    for role in vault.get("experience") or []:
-        lines += 3 + estimate_bullet_lines(bullet_texts(role), locale)
-    for project in vault.get("projects") or []:
-        lines += 2 + estimate_bullet_lines(bullet_texts(project), locale)
-    skill_count = sum(len(group.get("items") or []) for group in vault.get("skills") or [])
-    lines += max(1, skill_count / SKILLS_PER_LINE)
-    lines += len(vault.get("awards") or []) * 0.5
-    return max(1, math.ceil(lines / LINES_PER_PAGE))
+    # Mirror build_render_model: with a declared selection the summary comes
+    # from the selection (absent means the section is disabled); without one,
+    # the vault summary is the best available estimate.
+    summary_source = selection.get("summary") if fact_ids else (vault.get("identity") or {}).get("summary")
+    projects = [item for item in vault.get("projects") or [] if kept(item)]
+    skills = []
+    for group in vault.get("skills") or []:
+        if not kept(group):
+            continue
+        items = group.get("items") or []
+        kept_indices = skill_item_indices.get(group.get("id"))
+        if kept_indices is not None:
+            items = [items[i] for i in kept_indices if 0 <= i < len(items)]
+        skills.append({"items": [item for item in items if item.get("name")]})
+    model = {
+        "locale": locale,
+        "summary": localized(summary_source),
+        "education": [item for item in vault.get("education") or [] if kept(item)],
+        "experience": [{"bullets": bullet_texts(item)} for item in vault.get("experience") or [] if kept(item)],
+        "projects": [{"bullets": bullet_texts(item)} for item in projects],
+        "skills": skills,
+        "awards": [item for item in vault.get("awards") or [] if kept(item) and localized(item.get("title"))],
+        "certificates": [item for item in vault.get("certificates") or [] if kept(item)],
+        "languages": [item for item in vault.get("languages") or [] if kept(item)],
+        "publications": [item for item in vault.get("publications") or [] if kept(item)],
+        "open_source": [item for item in projects if item.get("context") == "open_source"],
+    }
+    return pages_from_lines(content_lines(model))
 
 
 def _label_key(label: str) -> str:

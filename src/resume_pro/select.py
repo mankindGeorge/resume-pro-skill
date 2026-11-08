@@ -149,7 +149,11 @@ def _pick_bullets(
         enumerate(bullets),
         key=lambda pair: (-_bullet_score(pair[1], registry, jd_terms), pair[0]),
     )
-    selected = [bullet for _, bullet in ranked[:limit]]
+    # Scores decide only which bullets survive the budget. The returned ids keep
+    # the vault's original order: render renders selection order and lint checks
+    # framework recipes against it, so score order would break written recipes.
+    kept_indices = sorted(index for index, _ in ranked[:limit])
+    selected = [bullets[index] for index in kept_indices]
     for _, bullet in ranked[limit:]:
         dropped.append(
             {
@@ -175,7 +179,12 @@ def select_facts(
     max_roles = 2 if page_max == 1 else 3 if is_student else 5
     max_projects = 2 if page_max == 1 else 3 if is_student else 2
     max_bullets_role = 3 if page_max == 1 else 4 if is_student else 5
-    max_bullets_project = 2 if page_max == 1 else 3
+    # The largest packaging recipe (STAR) needs 4 slots, and selection does not
+    # know which framework the application will declare. Never trim below the
+    # largest recipe: cutting a declared slot silently breaks the framework
+    # contract. The page budget stays enforced by the entry caps above and the
+    # explicit page-count gates in lint/layout, which fail loudly instead.
+    max_bullets_project = 4
     max_skills = 12 if market.startswith("cn_") else 16
 
     dropped: list[dict[str, Any]] = []

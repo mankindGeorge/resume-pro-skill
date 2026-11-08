@@ -9,11 +9,8 @@ limits (EN 240 / ZH 140) are errors, not warnings.
 
 from __future__ import annotations
 
-import copy
 import json
-from pathlib import Path
 
-import yaml
 from click.testing import CliRunner
 
 from resume_pro.cli import cli
@@ -278,10 +275,8 @@ def _drift_cli_setup(tmp_path, monkeypatch, texts):
     )
     assert created.exit_code == 0, created.output
     slug = json.loads(created.output)["slug"]
-    app_path = tmp_path / ".resume" / "applications" / slug / "application.yaml"
-    application = yaml.safe_load(app_path.read_text(encoding="utf-8"))
-    application["selection"]["bullet_ids"] = [f"bul_proj_drift_{index}" for index in range(len(texts))]
-    app_path.write_text(yaml.safe_dump(application, allow_unicode=True, sort_keys=False), encoding="utf-8")
+    # No manual selection edits: the selector itself must keep the vault's
+    # recipe order, so these CLI tests prove the real new -> lint/build chain.
     return runner, slug
 
 

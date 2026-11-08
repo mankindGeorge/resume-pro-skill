@@ -55,7 +55,12 @@ def estimate_bullet_lines(bullet_texts: list[str], locale: str) -> float:
     return sum(max(1.0, math.ceil(len(str(text)) / per_line)) for text in bullet_texts)
 
 
-def _content_lines(model: dict[str, Any]) -> float:
+def content_lines(model: dict[str, Any]) -> float:
+    """The single content-line estimator for page decisions.
+
+    check_layout (render time) and lint (pre-render) both call this on the same
+    render-model shape, so their page estimates cannot contradict each other.
+    """
     lines = 4.0  # header and contact block
     lines += _summary_lines(model)
     for entry in model.get("education") or []:
@@ -79,6 +84,28 @@ def _content_lines(model: dict[str, Any]) -> float:
     return lines
 
 
+def pages_from_lines(lines: float) -> int:
+    """Shared lines-to-pages conversion used by layout and lint."""
+    return max(1, math.ceil(lines / LINES_PER_PAGE))
+
+
+def _recipe_slot_count(application: dict[str, Any]) -> int:
+    """Slot count of the application's declared packaging recipe, else 0.
+
+    A declared recipe is a hard content contract (lint errors on missing or
+    reordered slots), so its slots must fit even when a template's soft bullet
+    budget is smaller (e.g. campus allows 3, STAR needs 4). The page-count gate
+    in check_layout still enforces the real page capacity. user_voice has no
+    fixed recipe and never loosens the template budget.
+    """
+    # Deferred import: lint imports layout at module level.
+    from .lint import FRAMEWORK_RECIPES
+
+    framework = (application.get("writing") or {}).get("framework")
+    recipe = FRAMEWORK_RECIPES.get(framework) if framework else None
+    return len(recipe) if recipe else 0
+
+
 def check_layout(
     model: dict[str, Any],
     manifest: dict[str, Any],
@@ -99,9 +126,10 @@ def check_layout(
     for entry in model.get("experience") or []:
         if len(entry.get("bullets") or []) > int(budgets.get("bullets_per_role", 5)):
             errors.append(f"A role has {len(entry['bullets'])} bullets; the template allows {budgets.get('bullets_per_role', 5)}.")
+    project_bullet_budget = max(int(budgets.get("bullets_per_project", 4)), _recipe_slot_count(application))
     for entry in model.get("projects") or []:
-        if len(entry.get("bullets") or []) > int(budgets.get("bullets_per_project", 4)):
-            errors.append(f"A project has {len(entry['bullets'])} bullets; the template allows {budgets.get('bullets_per_project', 4)}.")
+        if len(entry.get("bullets") or []) > project_bullet_budget:
+            errors.append(f"A project has {len(entry['bullets'])} bullets; the layout allows {project_bullet_budget}.")
     skill_count = sum(len(group.get("items") or []) for group in model.get("skills") or [])
     if skill_count > int(budgets.get("max_skills", 16)):
         errors.append(f"{skill_count} skills exceed the template budget of {budgets.get('max_skills', 16)}.")
@@ -123,8 +151,8 @@ def check_layout(
         int(template_pages.get("max", 2)),
         int(app_budget.get("max", 2)),
     )
-    lines = _content_lines(model)
-    pages = max(1, math.ceil(lines / LINES_PER_PAGE))
+    lines = content_lines(model)
+    pages = pages_from_lines(lines)
     if pages > maximum:
         raise LayoutError(
             "layout.page_count",
