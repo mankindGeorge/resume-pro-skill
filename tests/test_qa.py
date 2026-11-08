@@ -169,6 +169,28 @@ def test_short_tail_line_in_intro_fails(student_vault, tmp_path):
 
 
 @pytest.mark.skipif(find_browser() is None, reason="No headless browser available")
+def test_english_resume_is_exempt_from_short_tail(experienced_vault, tmp_path):
+    """English resumes skip the short-tail rule: a complete 9-char word tail passes."""
+    app, render = _rendered(
+        experienced_vault,
+        tmp_path,
+        market="intl_en",
+        persona="experienced",
+        role="Senior Backend Engineer",
+        template="ats-classic",
+    )
+    html = Path(render.html_path).read_text(encoding="utf-8")
+    bullet = experienced_vault["experience"][0]["bullets"][0]
+    old = bullet["text"]["en"]
+    bullet["text"]["en"] = "pipeline."
+    Path(render.html_path).write_text(html.replace(old, "pipeline.", 1), encoding="utf-8")
+    qa = run_qa(tmp_path, experienced_vault, app)
+    check = next(item for item in qa.checks if item.id == "qa.layout.short_line")
+    assert check.status == "pass", check.detail
+    assert "exempt" in check.detail.lower()
+
+
+@pytest.mark.skipif(find_browser() is None, reason="No headless browser available")
 def test_section_heading_is_not_counted_as_intro_line(student_vault, tmp_path):
     """A section heading that happens to appear inside a bullet is not an intro line."""
     app, render = _rendered(student_vault, tmp_path)
@@ -196,3 +218,35 @@ def test_page_count_uses_browser_and_can_fail(student_vault, tmp_path):
     assert qa.browser
     assert qa.metrics["pages"] > 1
     assert any(check.id == "qa.layout.pages" and check.status == "fail" for check in qa.checks)
+
+
+def test_text_balance_is_advisory_and_never_hard_fails(student_vault, tmp_path, monkeypatch):
+    """Narrow-but-complete lines are acceptable: text_balance may warn, never fail."""
+    app, _ = _rendered(student_vault, tmp_path)
+    # Synthetic render: three 30-char body lines only ~90pt wide on a 500pt
+    # printable width -> line_width_ratio ~0.18, well under the old 0.45 fail floor.
+    chars = []
+    for line_index in range(3):
+        top = 100 + line_index * 20
+        for i in range(30):
+            x0 = 50 + i * 3
+            chars.append(
+                {
+                    "x0": x0,
+                    "x1": x0 + 3,
+                    "top": top,
+                    "bottom": top + 10,
+                    "page": 0,
+                    "page_height": 800,
+                    "page_width": 600,
+                    "text": "a",
+                }
+            )
+    monkeypatch.setattr("resume_pro.qa.find_browser", lambda: "/fake/chrome")
+    monkeypatch.setattr("resume_pro.qa._browser_pdf", lambda *a, **k: (1, ["body text"], chars, 800))
+    qa = run_qa(tmp_path, student_vault, app)
+    assert qa.metrics["line_width_ratio"] < 0.45
+    check = next(item for item in qa.checks if item.id == "qa.layout.text_balance")
+    assert check.status != "fail"
+    assert check.status == "warn"
+    assert not any(item.id == "qa.layout.text_balance" for item in qa.hard_failures)

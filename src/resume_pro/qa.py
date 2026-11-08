@@ -497,7 +497,9 @@ def run_qa(
         )
         metrics["bottom_whitespace_pct"] = whitespace
 
-    # Horizontal balance: body points should use the printable width.
+    # Horizontal balance: body points should use the printable width. This is
+    # advisory only — narrow-but-complete lines are acceptable under the orphan-line
+    # philosophy, so it never hard-fails (worst case a warning) and never blocks a build.
     if template["manifest"].get("page", {}).get("columns") == "single" and page_chars:
         usable = _usable_width(page_chars)
         widths = []
@@ -514,7 +516,7 @@ def run_qa(
             checks.append(
                 QACheck(
                     "qa.layout.text_balance",
-                    "fail" if ratio < 0.45 else "warn" if ratio < 0.65 else "pass",
+                    "warn" if ratio < 0.65 else "pass",
                     f"Body lines use about {round(ratio * 100)}% of the printable width.",
                     "" if ratio >= 0.8 else "Expand points to use the printable width; do not leave the right side empty.",
                 )
@@ -523,8 +525,12 @@ def run_qa(
     # Short lines in project/internship intros: a wrap that leaves a tiny orphan
     # of fewer than 10 characters alone on a line is a defect. Wider-but-complete
     # lines pass; the writer re-expresses the point in place to absorb the orphan.
+    # English resumes are currently exempt: a 10-character cutoff misflags complete
+    # English word tails (e.g. "pipeline."), so the rule is applied to zh only.
     scope = [_norm(row["text"]) for row in bullets]
-    if not page_chars:
+    if locale == "en":
+        checks.append(QACheck("qa.layout.short_line", "pass", "English resumes are currently exempt from the short-tail check."))
+    elif not page_chars:
         checks.append(QACheck("qa.layout.short_line", "warn", "Short-line check needs a browser render.", "Install a headless browser."))
     elif template["manifest"].get("page", {}).get("columns") != "single":
         checks.append(QACheck("qa.layout.short_line", "pass", "Two-column template; the short-tail rule is not applied."))
