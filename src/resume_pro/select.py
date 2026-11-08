@@ -149,7 +149,11 @@ def _pick_bullets(
         enumerate(bullets),
         key=lambda pair: (-_bullet_score(pair[1], registry, jd_terms), pair[0]),
     )
-    selected = [bullet for _, bullet in ranked[:limit]]
+    # Scores decide only which bullets survive the budget. The returned ids keep
+    # the vault's original order: render renders selection order and lint checks
+    # framework recipes against it, so score order would break written recipes.
+    kept_indices = sorted(index for index, _ in ranked[:limit])
+    selected = [bullets[index] for index in kept_indices]
     for _, bullet in ranked[limit:]:
         dropped.append(
             {
