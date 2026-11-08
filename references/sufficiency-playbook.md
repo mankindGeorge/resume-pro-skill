@@ -16,7 +16,7 @@ The complete content-sufficiency rules behind the one-line checklist in `SKILL.m
 - 框架和内容包装写在同一个文档：[Writing engine](writing-engine.md)。六个框架（STAR/XYZ/FAB/CAR/结果优先/个人语气）各有自己的包装配方、标签分点和示例，按所选框架的配方写，不要都按一种框架写。
 - Follow the selected framework's packaging recipe while collecting; it lists exactly which slots to ask for. Ask only for the slots that are missing.
 - Render each kept project as 3–4 labeled points using the chosen framework's recipe and label set. Each point is a complete, substantial sentence with real detail; never a one-line fragment.
-- 项目/实习介绍换行后不足 10 字的孤儿行才算短尾缺陷（窄但完整的行不算）。修复时保持证据链、在原意与相近字数内重新表达语言来吸收孤行——旨在优化语言而非堆砌新事实，也不制造新的短尾行。
+- 项目/实习介绍换行后不足 10 字的孤儿行才算短尾缺陷（窄但完整的行不算）。修复时保持证据链、在原意与相近字数内重新表达语言来吸收孤行——旨在优化语言而非堆砌新事实，也不制造新的短尾行。英文简历当前豁免短尾检查（10 字符阈值会误伤完整英文单词尾行），该规则目前仅适用中文简历。
 - A `核心成果：` point must say what problem was solved and what changed, not just list an award or repeat the technology. A `解决方案：` point must explain the pain point and why the approach fits it. Remove filler such as launch dates unless they prove impact.
 - All points render as labeled paragraphs or plain lines. Do not use `<ul>`, `<ol>`, or `<li>`, and do not put a bullet dot before the text. The leading label (for example `项目背景：` or `Background:`) renders bold so the point structure is visible at a glance.
 

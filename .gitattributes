@@ -1,0 +1,5 @@
+# Golden preview hashes are byte-sensitive (tests compare read_bytes), and
+# core.autocrlf=true otherwise smudges CRLF into the working tree and breaks
+# them. Normalize text to LF in the repository and the working tree; binary
+# files (PNG previews) are auto-detected and left untouched.
+* text=auto eol=lf

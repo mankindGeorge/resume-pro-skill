@@ -214,7 +214,7 @@ resume diff <slug> <version> current
 resume templates
 ```
 
-`audit` checks the rendered HTML with a headless browser: pages, extracted text, selected bullets, headings, section order, font floor, line fill in project/experience intros, sensitive fields, and privacy. Hard failures exit `4`. Every rebuild snapshots a version.
+`audit` checks the rendered HTML with a headless browser: pages, extracted text, selected bullets, headings, section order, font floor, line fill in project/experience intros, sensitive fields, and privacy. Hard failures exit `4`. A successful build snapshots the delivered output as a version; history is bounded and the oldest snapshots are pruned.
 
 ## Content sufficiency
 
@@ -224,7 +224,7 @@ Packaging is the core work. The full method lives in the [Sufficiency playbook](
 - 合格项目的充分性标准：背景/问题、角色分工、方案与取舍、难点与解决、评估/验证、部署/交付、成果与数据、使用与反馈；对照清单逐个问缺的维度，一次一个问题。
 - First description too thin? Walk the uncovered dimensions and ask what the user may not have thought to mention; do not wait for volunteers. Tools/duties-only bullets: ask for the outcome behind them.
 - Follow the chosen framework's recipe in [Writing engine](references/writing-engine.md); ask only for the slots that are missing; render 3–4 labeled points, each a complete, substantial sentence.
-- 项目/实习介绍换行后不足 10 字的孤儿行才算短尾缺陷（窄但完整的行不算）。修复时保持证据链、在原意与相近字数内重新表达语言来吸收孤行，不堆砌新事实，也不制造新的短尾行。
+- 项目/实习介绍换行后不足 10 字的孤儿行才算短尾缺陷（窄但完整的行不算）。修复时保持证据链、在原意与相近字数内重新表达语言来吸收孤行，不堆砌新事实，也不制造新的短尾行。英文简历当前豁免短尾检查，该规则目前仅适用中文简历。
 - 核心成果：说清解决了什么问题、改变了什么；解决方案：说清痛点与为什么适配；去掉不证明影响的填充（如上线日期）。
 - Points render as labeled paragraphs or plain lines, never `<ul>`/`<ol>`/`<li>` or leading dots; the leading label renders bold.
 - Data fallback: Ask the user for the real data first → ask permission to estimate → propose one or two plausible candidate values → user confirms → write; confirmed candidates are user-asserted, unconfirmed stay out.
@@ -257,7 +257,7 @@ Packaging is the core work. The full method lives in the [Sufficiency playbook](
 | `resume localize` | EN↔ZH transcreation + parity |
 | `resume audit` / `diff` | Browser QA, version diff |
 
-Exit codes: `0` ok; `2` gate blocked/minimum; `3` invalid input or missing target-locale facts; `4` audit/lint/parity/QA hard failure; `5` unsupported format; `6` missing external dependency.
+Exit codes: `0` ok; `2` gate blocked/minimum or unconfirmed facts; `3` invalid input or missing target-locale facts; `4` audit/lint/parity/QA hard failure; `5` unsupported format; `6` missing external dependency; `7` internal error (a report path is printed).
 
 ## References
 

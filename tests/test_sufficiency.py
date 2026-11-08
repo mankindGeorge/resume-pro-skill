@@ -127,3 +127,16 @@ def test_publications_gap_advises_not_dead_ends(experienced_vault):
     warning_codes = {w["code"] for w in report.warnings}
     assert "sufficiency.publications_missing" not in blocker_codes
     assert "sufficiency.publications_missing" in warning_codes
+
+
+def test_research_missing_blocker_carries_a_targeted_question(experienced_vault):
+    # The academic persona requires research experience. When it is missing the
+    # blocker must map to a QUESTION_BANK follow-up, not become a dead end with
+    # no way to close the gap.
+    vault = copy.deepcopy(experienced_vault)
+    vault["projects"] = [p for p in vault.get("projects") or [] if p.get("context") != "research"]
+    report = evaluate(vault, market="intl_en", persona="academic", target_role="Researcher")
+    assert any(b["code"] == "sufficiency.research_missing" for b in report.blockers)
+    questions = [q for q in report.questions if q["code"] == "sufficiency.research_missing"]
+    assert questions, "sufficiency.research_missing must map to a QUESTION_BANK entry"
+    assert questions[0]["ask"] and questions[0]["why"]

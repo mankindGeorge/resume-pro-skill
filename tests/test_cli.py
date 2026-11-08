@@ -7,10 +7,13 @@ import json
 from pathlib import Path
 
 import pytest
+import yaml
 from click.testing import CliRunner
 
 from resume_pro.cli import cli
 from resume_pro.vault import load_vault, save_vault
+from tests.conftest import load_example
+from tests.ingest_fixtures import write_html
 from tests.test_intake import FULL_ANSWERS
 
 
@@ -265,6 +268,46 @@ def test_internal_error_exits_7_with_report(tmp_path, monkeypatch):
     assert list(tmp_path.rglob("internal-error-*.json")), "an internal-error report path must be written"
 
 
+def test_internal_error_message_is_redacted(tmp_path, monkeypatch, capsys):
+    import resume_pro.cli as cli_module
+
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(cli_module, "_INCLUDE_PII", False)
+
+    def boom():
+        raise RuntimeError("failed for liming@example.com / +86 137 0000 0000")
+
+    monkeypatch.setattr(cli_module, "cli", boom)
+    with pytest.raises(SystemExit) as exc:
+        cli_module.main()
+    assert exc.value.code == 7
+    err = capsys.readouterr().err
+    assert "liming@example.com" not in err
+    assert "+86 137 0000 0000" not in err
+    assert "[REDACTED]" in err
+    # The local report on disk keeps the full data (redaction is output-only).
+    report = next(tmp_path.rglob("internal-error-*.json"))
+    assert "liming@example.com" in report.read_text(encoding="utf-8")
+
+
+def test_human_error_output_is_redacted(monkeypatch, capsys):
+    import click
+
+    import resume_pro.cli as cli_module
+    from resume_pro.errors import ResumeProError
+
+    monkeypatch.setattr(cli_module, "_INCLUDE_PII", False)
+    ctx = click.Context(click.Command("demo"))
+    ctx.obj = {"json": False}
+    error = ResumeProError("demo.err", "contact liming@example.com or 13700000000", fix="mail a@b.com")
+    with pytest.raises(click.exceptions.Exit):
+        cli_module._handle(ctx, error)
+    err = capsys.readouterr().err
+    assert "liming@example.com" not in err
+    assert "13700000000" not in err
+    assert "[REDACTED]" in err
+
+
 def test_cwd_overrides_project_root(tmp_path, monkeypatch):
     project = tmp_path / "project"
     project.mkdir()
@@ -279,6 +322,95 @@ def test_cwd_overrides_project_root(tmp_path, monkeypatch):
     assert created.exit_code == 0, created.output
     assert (project / ".resume" / "vault.yaml").exists()
     assert not (elsewhere / ".resume").exists()
+
+
+def test_new_persists_absolute_jd_path_under_cwd(tmp_path, monkeypatch):
+    project = tmp_path / "project"
+    project.mkdir()
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    monkeypatch.chdir(elsewhere)
+    runner = CliRunner()
+    created = runner.invoke(
+        cli,
+        ["--cwd", str(project), "init", "--market", "cn_internet", "--persona", "student_with_internship", "--json"],
+    )
+    assert created.exit_code == 0, created.output
+    save_vault(load_example("vault-student.yaml"), root=project, validate=False)
+    (project / "jd.md").write_text("Backend engineer: Python, MySQL, Redis.", encoding="utf-8")
+
+    result = runner.invoke(
+        cli,
+        [
+            "--cwd", str(project), "new", "--role", "Backend Engineer",
+            "--market", "cn_internet", "--persona", "student_with_internship",
+            "--framework", "result_first", "--jd", "jd.md", "--json",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    slug = json.loads(result.output)["slug"]
+    application = yaml.safe_load((project / ".resume" / "applications" / slug / "application.yaml").read_text(encoding="utf-8"))
+    jd_path = application["target"]["jd_path"]
+    assert Path(jd_path).is_absolute(), "persisted --jd must be absolute so it survives a cwd change"
+    assert Path(jd_path) == (project / "jd.md").resolve()
+    assert Path(jd_path).is_file()
+
+
+def test_tailor_persists_absolute_jd_path_under_cwd(tmp_path, monkeypatch):
+    project = tmp_path / "project"
+    project.mkdir()
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    monkeypatch.chdir(elsewhere)
+    runner = CliRunner()
+    assert runner.invoke(
+        cli,
+        ["--cwd", str(project), "init", "--market", "cn_internet", "--persona", "student_with_internship", "--json"],
+    ).exit_code == 0
+    save_vault(load_example("vault-student.yaml"), root=project, validate=False)
+    (project / "jd.md").write_text("Backend engineer: Python, MySQL, Redis.", encoding="utf-8")
+
+    result = runner.invoke(
+        cli,
+        [
+            "--cwd", str(project), "tailor", "--jd", "jd.md",
+            "--market", "cn_internet", "--persona", "student_with_internship",
+            "--framework", "result_first", "--json",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    slug = json.loads(result.output)["slug"]
+    application = yaml.safe_load((project / ".resume" / "applications" / slug / "application.yaml").read_text(encoding="utf-8"))
+    jd_path = application["target"]["jd_path"]
+    assert Path(jd_path).is_absolute()
+    assert Path(jd_path) == (project / "jd.md").resolve()
+
+
+def test_cwd_relative_file_argument_resolves_against_cwd_dir(tmp_path, monkeypatch):
+    # --cwd chdirs before the subcommand FILE argument is parsed, so a relative
+    # FILE is looked up inside the --cwd directory, not the launch directory.
+    project = tmp_path / "project"
+    project.mkdir()
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    write_html(project / "resume.html")
+    write_html(elsewhere / "launch-only.html")
+    monkeypatch.chdir(elsewhere)
+    runner = CliRunner()
+
+    found = runner.invoke(
+        cli,
+        ["--cwd", str(project), "review", "resume.html", "--market", "intl_en", "--persona", "experienced", "--json"],
+    )
+    assert found.exit_code == 0, found.output
+    assert json.loads(found.output)["ok"] is True
+
+    # A file that exists only in the launch directory is not visible under --cwd.
+    missing = runner.invoke(
+        cli,
+        ["--cwd", str(project), "review", "launch-only.html", "--market", "intl_en", "--persona", "experienced", "--json"],
+    )
+    assert missing.exit_code == 2
 
 
 def test_json_redacts_pii_by_default(tmp_path, monkeypatch):
@@ -303,3 +435,80 @@ def test_json_redacts_pii_by_default(tmp_path, monkeypatch):
     ident_full = json.loads(full.output)["summary"]["identity"]
     assert ident_full["email"] == "liming@example.com"
     assert ident_full["phone"] == "+86 137 0000 0000"
+
+
+def _cn_student_app(tmp_path, monkeypatch, runner):
+    monkeypatch.chdir(tmp_path)
+    assert runner.invoke(cli, ["init", "--market", "cn_internet", "--persona", "student_with_internship"]).exit_code == 0
+    save_vault(load_example("vault-student.yaml"), root=tmp_path, validate=False)
+    created = runner.invoke(
+        cli,
+        ["new", "--role", "Backend Engineer", "--market", "cn_internet", "--persona", "student_with_internship", "--framework", "result_first", "--json"],
+    )
+    assert created.exit_code == 0, created.output
+    return json.loads(created.output)["slug"]
+
+
+def test_restyle_newest_snapshot_is_the_delivered_state(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    runner = CliRunner()
+    assert runner.invoke(cli, ["init", "--market", "intl_en", "--persona", "experienced"]).exit_code == 0
+    save_vault(load_example("vault-experienced.yaml"), root=tmp_path, validate=False)
+    created = runner.invoke(
+        cli,
+        ["new", "--role", "Senior Backend Engineer", "--market", "intl_en", "--persona", "experienced", "--framework", "result_first", "--template", "ats-classic", "--json"],
+    )
+    assert created.exit_code == 0, created.output
+    slug = json.loads(created.stdout)["slug"]
+    assert runner.invoke(cli, ["build", slug, "--yes", "--json"]).exit_code == 0
+    restyled = runner.invoke(cli, ["restyle", "--app", slug, "--template", "modern-sidebar", "--yes", "--json"])
+    assert restyled.exit_code == 0, restyled.output
+    app_dir = tmp_path / ".resume" / "applications" / slug
+    application = yaml.safe_load((app_dir / "application.yaml").read_text(encoding="utf-8"))
+    html_name = application["output"]["html"]
+    root_html = (app_dir / html_name).read_bytes()
+    versions = sorted((app_dir / "versions").iterdir())
+    assert len(versions) >= 2, "restyle keeps the prior state and snapshots the delivered rebuild"
+    # The newest snapshot must match the published resume, not the pre-restyle state.
+    assert (versions[-1] / html_name).read_bytes() == root_html
+
+
+def test_build_reports_pruned_versions(tmp_path, monkeypatch):
+    import resume_pro.cli as cli_module
+
+    monkeypatch.setattr(cli_module, "MAX_VERSIONS", 1)
+    runner = CliRunner()
+    slug = _cn_student_app(tmp_path, monkeypatch, runner)
+    assert runner.invoke(cli, ["build", slug, "--yes", "--json"]).exit_code == 0
+    vault = load_vault(root=tmp_path)
+    vault["identity"]["full_name"] = {"zh": "示例新名", "en": "Example Newname"}
+    save_vault(vault, root=tmp_path, validate=False)
+    rebuilt = runner.invoke(cli, ["build", slug, "--yes", "--json"])
+    assert rebuilt.exit_code == 0, rebuilt.output
+    payload = json.loads(rebuilt.stdout)
+    assert payload.get("versions_pruned"), "pruning must be surfaced in the JSON payload"
+    assert "versions.pruned" in rebuilt.stderr
+
+
+def test_warn_versions_pruned_helper(capsys):
+    import resume_pro.cli as cli_module
+
+    cli_module._warn_versions_pruned(["20261101-000000-000000"], True)
+    err = capsys.readouterr().err
+    assert "versions.pruned" in err
+    cli_module._warn_versions_pruned(["20261101-000000-000000"], False)
+    err = capsys.readouterr().err
+    assert "warning:" in err and "20261101-000000-000000" in err
+    cli_module._warn_versions_pruned([], False)
+    assert capsys.readouterr().err == ""
+
+
+def test_diff_missing_version_mentions_pruning(tmp_path, monkeypatch):
+    runner = CliRunner()
+    slug = _cn_student_app(tmp_path, monkeypatch, runner)
+    assert runner.invoke(cli, ["build", slug, "--yes", "--json"]).exit_code == 0
+    result = runner.invoke(cli, ["diff", slug, "20990101-000000-000000", "current", "--json"])
+    assert result.exit_code == 3
+    error = json.loads(result.output)["error"]
+    assert error["code"] == "diff.version_missing"
+    assert "pruned" in error["fix"]

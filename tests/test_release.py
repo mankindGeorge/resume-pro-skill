@@ -305,3 +305,13 @@ def test_examples_and_docs_exist():
         "CHANGELOG.md",
     ):
         assert (ROOT / path).is_file(), path
+
+
+def test_version_is_consistent_and_bumped():
+    import resume_pro
+
+    text = (ROOT / "pyproject.toml").read_text(encoding="utf-8")
+    match = re.search(r'^version\s*=\s*"([^"]+)"', text, re.MULTILINE)
+    assert match, "pyproject.toml must declare a version"
+    assert match.group(1) == resume_pro.__version__, "pyproject and package versions must match"
+    assert resume_pro.__version__ == "0.2.0"
