@@ -55,7 +55,12 @@ def estimate_bullet_lines(bullet_texts: list[str], locale: str) -> float:
     return sum(max(1.0, math.ceil(len(str(text)) / per_line)) for text in bullet_texts)
 
 
-def _content_lines(model: dict[str, Any]) -> float:
+def content_lines(model: dict[str, Any]) -> float:
+    """The single content-line estimator for page decisions.
+
+    check_layout (render time) and lint (pre-render) both call this on the same
+    render-model shape, so their page estimates cannot contradict each other.
+    """
     lines = 4.0  # header and contact block
     lines += _summary_lines(model)
     for entry in model.get("education") or []:
@@ -77,6 +82,11 @@ def _content_lines(model: dict[str, Any]) -> float:
     )
     lines += populated * 1.5
     return lines
+
+
+def pages_from_lines(lines: float) -> int:
+    """Shared lines-to-pages conversion used by layout and lint."""
+    return max(1, math.ceil(lines / LINES_PER_PAGE))
 
 
 def _recipe_slot_count(application: dict[str, Any]) -> int:
@@ -141,8 +151,8 @@ def check_layout(
         int(template_pages.get("max", 2)),
         int(app_budget.get("max", 2)),
     )
-    lines = _content_lines(model)
-    pages = max(1, math.ceil(lines / LINES_PER_PAGE))
+    lines = content_lines(model)
+    pages = pages_from_lines(lines)
     if pages > maximum:
         raise LayoutError(
             "layout.page_count",
