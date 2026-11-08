@@ -179,7 +179,12 @@ def select_facts(
     max_roles = 2 if page_max == 1 else 3 if is_student else 5
     max_projects = 2 if page_max == 1 else 3 if is_student else 2
     max_bullets_role = 3 if page_max == 1 else 4 if is_student else 5
-    max_bullets_project = 2 if page_max == 1 else 3
+    # The largest packaging recipe (STAR) needs 4 slots, and selection does not
+    # know which framework the application will declare. Never trim below the
+    # largest recipe: cutting a declared slot silently breaks the framework
+    # contract. The page budget stays enforced by the entry caps above and the
+    # explicit page-count gates in lint/layout, which fail loudly instead.
+    max_bullets_project = 4
     max_skills = 12 if market.startswith("cn_") else 16
 
     dropped: list[dict[str, Any]] = []

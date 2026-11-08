@@ -19,7 +19,7 @@ from resume_pro.render import RenderError, build_render_model, load_template, re
 from resume_pro.select import select_facts
 
 
-def _app(vault, tmp_path, template, market="intl_en", persona="experienced", role="Senior Backend Engineer"):
+def _app(vault, tmp_path, template, market="intl_en", persona="experienced", role="Senior Backend Engineer", framework="result_first"):
     budget = page_budget(market, persona)
     selection = select_facts(vault, market=market, persona=persona, target_role=role, page_max=budget["max"])
     application = create_application(
@@ -28,7 +28,7 @@ def _app(vault, tmp_path, template, market="intl_en", persona="experienced", rol
         role=role,
         market=market,
         persona=persona,
-        framework="result_first",
+        framework=framework,
         company="Example Co",
         template_id=template,
     )
@@ -388,6 +388,65 @@ def test_layout_budget_error(student_vault, tmp_path):
     application["selection"]["bullet_ids"] = [b["id"] for b in role["bullets"]]
     with pytest.raises(LayoutError) as error:
         render_application(tmp_path, vault, application)
+    assert error.value.code == "layout.budget"
+
+
+def _star_project(student_vault):
+    texts = [
+        {"zh": "项目背景：课程资料分散在 1200 份 PDF 和讲义里，找答案要翻很久。"},
+        {"zh": "核心框架：选用 BM25 与向量混合检索，兼顾关键词命中和语义召回。"},
+        {"zh": "解决方案：按标题层级分块并调权重，解决上下文断裂的痛点。"},
+        {"zh": "核心成果：在 120 条回归问题上把 Recall@5 从 62% 提升到 81%。"},
+    ]
+    student_vault["projects"][0]["bullets"] = [
+        {"id": f"bul_proj_star_{index}", "text": text, "evidence": ["ev_proj_eval"], "skill_ids": ["skl_ai"]}
+        for index, text in enumerate(texts)
+    ]
+    return [f"bul_proj_star_{index}" for index in range(4)]
+
+
+def test_star_recipe_slots_fit_the_campus_bullet_budget(student_vault, tmp_path):
+    """The campus manifest caps projects at 3 bullets, but a declared STAR
+    recipe is a 4-slot content contract: its slots must not be rejected."""
+    star_ids = _star_project(student_vault)
+    application = _app(
+        student_vault, tmp_path, "campus",
+        market="cn_internet", persona="student_with_internship", role="Backend Engineer",
+        framework="star",
+    )
+    for bullet_id in star_ids:
+        if bullet_id not in application["selection"]["bullet_ids"]:
+            application["selection"]["bullet_ids"].append(bullet_id)
+    result = render_application(tmp_path, student_vault, application)
+    assert result.layout.pages >= 1
+
+    # The recipe-aware budget is still a budget: a fifth bullet is rejected.
+    student_vault["projects"][0]["bullets"].append(
+        {"id": "bul_proj_star_extra", "text": {"zh": "核心成果：补充成果 2 项。"}, "evidence": ["ev_proj_eval"]}
+    )
+    application["selection"]["bullet_ids"].append("bul_proj_star_extra")
+    with pytest.raises(LayoutError) as error:
+        render_application(tmp_path, student_vault, application)
+    assert error.value.code == "layout.budget"
+
+
+def test_user_voice_does_not_loosen_the_template_bullet_budget(student_vault, tmp_path):
+    """user_voice has no fixed recipe, so the template budget stays in force."""
+    project = student_vault["projects"][0]
+    project["bullets"] = [
+        {"id": f"bul_proj_voice_{index}", "text": {"zh": f"自己的写法 {index}，带数字 1。"}, "evidence": ["ev_proj_eval"]}
+        for index in range(4)
+    ]
+    application = _app(
+        student_vault, tmp_path, "campus",
+        market="cn_internet", persona="student_with_internship", role="Backend Engineer",
+        framework="user_voice",
+    )
+    application["selection"]["bullet_ids"] = [
+        bullet_id for bullet_id in application["selection"]["bullet_ids"] if not bullet_id.startswith("bul_proj_")
+    ] + [f"bul_proj_voice_{index}" for index in range(4)]
+    with pytest.raises(LayoutError) as error:
+        render_application(tmp_path, student_vault, application)
     assert error.value.code == "layout.budget"
 
 

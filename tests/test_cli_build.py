@@ -14,6 +14,7 @@ from resume_pro.application import load_application, save_application
 from resume_pro.cli import cli
 from resume_pro.vault import load_vault, save_vault
 from tests.conftest import load_example
+from tests.test_lint_recipes import STAR_ZH
 
 
 def _cn_app(tmp_path, monkeypatch, *, minimum=False):
@@ -41,6 +42,58 @@ def _cn_app(tmp_path, monkeypatch, *, minimum=False):
     )
     assert created.exit_code == 0, created.output
     return runner, json.loads(created.output)["slug"]
+
+
+def test_star_recipe_survives_new_to_build(tmp_path, monkeypatch):
+    """Correctly ordered STAR points must pass init -> new -> build untouched.
+
+    Regression for the real chain (no manual selection edits): the selector
+    used to return score order (result point first) and cap projects below the
+    4-slot STAR recipe, destroying the recipe and tripping lint.framework_order
+    with exit 4 on a normal `resume new` -> `resume build`.
+    """
+    monkeypatch.chdir(tmp_path)
+    runner = CliRunner()
+    assert runner.invoke(cli, ["init", "--market", "cn_internet", "--persona", "student_with_internship"]).exit_code == 0
+    vault = load_example("vault-student.yaml")
+    vault["projects"][0]["bullets"] = [
+        {"id": f"bul_proj_star_{index}", "text": text, "evidence": ["ev_proj_eval"], "skill_ids": ["skl_ai"]}
+        for index, text in enumerate(STAR_ZH)
+    ]
+    save_vault(vault, root=tmp_path, validate=False)
+    created = runner.invoke(
+        cli,
+        [
+            "new",
+            "--role",
+            "Backend Engineer",
+            "--market",
+            "cn_internet",
+            "--persona",
+            "student_with_internship",
+            "--framework",
+            "star",
+            "--json",
+        ],
+    )
+    assert created.exit_code == 0, created.output
+    slug = json.loads(created.output)["slug"]
+
+    # Every STAR slot survives selection, in the vault's recipe order.
+    application = load_application(tmp_path, slug)
+    star_ids = [f"bul_proj_star_{index}" for index in range(len(STAR_ZH))]
+    selected = [bullet_id for bullet_id in application["selection"]["bullet_ids"] if bullet_id.startswith("bul_proj_star_")]
+    assert selected == star_ids
+
+    built = runner.invoke(cli, ["build", slug, "--yes", "--json"])
+    assert built.exit_code == 0, built.output
+    payload = json.loads(built.output)
+    assert payload["ok"] is True
+    codes = {issue["code"] for issue in payload["lint"]["issues"]}
+    assert not (codes & {"lint.framework_order", "lint.framework_label", "lint.result_no_data"})
+    html = Path(payload["render"]["html"]).read_text(encoding="utf-8")
+    positions = [html.index(label) for label in ("项目背景：", "核心框架：", "解决方案：", "核心成果：")]
+    assert positions == sorted(positions)
 
 
 def test_build_renders_html_and_editable(tmp_path, monkeypatch):

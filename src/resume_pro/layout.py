@@ -79,6 +79,23 @@ def _content_lines(model: dict[str, Any]) -> float:
     return lines
 
 
+def _recipe_slot_count(application: dict[str, Any]) -> int:
+    """Slot count of the application's declared packaging recipe, else 0.
+
+    A declared recipe is a hard content contract (lint errors on missing or
+    reordered slots), so its slots must fit even when a template's soft bullet
+    budget is smaller (e.g. campus allows 3, STAR needs 4). The page-count gate
+    in check_layout still enforces the real page capacity. user_voice has no
+    fixed recipe and never loosens the template budget.
+    """
+    # Deferred import: lint imports layout at module level.
+    from .lint import FRAMEWORK_RECIPES
+
+    framework = (application.get("writing") or {}).get("framework")
+    recipe = FRAMEWORK_RECIPES.get(framework) if framework else None
+    return len(recipe) if recipe else 0
+
+
 def check_layout(
     model: dict[str, Any],
     manifest: dict[str, Any],
@@ -99,9 +116,10 @@ def check_layout(
     for entry in model.get("experience") or []:
         if len(entry.get("bullets") or []) > int(budgets.get("bullets_per_role", 5)):
             errors.append(f"A role has {len(entry['bullets'])} bullets; the template allows {budgets.get('bullets_per_role', 5)}.")
+    project_bullet_budget = max(int(budgets.get("bullets_per_project", 4)), _recipe_slot_count(application))
     for entry in model.get("projects") or []:
-        if len(entry.get("bullets") or []) > int(budgets.get("bullets_per_project", 4)):
-            errors.append(f"A project has {len(entry['bullets'])} bullets; the template allows {budgets.get('bullets_per_project', 4)}.")
+        if len(entry.get("bullets") or []) > project_bullet_budget:
+            errors.append(f"A project has {len(entry['bullets'])} bullets; the layout allows {project_bullet_budget}.")
     skill_count = sum(len(group.get("items") or []) for group in model.get("skills") or [])
     if skill_count > int(budgets.get("max_skills", 16)):
         errors.append(f"{skill_count} skills exceed the template budget of {budgets.get('max_skills', 16)}.")
