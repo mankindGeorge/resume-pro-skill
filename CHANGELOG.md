@@ -4,9 +4,20 @@ All notable changes to this project are documented here. The format follows Keep
 
 ## [Unreleased]
 
+### Fixed
+
+- Selection keeps each item's bullets in vault order rather than score order, so a declared framework's recipe order (for example STAR background → framework → solution → result) survives `resume new`/`tailor` and is no longer falsely rejected by `lint.framework_order`; the project bullet budget no longer silently truncates a recipe slot.
+- `qa.layout.short_line` now flags only tiny orphan lines under 10 characters, superseding the earlier 2/5 printable-width rule; English resumes are currently exempt (a 10-character cutoff misflags complete English word tails), and `qa.layout.text_balance` is advisory and never blocks a build.
+- Build requires confirmed facts, refreshes parity on rebuild, and snapshots the delivered output; version history is bounded and pruning is reported.
+- CLI redacts phone/email/ID/address from stdout JSON and logs by default (`--include-pii` opts out); `--jd` is persisted as an absolute path and `--cwd` path resolution is documented; internal errors exit `7` with a report path.
+- Scanned/image-only files are refused; unreadable intake sessions are backed up and warned instead of silently reset; the academic research blocker maps to a targeted question.
+- Line endings are normalized to LF via `.gitattributes` so byte-sensitive golden preview hashes stay stable across checkouts.
+
 ### Changed
 
-- Change requests follow the same standards: before applying any user-requested change, re-read the user's input and the governing rules (framework recipe and label set, market rules, the 2/5 line-fill rule, naming and monolingual rules) and write strictly to those standards.
+- Bump the package version to 0.2.0.
+
+- Change requests follow the same standards: before applying any user-requested change, re-read the user's input and the governing rules (framework recipe and label set, market rules, the short-tail line rule, naming and monolingual rules) and write strictly to those standards.
 - The compact templates render one award per line: the awards list is single-column so each honor reads on its own row.
 - STAR packaging keeps merged content inside the recipe: an integrated tool or open-source artifact belongs within the four STAR points instead of extra bullets.
 - Point labels (`项目背景：` / `Background:` and friends) render bold in every resume, so the point structure is visible at a glance in both languages.
