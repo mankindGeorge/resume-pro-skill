@@ -101,6 +101,11 @@ QUESTION_BANK = {
         "why": "This persona is evaluated on research output.",
         "example": "A conference paper with venue and year",
     },
+    "sufficiency.research_missing": {
+        "ask": "What research have you done: the topic, your method, and one result or output?",
+        "why": "This persona is evaluated on research experience, not coursework alone.",
+        "example": "A retrieval study where you designed the evaluation and measured Recall@5",
+    },
     "sufficiency.portfolio_missing": {
         "ask": "What is your portfolio or GitHub link?",
         "why": "This persona is judged on work that can be opened.",
