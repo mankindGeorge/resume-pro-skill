@@ -435,3 +435,80 @@ def test_json_redacts_pii_by_default(tmp_path, monkeypatch):
     ident_full = json.loads(full.output)["summary"]["identity"]
     assert ident_full["email"] == "liming@example.com"
     assert ident_full["phone"] == "+86 137 0000 0000"
+
+
+def _cn_student_app(tmp_path, monkeypatch, runner):
+    monkeypatch.chdir(tmp_path)
+    assert runner.invoke(cli, ["init", "--market", "cn_internet", "--persona", "student_with_internship"]).exit_code == 0
+    save_vault(load_example("vault-student.yaml"), root=tmp_path, validate=False)
+    created = runner.invoke(
+        cli,
+        ["new", "--role", "Backend Engineer", "--market", "cn_internet", "--persona", "student_with_internship", "--framework", "result_first", "--json"],
+    )
+    assert created.exit_code == 0, created.output
+    return json.loads(created.output)["slug"]
+
+
+def test_restyle_newest_snapshot_is_the_delivered_state(tmp_path, monkeypatch):
+    monkeypatch.chdir(tmp_path)
+    runner = CliRunner()
+    assert runner.invoke(cli, ["init", "--market", "intl_en", "--persona", "experienced"]).exit_code == 0
+    save_vault(load_example("vault-experienced.yaml"), root=tmp_path, validate=False)
+    created = runner.invoke(
+        cli,
+        ["new", "--role", "Senior Backend Engineer", "--market", "intl_en", "--persona", "experienced", "--framework", "result_first", "--template", "ats-classic", "--json"],
+    )
+    assert created.exit_code == 0, created.output
+    slug = json.loads(created.stdout)["slug"]
+    assert runner.invoke(cli, ["build", slug, "--yes", "--json"]).exit_code == 0
+    restyled = runner.invoke(cli, ["restyle", "--app", slug, "--template", "modern-sidebar", "--yes", "--json"])
+    assert restyled.exit_code == 0, restyled.output
+    app_dir = tmp_path / ".resume" / "applications" / slug
+    application = yaml.safe_load((app_dir / "application.yaml").read_text(encoding="utf-8"))
+    html_name = application["output"]["html"]
+    root_html = (app_dir / html_name).read_bytes()
+    versions = sorted((app_dir / "versions").iterdir())
+    assert len(versions) >= 2, "restyle keeps the prior state and snapshots the delivered rebuild"
+    # The newest snapshot must match the published resume, not the pre-restyle state.
+    assert (versions[-1] / html_name).read_bytes() == root_html
+
+
+def test_build_reports_pruned_versions(tmp_path, monkeypatch):
+    import resume_pro.cli as cli_module
+
+    monkeypatch.setattr(cli_module, "MAX_VERSIONS", 1)
+    runner = CliRunner()
+    slug = _cn_student_app(tmp_path, monkeypatch, runner)
+    assert runner.invoke(cli, ["build", slug, "--yes", "--json"]).exit_code == 0
+    vault = load_vault(root=tmp_path)
+    vault["identity"]["full_name"] = {"zh": "示例新名", "en": "Example Newname"}
+    save_vault(vault, root=tmp_path, validate=False)
+    rebuilt = runner.invoke(cli, ["build", slug, "--yes", "--json"])
+    assert rebuilt.exit_code == 0, rebuilt.output
+    payload = json.loads(rebuilt.stdout)
+    assert payload.get("versions_pruned"), "pruning must be surfaced in the JSON payload"
+    assert "versions.pruned" in rebuilt.stderr
+
+
+def test_warn_versions_pruned_helper(capsys):
+    import resume_pro.cli as cli_module
+
+    cli_module._warn_versions_pruned(["20261101-000000-000000"], True)
+    err = capsys.readouterr().err
+    assert "versions.pruned" in err
+    cli_module._warn_versions_pruned(["20261101-000000-000000"], False)
+    err = capsys.readouterr().err
+    assert "warning:" in err and "20261101-000000-000000" in err
+    cli_module._warn_versions_pruned([], False)
+    assert capsys.readouterr().err == ""
+
+
+def test_diff_missing_version_mentions_pruning(tmp_path, monkeypatch):
+    runner = CliRunner()
+    slug = _cn_student_app(tmp_path, monkeypatch, runner)
+    assert runner.invoke(cli, ["build", slug, "--yes", "--json"]).exit_code == 0
+    result = runner.invoke(cli, ["diff", slug, "20990101-000000-000000", "current", "--json"])
+    assert result.exit_code == 3
+    error = json.loads(result.output)["error"]
+    assert error["code"] == "diff.version_missing"
+    assert "pruned" in error["fix"]

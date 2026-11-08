@@ -442,11 +442,12 @@ def _prune_versions(directory: Path, keep: int) -> list[str]:
     return removed
 
 
-def _snapshot_version(root: Path, application: dict[str, Any]) -> str | None:
+def _snapshot_version(root: Path, application: dict[str, Any]) -> tuple[str | None, list[str]]:
+    """Snapshot the current delivered output; return (version name, pruned names)."""
     directory = application_dir(root, application["slug"])
     html_path = directory / (application.get("output") or {}).get("html", "resume.html")
     if not html_path.is_file():
-        return None
+        return None, []
     version_dir = directory / "versions" / _version_timestamp()
     version_dir.mkdir(parents=True, exist_ok=True)
     output = application.get("output") or {}
@@ -462,8 +463,21 @@ def _snapshot_version(root: Path, application: dict[str, Any]) -> str | None:
         source = directory / name
         if source.is_file():
             shutil.copy2(source, version_dir / name)
-    _prune_versions(directory, keep=MAX_VERSIONS)
-    return version_dir.name
+    pruned = _prune_versions(directory, keep=MAX_VERSIONS)
+    return version_dir.name, pruned
+
+
+def _warn_versions_pruned(pruned: list[str] | None, as_json: bool) -> None:
+    """Notice that old snapshots were pruned: NDJSON on stderr in JSON mode, else text."""
+    if not pruned:
+        return
+    if as_json:
+        click.echo(json.dumps({"warning": "versions.pruned", "removed": list(pruned), "keep": MAX_VERSIONS}), err=True)
+    else:
+        click.echo(
+            f"warning: pruned {len(pruned)} old version snapshot(s) beyond the latest {MAX_VERSIONS}: {', '.join(pruned)}",
+            err=True,
+        )
 
 
 def _run_build(
@@ -538,7 +552,7 @@ def _run_build(
     ok = qa.status != "fail" and not parity_failed
     # Snapshot the delivered state after a successful build so the newest version
     # always matches the published resume (and history stays bounded).
-    version = _snapshot_version(root, application) if (snapshot and ok) else None
+    version, pruned = _snapshot_version(root, application) if (snapshot and ok) else (None, [])
     payload.update(
         {
             "ok": ok,
@@ -549,6 +563,8 @@ def _run_build(
             "version": version,
         }
     )
+    if pruned:
+        payload["versions_pruned"] = pruned
     if parity is not None:
         payload["parity"] = parity.to_dict()
         payload["parity_report"] = str(application_dir(root, slug) / "parity.json")
@@ -586,6 +602,7 @@ def build(
             draft=draft_flag,
             confirm=confirm_flag,
         )
+        _warn_versions_pruned(payload.get("versions_pruned"), as_json)
         if as_json:
             _json_out(payload)
         else:
@@ -1046,7 +1063,11 @@ def restyle(
         if app_slug:
             application = load_application(root, app_slug)
             _validate_template_language(root, application["market"], template_id, language=application_locale(application))
-            _snapshot_version(root, application)
+            # Preserve the pre-restyle state for diffing, then let the successful
+            # rebuild snapshot the delivered output so the newest version still
+            # matches the published resume (same invariant as `build`).
+            _, pre_pruned = _snapshot_version(root, application)
+            _warn_versions_pruned(pre_pruned, as_json)
             application["template"]["id"] = template_id
             application["template"]["source"] = "user_learned" if template_id.startswith("user-") else "library"
             save_application(root, application)
@@ -1057,8 +1078,8 @@ def restyle(
                 application,
                 template_id=template_id,
                 confirm=confirm_flag,
-                snapshot=False,
             )
+            _warn_versions_pruned(payload.get("versions_pruned"), as_json)
             if as_json:
                 _json_out(payload)
             else:
@@ -1579,6 +1600,7 @@ def localize(
             confirm=confirm_flag,
             draft=draft_flag,
         )
+        _warn_versions_pruned(build_payload.get("versions_pruned"), as_json)
         payload["build"] = build_payload
         payload["ok"] = exit_code == 0 and result.parity.status == "pass"
         if as_json:
@@ -1658,7 +1680,10 @@ def _version_ref(root: Path, slug: str, ref: str) -> tuple[dict[str, Any], Path]
         raise ResumeProError(
             "diff.version_missing",
             f"No version {ref!r} for application {slug!r}.",
-            fix="Run `resume build` to create a version, then list `.resume/applications/<slug>/versions/`.",
+            fix=(
+                "Run `resume build` to create a version, then list `.resume/applications/<slug>/versions/`. "
+                f"History keeps only the latest {MAX_VERSIONS} snapshots; older versions may have been pruned."
+            ),
         )
     return yaml.safe_load(app_path.read_text(encoding="utf-8")), version_dir
 

@@ -165,7 +165,7 @@ resume doctor [--json]
         └── qa.json
 ```
 
-`versions/` keeps a bounded history (the most recent 20 snapshots; older ones are pruned). A successful `build` snapshots the delivered output after writing, so the newest version matches the published resume; `restyle --app` snapshots the prior output before changing the template.
+`versions/` keeps a bounded history (the most recent 20 snapshots; older ones are pruned). Pruning is reported, never silent: a `versions_pruned` list in the `--json` payload plus a `versions.pruned` warning on stderr (a plain-text warning in human mode). A successful `build` snapshots the delivered output after writing, so the newest version matches the published resume. `restyle --app` first snapshots the prior output (preserving it for `diff`), then the successful rebuild snapshots the new delivered state, so the newest version still matches the published resume. A `diff` reference to a missing version notes that older snapshots may have been pruned.
 
 ## 5. Error format
 
