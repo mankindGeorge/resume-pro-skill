@@ -96,7 +96,7 @@ def _handle(ctx: click.Context, error: ResumeProError) -> None:
     if (ctx.obj or {}).get("json"):
         _json_out({"ok": False, "error": error.to_dict()})
     else:
-        click.echo(error.render(), err=True)
+        click.echo(_safe_text(error.render()), err=True)
     ctx.exit(_exit_code(error))
 
 
@@ -126,7 +126,7 @@ def _print_question(engine: IntakeEngine, question, lang: str) -> None:
     click.echo(f"[{question.stage}] ({progress['answered']}/{progress['total']}) {question.text(lang)}")
     click.echo(f"  why: {question.why_text(lang)}")
     if question.example:
-        click.echo(f"  e.g. {question.example}")
+        click.echo(f"  e.g. {_safe_text(question.example)}")
     if question.optional:
         click.echo("  optional: press Enter or type `skip` to leave a recorded gap")
     click.echo(f"  id: {question.id}")
@@ -145,9 +145,9 @@ def _print_summary(vault: dict[str, Any], session: dict[str, Any], lang: str) ->
         click.echo(f"Education: {data['counts']['education']} · Experience: {data['counts']['experience']} · Projects: {data['counts']['projects']} · Skills: {data['counts']['skills']}")
         click.echo(f"Bullets: {data['counts']['bullets']} · Evidence: {data['counts']['evidence']}")
     if data.get("notes"):
-        click.echo(f"Notes: {data['notes']}")
+        click.echo(f"Notes: {_safe_text(data['notes'])}")
     for note in data["unresolved"]:
-        click.echo(f"  unresolved [{note.get('severity')}]: {note.get('path')} — {note.get('reason')}")
+        click.echo(f"  unresolved [{note.get('severity')}]: {note.get('path')} — {_safe_text(note.get('reason'))}")
 
 
 def _print_report(report: GateReport, lang: str) -> None:
@@ -157,22 +157,22 @@ def _print_report(report: GateReport, lang: str) -> None:
         info = dimension.to_dict()
         name = info["label_zh"] if lang == "zh" else info["label"]
         status_label = DIM_STATUS.get(info["status"], {"en": info["status"], "zh": info["status"]})[lang]
-        click.echo(f"  {status_label:<4} {name}: {info['detail']}")
+        click.echo(f"  {status_label:<4} {name}: {_safe_text(info['detail'])}")
     if report.blockers:
         click.echo("Blockers:" if lang == "en" else "阻断项:")
         for item in report.blockers:
-            click.echo(f"  - {item['code']} [{item['path']}]: {item['message']}")
+            click.echo(f"  - {item['code']} [{item['path']}]: {_safe_text(item['message'])}")
             if item.get("fix"):
-                click.echo(f"    fix: {item['fix']}")
+                click.echo(f"    fix: {_safe_text(item['fix'])}")
     if report.warnings:
         click.echo("Warnings:" if lang == "en" else "警告:")
         for item in report.warnings:
-            click.echo(f"  - {item['code']} [{item['path']}]: {item['message']}")
+            click.echo(f"  - {item['code']} [{item['path']}]: {_safe_text(item['message'])}")
     if report.questions:
         click.echo("Next questions:" if lang == "en" else "建议追问:")
         for index, question in enumerate(report.questions, 1):
-            click.echo(f"  {index}. {question['ask']}")
-            click.echo(f"     why: {question['why']}")
+            click.echo(f"  {index}. {_safe_text(question['ask'])}")
+            click.echo(f"     why: {_safe_text(question['why'])}")
     if report.draft:
         click.echo("DRAFT — NOT FOR SUBMISSION")
     click.echo(f"Can build: {report.can_build} · Deliverable: {report.deliverable}")
@@ -761,7 +761,7 @@ def _print_ingest(result) -> None:
     if result.scanned:
         click.echo("Scanned/image-only: text could not be read.")
     for warning in result.warnings:
-        click.echo(f"  warning: {warning}")
+        click.echo(f"  warning: {_safe_text(warning)}")
     if result.needs_confirmation:
         click.echo("  needs confirmation: " + ", ".join(result.needs_confirmation[:8]))
 
@@ -770,11 +770,21 @@ def _print_audit(audit: TemplateAudit) -> None:
     click.echo(f"Template verdict: {audit.verdict} (keep allowed: {audit.keep_allowed})")
     for dimension in audit.dimensions:
         info = dimension.to_dict()
-        click.echo(f"  {info['status']:<4} {info['label']}: {info['detail']}")
+        click.echo(f"  {info['status']:<4} {info['label']}: {_safe_text(info['detail'])}")
         if info["fix"] and info["status"] != "pass":
-            click.echo(f"       fix: {info['fix']}")
+            click.echo(f"       fix: {_safe_text(info['fix'])}")
     if audit.recommendations:
         click.echo("  recommended templates: " + ", ".join(audit.recommendations))
+
+
+def _safe_text(value: Any) -> str:
+    """Redact PII from human-mode free text unless --include-pii is set.
+
+    Mirrors the stdout JSON redaction so diagnostics, logs, and error messages
+    never leak phone/email/ID/address to the terminal (contract §7).
+    """
+    text = str(value)
+    return text if _INCLUDE_PII else redact_pii(text)
 
 
 def _json_out(data: dict[str, Any]) -> None:
@@ -1137,15 +1147,15 @@ def _print_match(report) -> None:
     if data["gaps"]:
         click.echo("Gaps:")
         for gap in data["gaps"][:8]:
-            click.echo(f"  - [{gap['classification']}] {gap['requirement']}")
-            click.echo(f"    {gap['fix']}")
+            click.echo(f"  - [{gap['classification']}] {_safe_text(gap['requirement'])}")
+            click.echo(f"    {_safe_text(gap['fix'])}")
     if data["risks"]:
         click.echo("Risks:")
         for risk in data["risks"]:
-            click.echo(f"  - [{risk['type']}] {risk['question']}")
-            click.echo(f"    response: {risk['response']}")
+            click.echo(f"  - [{risk['type']}] {_safe_text(risk['question'])}")
+            click.echo(f"    response: {_safe_text(risk['response'])}")
     for note in data.get("notes") or []:
-        click.echo(f"  note: {note}")
+        click.echo(f"  note: {_safe_text(note)}")
 
 
 def _print_qa(qa) -> None:
@@ -1156,9 +1166,9 @@ def _print_qa(qa) -> None:
     )
     for check in data["checks"]:
         if check["status"] != "pass":
-            click.echo(f"  [{check['status']}] {check['id']}: {check['detail']}")
+            click.echo(f"  [{check['status']}] {check['id']}: {_safe_text(check['detail'])}")
             if check.get("fix"):
-                click.echo(f"       fix: {check['fix']}")
+                click.echo(f"       fix: {_safe_text(check['fix'])}")
 
 
 def _print_lint(report) -> None:
@@ -1169,9 +1179,9 @@ def _print_lint(report) -> None:
     )
     click.echo(f"10-second skim: {'pass' if data['skim']['passed'] else 'fail'} · found: {', '.join(data['skim']['found']) or '—'}")
     for issue in data["issues"]:
-        click.echo(f"  [{issue['severity']}] {issue['code']} [{issue['path']}]: {issue['message']}")
+        click.echo(f"  [{issue['severity']}] {issue['code']} [{issue['path']}]: {_safe_text(issue['message'])}")
         if issue.get("fix"):
-            click.echo(f"       fix: {issue['fix']}")
+            click.echo(f"       fix: {_safe_text(issue['fix'])}")
 
 
 @cli.command()
@@ -1808,7 +1818,7 @@ def main() -> None:
             )
         except OSError:
             report_path = None
-        click.echo(f"7: internal error: {exc}", err=True)
+        click.echo(f"7: internal error: {_safe_text(exc)}", err=True)
         if report_path is not None:
             click.echo(f"  report: {report_path}", err=True)
         raise SystemExit(7)

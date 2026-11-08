@@ -265,6 +265,46 @@ def test_internal_error_exits_7_with_report(tmp_path, monkeypatch):
     assert list(tmp_path.rglob("internal-error-*.json")), "an internal-error report path must be written"
 
 
+def test_internal_error_message_is_redacted(tmp_path, monkeypatch, capsys):
+    import resume_pro.cli as cli_module
+
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr(cli_module, "_INCLUDE_PII", False)
+
+    def boom():
+        raise RuntimeError("failed for liming@example.com / +86 137 0000 0000")
+
+    monkeypatch.setattr(cli_module, "cli", boom)
+    with pytest.raises(SystemExit) as exc:
+        cli_module.main()
+    assert exc.value.code == 7
+    err = capsys.readouterr().err
+    assert "liming@example.com" not in err
+    assert "+86 137 0000 0000" not in err
+    assert "[REDACTED]" in err
+    # The local report on disk keeps the full data (redaction is output-only).
+    report = next(tmp_path.rglob("internal-error-*.json"))
+    assert "liming@example.com" in report.read_text(encoding="utf-8")
+
+
+def test_human_error_output_is_redacted(monkeypatch, capsys):
+    import click
+
+    import resume_pro.cli as cli_module
+    from resume_pro.errors import ResumeProError
+
+    monkeypatch.setattr(cli_module, "_INCLUDE_PII", False)
+    ctx = click.Context(click.Command("demo"))
+    ctx.obj = {"json": False}
+    error = ResumeProError("demo.err", "contact liming@example.com or 13700000000", fix="mail a@b.com")
+    with pytest.raises(click.exceptions.Exit):
+        cli_module._handle(ctx, error)
+    err = capsys.readouterr().err
+    assert "liming@example.com" not in err
+    assert "13700000000" not in err
+    assert "[REDACTED]" in err
+
+
 def test_cwd_overrides_project_root(tmp_path, monkeypatch):
     project = tmp_path / "project"
     project.mkdir()
