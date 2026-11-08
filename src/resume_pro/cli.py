@@ -1240,7 +1240,7 @@ def new(
             company=company,
             template_id=template_id,
             slug=slug,
-            jd_path=str(jd_path) if jd_path else None,
+            jd_path=str(jd_path.resolve()) if jd_path else None,
             role_in_filename=False if no_role_filename else None,
         )
         locale = application["writing"]["locale"]
@@ -1457,7 +1457,7 @@ def tailor(
             company=(application or {}).get("target", {}).get("company"),
             template_id=template_id or (application or {}).get("template", {}).get("id"),
             slug=slug or (application or {}).get("slug"),
-            jd_path=str(jd_path),
+            jd_path=str(jd_path.resolve()),
             role_in_filename=False if no_role_filename else None,
         )
         if application:

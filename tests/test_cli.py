@@ -7,10 +7,13 @@ import json
 from pathlib import Path
 
 import pytest
+import yaml
 from click.testing import CliRunner
 
 from resume_pro.cli import cli
 from resume_pro.vault import load_vault, save_vault
+from tests.conftest import load_example
+from tests.ingest_fixtures import write_html
 from tests.test_intake import FULL_ANSWERS
 
 
@@ -319,6 +322,95 @@ def test_cwd_overrides_project_root(tmp_path, monkeypatch):
     assert created.exit_code == 0, created.output
     assert (project / ".resume" / "vault.yaml").exists()
     assert not (elsewhere / ".resume").exists()
+
+
+def test_new_persists_absolute_jd_path_under_cwd(tmp_path, monkeypatch):
+    project = tmp_path / "project"
+    project.mkdir()
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    monkeypatch.chdir(elsewhere)
+    runner = CliRunner()
+    created = runner.invoke(
+        cli,
+        ["--cwd", str(project), "init", "--market", "cn_internet", "--persona", "student_with_internship", "--json"],
+    )
+    assert created.exit_code == 0, created.output
+    save_vault(load_example("vault-student.yaml"), root=project, validate=False)
+    (project / "jd.md").write_text("Backend engineer: Python, MySQL, Redis.", encoding="utf-8")
+
+    result = runner.invoke(
+        cli,
+        [
+            "--cwd", str(project), "new", "--role", "Backend Engineer",
+            "--market", "cn_internet", "--persona", "student_with_internship",
+            "--framework", "result_first", "--jd", "jd.md", "--json",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    slug = json.loads(result.output)["slug"]
+    application = yaml.safe_load((project / ".resume" / "applications" / slug / "application.yaml").read_text(encoding="utf-8"))
+    jd_path = application["target"]["jd_path"]
+    assert Path(jd_path).is_absolute(), "persisted --jd must be absolute so it survives a cwd change"
+    assert Path(jd_path) == (project / "jd.md").resolve()
+    assert Path(jd_path).is_file()
+
+
+def test_tailor_persists_absolute_jd_path_under_cwd(tmp_path, monkeypatch):
+    project = tmp_path / "project"
+    project.mkdir()
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    monkeypatch.chdir(elsewhere)
+    runner = CliRunner()
+    assert runner.invoke(
+        cli,
+        ["--cwd", str(project), "init", "--market", "cn_internet", "--persona", "student_with_internship", "--json"],
+    ).exit_code == 0
+    save_vault(load_example("vault-student.yaml"), root=project, validate=False)
+    (project / "jd.md").write_text("Backend engineer: Python, MySQL, Redis.", encoding="utf-8")
+
+    result = runner.invoke(
+        cli,
+        [
+            "--cwd", str(project), "tailor", "--jd", "jd.md",
+            "--market", "cn_internet", "--persona", "student_with_internship",
+            "--framework", "result_first", "--json",
+        ],
+    )
+    assert result.exit_code == 0, result.output
+    slug = json.loads(result.output)["slug"]
+    application = yaml.safe_load((project / ".resume" / "applications" / slug / "application.yaml").read_text(encoding="utf-8"))
+    jd_path = application["target"]["jd_path"]
+    assert Path(jd_path).is_absolute()
+    assert Path(jd_path) == (project / "jd.md").resolve()
+
+
+def test_cwd_relative_file_argument_resolves_against_cwd_dir(tmp_path, monkeypatch):
+    # --cwd chdirs before the subcommand FILE argument is parsed, so a relative
+    # FILE is looked up inside the --cwd directory, not the launch directory.
+    project = tmp_path / "project"
+    project.mkdir()
+    elsewhere = tmp_path / "elsewhere"
+    elsewhere.mkdir()
+    write_html(project / "resume.html")
+    write_html(elsewhere / "launch-only.html")
+    monkeypatch.chdir(elsewhere)
+    runner = CliRunner()
+
+    found = runner.invoke(
+        cli,
+        ["--cwd", str(project), "review", "resume.html", "--market", "intl_en", "--persona", "experienced", "--json"],
+    )
+    assert found.exit_code == 0, found.output
+    assert json.loads(found.output)["ok"] is True
+
+    # A file that exists only in the launch directory is not visible under --cwd.
+    missing = runner.invoke(
+        cli,
+        ["--cwd", str(project), "review", "launch-only.html", "--market", "intl_en", "--persona", "experienced", "--json"],
+    )
+    assert missing.exit_code == 2
 
 
 def test_json_redacts_pii_by_default(tmp_path, monkeypatch):

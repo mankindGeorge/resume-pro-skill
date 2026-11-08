@@ -10,7 +10,7 @@ resume <command> [options]
 
 | Convention | Rule |
 |---|---|
-| Working directory | The nearest ancestor containing `.resume/`; override with `--cwd`. |
+| Working directory | The nearest ancestor containing `.resume/`; override with `--cwd`. `--cwd` changes the process directory before subcommand arguments are parsed (see below). |
 | Vault | `.resume/vault.yaml` by default. |
 | Applications | `.resume/applications/<slug>/`. |
 | Config | `.resume/config.yaml`. |
@@ -22,6 +22,12 @@ resume <command> [options]
 | Determinism | Same vault + same application + same template → identical HTML bytes. |
 | Output format | Resume output is self-contained HTML; PDF comes from the browser print dialog. |
 | Overwrite | Commands never overwrite an existing artifact without `--force`; versions are moved to `versions/`. |
+
+### Path resolution under `--cwd`
+
+`--cwd` is applied by the group callback before Click parses the subcommand, so it changes the process working directory first. As a result, **relative `FILE` arguments** (`review`, `optimize`, `restyle`, `template-import`, `tailor`, `photo`) **and relative `--jd` paths are resolved against the `--cwd` directory, not the directory you launched from**. For example, `resume --cwd proj review resume.pdf` looks for `proj/resume.pdf`. To reference a file relative to the launch directory while overriding `--cwd`, pass an absolute path.
+
+File paths that are persisted are stored as absolute paths so they stay valid when the working directory changes later: `--jd` is recorded as an absolute `target.jd_path` in `application.yaml` (`new`, `tailor`), and `photo` stores an absolute `identity.photo`.
 
 ## 2. Exit codes
 
